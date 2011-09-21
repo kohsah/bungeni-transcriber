@@ -30,11 +30,12 @@
 # include "config.h"
 #endif
 
-#include "inplaceEditor.hpp"
-#include "transcribeWidget.hpp"
-
 #include <QHBoxLayout>
 #include <QGroupBox>
+
+#include "inplaceEditor.hpp"
+#include "transcribeWidget.hpp"
+#include "util/util.hpp"
 InplaceEditor::InplaceEditor(QWidget * parent) : QWidget(parent)
 {
     ui.setupUi(this);

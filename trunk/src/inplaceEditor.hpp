@@ -61,7 +61,6 @@ public:
     void setDuration(int);
     void setAutoCompleteWordlist(const QStringList &);
 private:
-    QString timeSecondstoString(int time);
     Ui::inPlaceEditor ui;
     QxtSpanSlider *horizontalSlider; 
     customTextEdit *speechText;

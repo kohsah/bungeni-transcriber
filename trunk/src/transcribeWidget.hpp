@@ -51,7 +51,7 @@
 #include "network/formpost.hpp"
 #include "controlsWidget.hpp"
 #include "playlistWidget.hpp"
-
+#include "util/util.hpp"
 class TranscribeWidget : public QMainWindow
 {
     Q_OBJECT

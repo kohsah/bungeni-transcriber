@@ -33,6 +33,8 @@
 #include <QPainter>
 #include <QDebug>
 #include <QCompleter>
+
+#include "util/util.hpp"
 ListViewDelegate::ListViewDelegate(QObject *parent)
     		: QAbstractItemDelegate(parent)
 	{

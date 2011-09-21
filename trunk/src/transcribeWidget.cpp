@@ -53,12 +53,12 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     //Setup UI 
     ui.setupUi(this);
     delegate = new ListViewDelegate(this);
-    QObject::connect( ui.addButton, SIGNAL(clicked()), this, SLOT(addSpeech()) );
-    QObject::connect( ui.removeButton, SIGNAL(clicked()), this, SLOT(removeSpeech()) );
-    //QObject::connect( ui.agendaItemButton, SIGNAL(clicked()), this, SLOT(addAgendaItem()) );
-    QObject::connect( ui.table, SIGNAL(doubleClicked(QModelIndex)), delegate, SLOT(currentEditing(QModelIndex)));
-    QObject::connect( ui.table, SIGNAL(clicked(QModelIndex)), delegate, SLOT(display(QModelIndex)));
-    QObject::connect( ui.table, SIGNAL(clicked(QModelIndex)), this, SLOT(selection(QModelIndex)));
+    QObject::connect(ui.addButton, SIGNAL(clicked()), this, SLOT(addSpeech()));
+    QObject::connect(ui.removeButton, SIGNAL(clicked()), this, SLOT(removeSpeech()));
+    //QObject::connect(ui.agendaItemButton, SIGNAL(clicked()), this, SLOT(addAgendaItem() );
+    QObject::connect(ui.table, SIGNAL(doubleClicked(QModelIndex)), delegate, SLOT(currentEditing(QModelIndex)));
+    QObject::connect(ui.table, SIGNAL(clicked(QModelIndex)), delegate, SLOT(display(QModelIndex)));
+    QObject::connect(ui.table, SIGNAL(clicked(QModelIndex)), this, SLOT(selection(QModelIndex)));
     this->setupModelView();
     fileName="";
     
@@ -827,10 +827,10 @@ bool TranscribeWidget::writeFile(QString fileName)
     	        writer.writeAttribute("person_id", "");
     	    }
     	    writer.writeAttribute("startTime", 
-    	        TranscribeWidget::timeSecondstoString(model->data(model->index(i, 
+                timeSecondstoString(model->data(model->index(i,
     	                2, QModelIndex()),Qt::DisplayRole).toInt()));
     	    writer.writeAttribute("endTime", 
-    	        TranscribeWidget::timeSecondstoString(model->data(model->index(i, 
+               timeSecondstoString(model->data(model->index(i,
     	                3, QModelIndex()),Qt::DisplayRole).toInt()));
             writer.writeCDATA(model->data(model->index(i, 0, QModelIndex()),Qt::DisplayRole).toString());
             //writer.writeCharacters( QDomDocument::createCDATASection ( model->data(model->index(i, 0, QModelIndex()),Qt::DisplayRole).toString() ) );
@@ -840,10 +840,10 @@ bool TranscribeWidget::writeFile(QString fileName)
         {
             writer.writeStartElement("agenda_item");
             writer.writeAttribute("startTime", 
-    	        TranscribeWidget::timeSecondstoString(model->data(model->index(i, 
+                timeSecondstoString(model->data(model->index(i,
     	                2, QModelIndex()),Qt::DisplayRole).toInt()));
     	    writer.writeAttribute("endTime", 
-    	        TranscribeWidget::timeSecondstoString(model->data(model->index(i, 
+                timeSecondstoString(model->data(model->index(i,
     	                3, QModelIndex()),Qt::DisplayRole).toInt()));
     	    writer.writeAttribute("id", 
     	        TranscribeWidget::model->data(model->index(i, 
@@ -877,8 +877,8 @@ QTemporaryFile * TranscribeWidget::writeTemp()
     {
     	writer.writeStartElement("speech");
     	writer.writeAttribute("person", model->data(model->index(i, 1, QModelIndex()),Qt::DisplayRole).toString());
-    	writer.writeAttribute("startTime", TranscribeWidget::timeSecondstoString(model->data(model->index(i, 2, QModelIndex()),Qt::DisplayRole).toInt()));
-    	writer.writeAttribute("endTime", TranscribeWidget::timeSecondstoString(model->data(model->index(i, 3, QModelIndex()),Qt::DisplayRole).toInt()));
+        writer.writeAttribute("startTime", timeSecondstoString(model->data(model->index(i, 2, QModelIndex()),Qt::DisplayRole).toInt()));
+        writer.writeAttribute("endTime", timeSecondstoString(model->data(model->index(i, 3, QModelIndex()),Qt::DisplayRole).toInt()));
         writer.writeCharacters(model->data(model->index(i, 0, QModelIndex()),Qt::DisplayRole).toString());
         writer.writeEndElement();    
     }

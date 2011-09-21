@@ -133,43 +133,25 @@ void KeyShortcutEdit::mousePressEvent( QMouseEvent *)
     emit pressed();
 }
 
+QString formatTime(int number) {
+    QString text = "", temp = "";
+    if (number < 10) {
+        text.append("0");
+        temp.setNum(number);
+        text += temp;
+    }
+    else {
+        text.setNum(number);
+    }
+    return text;
+}
+
 QString timeSecondstoString(int time)
 {
-
-	int hours, minutes, seconds;
-	QString temp;
-	hours = time / 3600;
+    int hours, minutes, seconds;
+    hours = time / 3600;
     minutes = (time % 3600) / 60;
     seconds = (time % 3600) % 60;
-    QString timeText = "";
-
-    if (hours < 10){
-        timeText.append("0"); 
-        temp.setNum(hours);
-        timeText += temp;
-    }
-	else{
-		temp.setNum(hours);
-		timeText += temp;
-	}
-	if ( minutes < 10 ){
-		timeText.append(":0"); 
-		temp.setNum(minutes);
-		timeText += temp;
-	}
-	else{
-		temp.setNum(minutes);
-		timeText += ":"+temp;
-	}
-	if ( seconds < 10 )
-	{
-		timeText.append(":0"); 
-		temp.setNum(seconds);
-		timeText += temp;
-	}else
-	{
-		temp.setNum(seconds);
-		timeText += ":" + temp;
-	}
-	return timeText;
+    QString timeText = formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds);
+    return timeText;
 }
