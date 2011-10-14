@@ -18,6 +18,7 @@ HEADERS +=  src/transcribeWidget.hpp \
             src/util/vlc_keys.h \
             src/util/util.hpp \
             src/settings.hpp \
+            src/transcriptionItemEditor.hpp \
             src/transcribeKeySelector.hpp \
             src/model/agendaItem.hpp \
             src/model/speech.hpp \
@@ -48,7 +49,8 @@ SOURCES +=  src/transcribeWidget.cpp \
             src/transcribeKeySelector.cpp \
             src/model/agendaItem.cpp \
             src/model/speech.cpp \
-            src/model/transcriptionItem.hpp \
+            src/model/transcriptionItem.hpp \ 
+            src/transcriptionItemEditor.cpp \
             src/model/transcriptionModel.cpp
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           

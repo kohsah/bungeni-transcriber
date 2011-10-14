@@ -4,7 +4,7 @@ TranscriptionModel::TranscriptionModel(QObject *parent) :
     QAbstractListModel(parent) {
 }
 
-QVariant TranscriptionModel::data(const QModelIndex &index, int role) const{
+QVariant TranscriptionModel::data(const QModelIndex &index, int role ) const{
     return QVariant::fromValue(new TranscriptionItemWrapper(items.value(index.row())));
 }
 

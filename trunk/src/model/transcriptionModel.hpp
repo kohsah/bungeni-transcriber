@@ -11,12 +11,12 @@ class TranscriptionModel : public QAbstractListModel
     Q_OBJECT
 public:
     explicit TranscriptionModel(QObject *parent = 0);
-    QVariant data(const QModelIndex &index, int role) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool removeRows(int row, int count, const QModelIndex &parent);
     bool insertItem (int row, TranscriptionItem *item);
     bool setData(const QModelIndex & index, TranscriptionItem &item, int role);
-    int rowCount(const QModelIndex &parent) const;
+    int rowCount(const QModelIndex & parent = QModelIndex()) const;
 private:
     QList<TranscriptionItem *> items;
 };

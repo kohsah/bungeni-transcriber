@@ -4,22 +4,28 @@
 #include <QObject>
 #include <QTime>
 #include "transcriptionItem.hpp"
+#include "../transcriptionItemEditor.hpp"
 class Speech : public TranscriptionItem{
 public:
     explicit Speech(QTime, QTime, QString, QString, int, bool);
     void setPersonName(QString);
-    void setSpeech(QString title);
+    void setSpeech(QString);
     void setId(int id);
     QString getPersonName();
     QString getSpeech();
     int getId();
-    virtual QWidget * getEditor(QWidget*) = 0;
-    virtual void setStartTime(QTime) = 0;
-    virtual void setEndTime(QTime) = 0;
-    virtual QTime getStartTime() = 0;
-    virtual QTime getEndTime() = 0;
+    QWidget * getEditor(QWidget*);
+    TranscriptionItemEditor *newEditor(QWidget *parent);
+    void setStartTime(QTime);
+    void setEndTime(QTime);
+    QTime getStartTime();
+    QTime getEndTime();
     void setComplete(bool);
     bool isComplete();
+    void draw(QPainter *&, const QStyleOptionViewItem&);
+    QSize sizeHint(const QStyleOptionViewItem&, bool, bool);
+    void setEditorData(QWidget*);
+    void setModelData(QWidget *editor_);
 protected:
     QString personName;
     QString speech;

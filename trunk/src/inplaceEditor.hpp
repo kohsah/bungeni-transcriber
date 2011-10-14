@@ -38,7 +38,9 @@
 #include <QModelIndex>
 #include "customTextEdit.hpp"
 #include <QCompleter>
-class InplaceEditor : public QWidget
+#include <QTime>
+#include "transcriptionItemEditor.hpp"
+class InplaceEditor : public TranscriptionItemEditor
 {
     Q_OBJECT
 public:
@@ -55,8 +57,8 @@ public:
     void setComplete(bool incomplete);
     void setName(QString);
     void setSpeech(QString);
-    void setStartTime(int);
-    void setEndTime(int);
+    void setStartTime(QTime);
+    void setEndTime(QTime);
     void setIndex(const QModelIndex& );
     void setDuration(int);
     void setAutoCompleteWordlist(const QStringList &);
@@ -76,10 +78,6 @@ public slots:
     void save();
     void cancel();
     void play();
-signals:
-    void close(QWidget *);
-    void cancelled(QWidget *);
-    void closeIndex(QModelIndex); 
 };
 
 

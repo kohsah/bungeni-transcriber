@@ -48,9 +48,10 @@
 #include "listViewDelegate.hpp"
 #include "qxtspanslider/qxtspanslider.h"
 #include "ui/ui_uploadProgress.h"
-#include "network/formpost.hpp"
+#include "network/formpost/formpost.hpp"
 #include "controlsWidget.hpp"
 #include "playlistWidget.hpp"
+#include "model/transcriptionModel.hpp"
 #include "util/util.hpp"
 class TranscribeWidget : public QMainWindow
 {
@@ -63,6 +64,7 @@ class TranscribeWidget : public QMainWindow
             return instance;
         }
         int getFileDuration();
+        void setFileDuration();
         void endReached();
     public slots:  
         void addSpeech();
@@ -95,8 +97,6 @@ class TranscribeWidget : public QMainWindow
         void skipBackward(int sec);
         void playFaster();
         void playSlower();
-        void getLength();
-        void selection(QModelIndex);
         void takes();
         void getMPList();
         void MPListReply();
@@ -107,10 +107,8 @@ class TranscribeWidget : public QMainWindow
         ~TranscribeWidget();
         static TranscribeWidget *instance;
         QFrame * video;
-        void raise(libvlc_exception_t * ex);
         Ui::Transcribe ui;
         bool _isPlaying;
-        libvlc_exception_t _vlcexcep;
         libvlc_instance_t *_vlcinstance;
         libvlc_media_player_t *_mp;
         libvlc_media_t *_m;
@@ -121,7 +119,7 @@ class TranscribeWidget : public QMainWindow
         QPushButton *addButton;
         QPushButton *removeButton;
         ListViewDelegate *delegate;
-        QStandardItemModel *model;
+        TranscriptionModel *model;
         QSortFilterProxyModel *filterModel;
         QItemSelectionModel *selectionModel;
         void setupModelView();

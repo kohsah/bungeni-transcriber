@@ -35,7 +35,7 @@
 
 #include <QHBoxLayout>
 #include <QGroupBox>
-AgendaItemEditor::AgendaItemEditor(QWidget * parent) : QWidget(parent)
+AgendaItemEditor::AgendaItemEditor(QWidget * parent) : TranscriptionItemEditor()
 {
     ui.setupUi(this);
     //TranscribeWidget *transcribe = static_cast<TranscribeWidget*>(parent);
@@ -93,7 +93,7 @@ void AgendaItemEditor::updateStartTime( int time )
 	QString temp;
 	QTime start;
 	QString timeText = "";
-	timeText = AgendaItemEditor::timeSecondstoString(time);
+        timeText = timeSecondstoString(time);
 	start = QTime::fromString(timeText);
 	ui.startTime->setTime(start);
 	
@@ -105,60 +105,10 @@ void AgendaItemEditor::updateEndTime( int time )
 	QString temp;
 	QTime end;
 	QString timeText = "";
-	timeText = AgendaItemEditor::timeSecondstoString(time);
+        timeText = timeSecondstoString(time);
 	end = QTime::fromString(timeText);
 	ui.endTime->setTime(end);
 }
-
-//Converts number of seconds into time in this format hh:mm:ss
-QString AgendaItemEditor::timeSecondstoString(int time)
-{
-
-	int hours, minutes, seconds;
-	QString temp;
-	hours = time / 3600;
-	minutes = (time % 3600) / 60;
-	seconds = (time % 3600) % 60;
-	
-QString timeText = "";
-
-if (hours < 10)
-	{
-		timeText.append("0"); 
-		temp.setNum(hours);
-		timeText += temp;
-	}
-	else
-	{
-		temp.setNum(hours);
-		timeText += temp;
-	}
-	if ( minutes < 10 )
-	{
-		timeText.append(":0"); 
-		temp.setNum(minutes);
-		timeText += temp;
-	}
-	else
-	{
-		temp.setNum(minutes);
-		timeText += ":"+temp;
-	}
-	if ( seconds < 10 )
-	{
-		timeText.append(":0"); 
-		temp.setNum(seconds);
-		timeText += temp;
-	}
-	else
-	{
-		temp.setNum(seconds);
-		timeText += ":" + temp;
-	}
-	return timeText;
-
-}
-
 
 void AgendaItemEditor::save()
 {
@@ -183,20 +133,16 @@ void AgendaItemEditor::setAgendaList(const QStringList & list)
     ui.comboBox->insertItems(0, list);
 }
 
-int AgendaItemEditor::getStartTime()
+QTime AgendaItemEditor::getStartTime()
 {
-  //  qDebug() << "inplace editor getStartTime " << ui.startTime->time();
-   // return ui.startTime->time();
-   qDebug() << "inplace editor getStartTime " << horizontalSlider->lowerValue();
-   qDebug() << "inplace editor ui.starttime->time " << ui.startTime->time();;
-   return horizontalSlider->lowerValue();
+   //return horizontalSlider->lowerValue();
+    return QTime();
 }
     
-int AgendaItemEditor::getEndTime()
+QTime AgendaItemEditor::getEndTime()
 {
-    //qDebug() << "inplace editor getendTime " << ui.endTime->time();
-   // return ui.endTime->time();
-   return horizontalSlider->upperValue();
+   //return horizontalSlider->upperValue();
+    return QTime();
 }
 
 QString AgendaItemEditor::getAgendaItem()
@@ -214,19 +160,12 @@ void AgendaItemEditor::setDuration(int sec)
     ui.endTime->setMaximumTime(QTime(hour, min, seconds));
 }
 
-void AgendaItemEditor::setStartTime(int start)
+void AgendaItemEditor::setStartTime(QTime start)
 {
-    /*
-    int hour = start / 3600;
-    int min = (start % 3600 ) / 60;
-    int seconds = (start % 3600) % 60;
-    ui.startTime->setTime(QTime(hour, min, seconds));
-    */
-    horizontalSlider->setLowerValue(start);
+    //horizontalSlider->setLowerValue(start);
 }
     
-void AgendaItemEditor::setEndTime(int end)
+void AgendaItemEditor::setEndTime(QTime end)
 {
-    //ui.endTime->setTime(QTime::fromString(InplaceEditor::timeSecondstoString(end)));
-    horizontalSlider->setLowerValue(end);
+    //horizontalSlider->setLowerValue(end);
 }

@@ -5,6 +5,10 @@
 #include <QWidget>
 #include <QTime>
 #include <QMetaType>
+#include <QPainter>
+#include <QSize>
+#include <QStyleOptionViewItem>
+#include "../transcriptionItemEditor.hpp"
 class TranscriptionItem
 {
 public:
@@ -13,6 +17,11 @@ public:
     virtual void setEndTime(QTime) = 0;
     virtual QTime getStartTime() = 0;
     virtual QTime getEndTime() = 0;
+    virtual void draw(QPainter *&, const QStyleOptionViewItem&) = 0;
+    virtual QSize sizeHint(const QStyleOptionViewItem&, bool, bool) = 0;
+    virtual void setEditorData(QWidget *) = 0;
+    virtual void setModelData(QWidget *) = 0;
+    virtual TranscriptionItemEditor *newEditor(QWidget *) = 0;
 protected:
     QTime startTime;
     QTime endTime;

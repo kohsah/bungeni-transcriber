@@ -36,7 +36,7 @@
 #include "inplaceEditor.hpp"
 #include "transcribeWidget.hpp"
 #include "util/util.hpp"
-InplaceEditor::InplaceEditor(QWidget * parent) : QWidget(parent)
+InplaceEditor::InplaceEditor(QWidget * parent) : TranscriptionItemEditor(parent)
 {
     ui.setupUi(this);
     horizontalSlider = new QxtSpanSlider();
@@ -291,7 +291,7 @@ void InplaceEditor::setSpeech(QString speech)
    speechText->setHtml(speech);
 }
     
-void InplaceEditor::setStartTime(int start)
+void InplaceEditor::setStartTime(QTime start)
 {
     /*
     int hour = start / 3600;
@@ -299,11 +299,11 @@ void InplaceEditor::setStartTime(int start)
     int seconds = (start % 3600) % 60;
     ui.startTime->setTime(QTime(hour, min, seconds));
     */
-    horizontalSlider->setLowerValue(start);
+    //horizontalSlider->setLowerValue(start);
 }
     
-void InplaceEditor::setEndTime(int end)
+void InplaceEditor::setEndTime(QTime end)
 {
     //ui.endTime->setTime(QTime::fromString(InplaceEditor::timeSecondstoString(end)));
-    horizontalSlider->setLowerValue(end);
+    //horizontalSlider->setLowerValue(end);
 }

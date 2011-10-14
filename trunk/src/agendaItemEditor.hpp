@@ -36,22 +36,24 @@
 #include <QTextEdit>
 #include <QTimeEdit>
 #include <QModelIndex>
-class AgendaItemEditor : public QWidget
+#include <QTime>
+#include "util/util.hpp"
+#include "transcriptionItemEditor.hpp"
+class AgendaItemEditor : public TranscriptionItemEditor
 {
     Q_OBJECT
 public:
     AgendaItemEditor(QWidget * parent = 0);
     virtual ~AgendaItemEditor();
-    int getStartTime();
-    int getEndTime();
-    void setStartTime(int);
-    void setEndTime(int);
+    QTime getStartTime();
+    QTime getEndTime();
+    void setStartTime(QTime);
+    void setEndTime(QTime);
     void setIndex(const QModelIndex& );
     void setDuration(int);
     void setAgendaList(const QStringList &);
     QString getAgendaItem();
 private:
-    QString timeSecondstoString(int time);
     Ui::agendaItemEditor ui;
     QxtSpanSlider *horizontalSlider; 
     QModelIndex index;
@@ -62,10 +64,6 @@ public slots:
     void updateEndTime( int );
     void save();
     void cancel();
-signals:
-    void close(QWidget *);
-    void cancelled(QWidget *);
-    void closeIndex(QModelIndex); 
 };
 
 
