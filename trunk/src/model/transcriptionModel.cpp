@@ -24,6 +24,7 @@ bool TranscriptionModel::removeRows(int row, int count, const QModelIndex &paren
     beginRemoveRows(parent, beginRow, endRow);
 
     while (beginRow <= endRow) {
+        delete items.value(beginRow);
         items.removeAt(beginRow);
         ++beginRow;
     }
