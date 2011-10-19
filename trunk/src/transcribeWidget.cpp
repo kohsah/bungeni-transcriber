@@ -45,71 +45,76 @@
 #include "hotkeyWidget.hpp"
 #include "settings.hpp"
 #include "model/speech.hpp"
+#include "model/agendaItem.hpp"
 
 TranscribeWidget * TranscribeWidget::instance = NULL;
 
 TranscribeWidget::TranscribeWidget() : QMainWindow()
 {
+    // Initilise global vars
+    currentMediaFile = "";
+    fileName="";
+    _isPlaying=false;
+
     //Setup UI
     ui.setupUi(this);
+    // Connect UI elements to their respective slots
     QObject::connect(ui.addButton, SIGNAL(clicked()), this, SLOT(addSpeech()));
-    QObject::connect(ui.removeButton, SIGNAL(clicked()), this, SLOT(removeSpeech()));
-    //QObject::connect(ui.agendaItemButton, SIGNAL(clicked()), this, SLOT(addAgendaItem() );
-    QObject::connect(ui.table, SIGNAL(doubleClicked(QModelIndex)), delegate, SLOT(currentEditing(QModelIndex)));
-    QObject::connect(ui.table, SIGNAL(clicked(QModelIndex)), delegate, SLOT(display(QModelIndex)));
-    QObject::connect(ui.table, SIGNAL(clicked(QModelIndex)), this, SLOT(selection(QModelIndex)));
-    this->setupModelView();
-    fileName="";
+    QObject::connect(ui.removeButton, SIGNAL(clicked()),
+                     this, SLOT(removeTranscriptionItem()));
+    QObject::connect(ui.agendaItemButton, SIGNAL(clicked()),
+                     this, SLOT(addAgendaItem()));
+    QObject::connect(ui.table, SIGNAL(doubleClicked(QModelIndex)),
+                     delegate, SLOT(currentEditing(QModelIndex)));
+    QObject::connect(ui.table, SIGNAL(clicked(QModelIndex)),
+                     delegate, SLOT(display(QModelIndex)));
+    QObject::connect(ui.table, SIGNAL(clicked(QModelIndex)),
+                     this, SLOT(selection(QModelIndex)));
 
-    const char * const vlc_args[] = {
-        "-I", "dummy", /* Don't use any interface */
-        "--ignore-config", /* Don't use VLC's config */
-        "--extraintf=logger"};
-
+    // Create and add video frame to UI
     video=new QFrame(this);
     QPalette palette = video->palette();
     palette.setColor( backgroundRole(), QColor( 0, 0, 0 ) );
     video->setPalette( palette );
     video->setAutoFillBackground( true );
-
     ui.gridLayout_2->addWidget(video, 0, 0, 1, 3);
 
+    // Create and add playback controls.
     controls = new ControlsWidget();
     ui.gridLayout_2->addWidget(controls, 1, 0, 1, 3);
 
+    // Create and add playlist widget
     playlist = new PlaylistWidget();
     ui.gridLayout_2->addWidget(playlist, 2, 0, 1, 3);
 
-    currentMediaFile = "";
-
-    QObject::connect( playlist, SIGNAL(playMediaFile(QString)), this, SLOT(playFile(QString)));
-    QObject::connect( playlist, SIGNAL(playMediaFile(QString)), this, SLOT(loadMetaData(QString)));
-
-    QObject::connect( playlist, SIGNAL(loadTranscriptFile(int,QString)), this, SLOT(loadNextFileSlot(int,QString)));
-
+    // Connect playlist and control widgets
     QObject::connect( controls, SIGNAL(playSignal()), this, SLOT(play()));
     QObject::connect( controls, SIGNAL(stopSignal()), this, SLOT(stop()));
     QObject::connect( controls, SIGNAL(fasterSignal()), this, SLOT(playFaster()));
     QObject::connect( controls, SIGNAL(slowerSignal()), this, SLOT(playSlower()));
     QObject::connect( controls, SIGNAL(nextSignal()), playlist, SLOT(next()));
     QObject::connect( controls, SIGNAL(prevSignal()), playlist, SLOT(prev()));
+    QObject::connect(controls, SIGNAL(sliderMoved(int)),
+                     this, SLOT(changePosition(int)));
+    QObject::connect( playlist, SIGNAL(playMediaFile(QString)),
+                      this, SLOT(playFile(QString)));
+    QObject::connect( playlist, SIGNAL(playMediaFile(QString)),
+                      this, SLOT(loadMetaData(QString)));
+    QObject::connect( playlist, SIGNAL(loadTranscriptFile(int,QString)),
+                      this, SLOT(loadNextFileSlot(int,QString)));
+
+    this->setupModelView();
     this->createActions();
     this->createMenus();
 
-    _isPlaying=false;
-    poller=new QTimer(this);
-
     //create a new libvlc instance
     _vlcinstance=libvlc_new(0, NULL);
-
     // Create a media player playing environement
     _mp = libvlc_media_player_new (_vlcinstance);
 
-    //connect the two sliders to the corresponding slots
-    connect(poller, SIGNAL(timeout()), this, SLOT(updateInterface()));
-    connect(controls, SIGNAL(sliderMoved(int)), this, SLOT(changePosition(int)));
-
-    poller->start(100); //start timer to trigger every 100 ms the updateInterface slot
+    poller=new QTimer(this);
+    QObject::connect(poller, SIGNAL(timeout()), this, SLOT(updateInterface()));
+    poller->start(100);
 }
 
 TranscribeWidget::~TranscribeWidget()
@@ -222,24 +227,6 @@ void TranscribeWidget::setFileDuration()
     qDebug() << "Bungeni Transcribe : setFileDuration(), File duration = " << _file_duration;
 }
 
-// End of file reached callback
-/*
-static void end_reached_callback(const libvlc_event_t *, void *)
-{
-    qDebug() << "End Reached Callback success";
-    //TranscribeWidget *instance = TranscribeWidget::getInstance();
-    //instance->endReached();
-    //_isPlaying=false;
-}
-*/
-
-/*
-static void media_preparsed_callback(const libvlc_event_t *, void *)
-{
-    qDebug() << "Media Pre-parsed success";
-}
-*/
-
 void TranscribeWidget::playFile(QString file)
 {
     currentMediaFile = file;
@@ -308,7 +295,7 @@ void TranscribeWidget::updateInterface()
     controls->updateSlider(sliderPos);
 }
 
-void TranscribeWidget::removeSpeech()
+void TranscribeWidget::removeTranscriptionItem()
 {
     QMessageBox msgBox;
     msgBox.setText("Do you want to remove the transcript?");
@@ -330,14 +317,7 @@ void TranscribeWidget::removeSpeech()
         }
     }
 }
-/*
-void TranscribeWidget::refresh(const QModelIndex & index)
-{
-    qDebug( "Refresh entered" );
-    emit refreshWidget(index);
-    //delegate->display(index);
-}
-*/
+
 void TranscribeWidget::addSpeech()
 {
     Speech *newSpeech;
@@ -362,47 +342,32 @@ void TranscribeWidget::addSpeech()
         QMessageBox::warning(this, tr("Error"),"Please add/select a file from the playlist");
     }
 }
-/*
+
 void TranscribeWidget::addAgendaItem()
 {
-        qDebug( "Add Agenda Item entered" );
-        int i_length = _file_duration;
-        if (playlist->getSelected()>=0)
-        {
-            model->insertRows(model->rowCount(), 1, QModelIndex());
-        model->setData(model->index(model->rowCount()-1, 5, QModelIndex()), false);
-        model->setData(model->index(model->rowCount()-1, 6, QModelIndex()), "");
-            if (model->rowCount() == 1)
-        {
-                    model->setData(model->index(0, 2, QModelIndex()), 0);
-                    if (i_length < 120)
-                            model->setData(model->index(0, 3, QModelIndex()), i_length);
-                    else
-                            model->setData(model->index(0, 3, QModelIndex()), 120);
-                        qDebug( "model->rowCount() = 1" );
+    AgendaItem *newAgendaItem;
+    if (playlist->getSelected()>=0)
+    {
+        if (model->rowCount() > 0){
+            TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(
+                        model->data(model->index(model->rowCount()-1)));
+            TranscriptionItem *lastItem = wrapper->ptr;
+            newAgendaItem = new AgendaItem(lastItem->getEndTime().addSecs(1),
+                                   lastItem->getEndTime().addSecs(120),
+                                   "Agenda Item", 0);
         }
-        else
-        {
-            int end = model->data(model->index(model->rowCount()-2, 3, QModelIndex())).toInt();
-            if ((end+120) < i_length)
-            {
-                    model->setData(model->index(model->rowCount()-1, 2, QModelIndex()), QVariant(end));
-                            model->setData(model->index(model->rowCount()-1, 3, QModelIndex()), QVariant(end+120));
-                    }
-                    else
-                    {
-                            model->setData(model->index(model->rowCount()-1, 2, QModelIndex()), QVariant(end));
-                            model->setData(model->index(model->rowCount()-1, 3, QModelIndex()), QVariant(i_length));
-                    }
-                    qDebug( "model->rowCount() > 1" );
+        else {
+            newAgendaItem = new AgendaItem(QTime(0,0,0), QTime(0,2,0),
+                                    "Agenda Item", 0);
         }
+        model->insertItem(model->rowCount(), newAgendaItem);
     }
     else
     {
         QMessageBox::warning(this, tr("Error"),"Please add/select a file from the playlist");
     }
 }
-*/
+
 void TranscribeWidget::setupModelView(){
     model = new TranscriptionModel();
     delegate = new ListViewDelegate(this);
@@ -423,20 +388,6 @@ void TranscribeWidget::setupModelView(){
 }
 
 
-void TranscribeWidget::updateComplete( int state )
-{
-  /*  bool checked = true;
-    if (state == Qt::Checked)
-    {
-        checked = 1;
-        model->setData(model->index(currentIndex.row(),4), QVariant(checked));
-    }
-    else
-    {
-        checked = 0;
-        model->setData(model->index(currentIndex.row(),4), QVariant(checked));
-    } */
-}
 
 
 /*
@@ -485,9 +436,7 @@ void  TranscribeWidget::play(QModelIndex _index)
 }
 */
 
-
-
-
+/*
 void TranscribeWidget::playItem(const QModelIndex& index)
 {
     QString currentFile = index.model()->index( index.row() , 0).data(Qt::DisplayRole).toString();
@@ -503,7 +452,7 @@ void TranscribeWidget::playItem(const QModelIndex& index)
 
     }
 }
-
+*/
 void TranscribeWidget::createMenus()
 {
     fileMenu = menuBar()->addMenu("&File");
@@ -578,19 +527,14 @@ void TranscribeWidget::createActions()
 void TranscribeWidget::hotkeySettings()
 {
     HotkeyWidget *hotkey = new HotkeyWidget();
-    //qDebug() << "Hotkey";
-    qDebug() << "Hotkey";
     hotkey->show();
-
 }
-
 
 void TranscribeWidget::about()
 {
     aboutWidget *about = new aboutWidget();
     about->show();
 }
-
 
 void TranscribeWidget::jumpPosition(int change)
 {
@@ -669,7 +613,7 @@ void TranscribeWidget::keyPressEvent( QKeyEvent *keyEvent )
                 }
                 else if (keys.at(j) == "Remove Transcript")
                 {
-                    this->removeSpeech();
+                    this->removeTranscriptionItem();
                 }
                 else if (keys.at(j) == "Slower")
                 {
@@ -679,8 +623,6 @@ void TranscribeWidget::keyPressEvent( QKeyEvent *keyEvent )
                 {
                     this->stop();
                 }
-
-
                 found = true;
                 keyEvent->accept();
             }

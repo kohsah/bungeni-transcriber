@@ -66,22 +66,7 @@ class TranscribeWidget : public QMainWindow
         int getFileDuration();
         void setFileDuration();
         void endReached();
-    public slots:  
-        void addSpeech();
-        void removeSpeech();
-        void updateComplete( int state );
-        void replyFinished(QNetworkReply*);
-        void saveFileAs();
-        void saveFile();
-        void openFile();
-        void newFile();
-        void slotError(QNetworkReply::NetworkError);
-        void getTakesLoginComplete();
-        void progress ( qint64, qint64 );
-        void takesReply();
-        void takesDownload( QNetworkReply * reply );
-        void playItem(const QModelIndex& );
-        void postFinished();
+    public slots:
         void updateInterface();
         void changeVolume(int newVolume);
         void changePosition(int newPosition);
@@ -92,55 +77,42 @@ class TranscribeWidget : public QMainWindow
         void preferences();
         void hotkeySettings();
         void loadMetaData(QString);
-        void loadNextFileSlot(int currentLogicalIndex,QString newfileName);
         void skipForward(int sec);
         void skipBackward(int sec);
         void playFaster();
         void playSlower();
-        void takes();
-        void getMPList();
-        void MPListReply();
-        void post();
-        //void addAgendaItem();
+        // Add transcription item slots
+        void addAgendaItem();
+        void addSpeech();
+        // Remove transcription item
+        void removeTranscriptionItem();
     private:
         TranscribeWidget();
         ~TranscribeWidget();
+
+        // Singleton instance
         static TranscribeWidget *instance;
-        QFrame * video;
-        Ui::Transcribe ui;
-        bool _isPlaying;
+
+        // LibVLC variables
         libvlc_instance_t *_vlcinstance;
         libvlc_media_player_t *_mp;
-        libvlc_media_t *_m;
         libvlc_time_t _file_duration;
-        libvlc_event_manager_t * p_event_manager;
+        libvlc_media_t *_m;
+        // Models
+        TranscriptionModel *model;
+        QSortFilterProxyModel *filterModel;
+        QItemSelectionModel *selectionModel;
+
+        // Delegates
+        ListViewDelegate *delegate;
+
+        //UI elements
+        Ui::Transcribe ui;
+        QFrame * video;
         QTableView *table;
         QVBoxLayout *mainLayout;
         QPushButton *addButton;
         QPushButton *removeButton;
-        ListViewDelegate *delegate;
-        TranscriptionModel *model;
-        QSortFilterProxyModel *filterModel;
-        QItemSelectionModel *selectionModel;
-        void setupModelView();
-        QxtSpanSlider *horizontalSlider; 
-        QModelIndex currentIndex;
-        QTemporaryFile * writeTemp();
-        void refresh(const QModelIndex & index);
-        bool writeFile(QString fileName);
-        QWidget *progressWidget; 
-        Ui::uploadProgress uiProgress;
-        QString fileName;
-        FormPostPlugin * posta;
-        QNetworkReply *reply;
-        QHash<QString, QString> hash;
-        QHash<QString, QString> mphash;
-        QHash<QString, QString> agendahash;
-        QTimer *poller;
-        bool loadFile(QString newfileName);
-        void createActions();
-        void createMenus();
-        PlaylistWidget *playlist;
         QMenu *fileMenu;
         QMenu *editMenu;
         QMenu *helpMenu;
@@ -153,13 +125,30 @@ class TranscribeWidget : public QMainWindow
         QAction *exitAct;
         QAction *aboutAct;
         QAction *hotkeyAct;
+        QxtSpanSlider *horizontalSlider; 
+        ControlsWidget *controls;
+        PlaylistWidget *playlist;
+
+        // UI setup routines
+        void createActions();
+        void createMenus();
+
+        // Model Setup routines
+        void setupModelView();
+
+        // Poller to update the user interface
+        QTimer *poller;
+
+        void keyPressEvent( QKeyEvent *keyEvent );
+        void jumpPosition(int change);
+
+        QModelIndex currentIndex;
+        QString fileName;
         int currentFileDuration;
         QString sittingName;
         QString mediaLocation;
         QString currentMediaFile;
-        ControlsWidget *controls;
-        void keyPressEvent( QKeyEvent *keyEvent );
-        void jumpPosition(int change);
+        bool _isPlaying;
 };
 
 #endif
