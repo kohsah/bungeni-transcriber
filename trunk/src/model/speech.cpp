@@ -96,9 +96,7 @@ void Speech::draw(QPainter *&painter, const QStyleOptionViewItem &option){
 
 QSize Speech::sizeHint(const QStyleOptionViewItem &option,
                            bool editing, bool current){
-    qDebug() << "editing ->" << editing << "current" << current;
     if ((editing == true) && (current == true)){
-        qDebug() << "YES";
         return QSize(option.rect.width(), 350);
     }
     else if ((editing == false) && (current == true)){

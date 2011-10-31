@@ -53,10 +53,12 @@ public:
     void setDuration(int);
     void setAgendaList(const QStringList &);
     QString getAgendaItem();
+    void setAgendaList(QStringList list);
 private:
     Ui::agendaItemEditor ui;
     QxtSpanSlider *horizontalSlider; 
     QModelIndex index;
+    QStringList agendaList;
 public slots:
     void updateStartTime( const QTime & );
     void updateEndTime( const QTime & );

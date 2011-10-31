@@ -58,6 +58,7 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
 
     //Setup UI
     ui.setupUi(this);
+    delegate = new ListViewDelegate(this);
     // Connect UI elements to their respective slots
     QObject::connect(ui.addButton, SIGNAL(clicked()), this, SLOT(addSpeech()));
     QObject::connect(ui.removeButton, SIGNAL(clicked()),
@@ -370,7 +371,6 @@ void TranscribeWidget::addAgendaItem()
 
 void TranscribeWidget::setupModelView(){
     model = new TranscriptionModel();
-    delegate = new ListViewDelegate(this);
     ui.table->setItemDelegate(delegate);
     ui.table->setAlternatingRowColors(true);
     //filterModel = new QSortFilterProxyModel();

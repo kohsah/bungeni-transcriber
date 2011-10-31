@@ -35,7 +35,7 @@
 
 #include <QHBoxLayout>
 #include <QGroupBox>
-AgendaItemEditor::AgendaItemEditor(QWidget * parent) : TranscriptionItemEditor()
+AgendaItemEditor::AgendaItemEditor(QWidget * parent) : TranscriptionItemEditor(parent)
 {
     ui.setupUi(this);
     //TranscribeWidget *transcribe = static_cast<TranscribeWidget*>(parent);
@@ -45,9 +45,6 @@ AgendaItemEditor::AgendaItemEditor(QWidget * parent) : TranscriptionItemEditor()
     horizontalSlider->setOrientation(Qt::Horizontal);
     //horizontalSlider->setMaximum(10000);
     ui.gridLayout->addWidget(horizontalSlider, 0, 1, 1, 3);
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
-    
     QObject::connect(ui.startTime, SIGNAL(timeChanged( const QTime & )), this, SLOT(updateStartTime( const QTime &)));
     QObject::connect(ui.endTime, SIGNAL(timeChanged( const QTime & )), this, SLOT(updateEndTime( const QTime &)));
     QObject::connect(horizontalSlider, SIGNAL( lowerValueChanged( int ) ), this, SLOT( updateStartTime( int ) ));
@@ -168,4 +165,9 @@ void AgendaItemEditor::setStartTime(QTime start)
 void AgendaItemEditor::setEndTime(QTime end)
 {
     //horizontalSlider->setLowerValue(end);
+}
+
+void AgendaItemEditor::setAgendaList(QStringList list)
+{
+    agendaList = list;
 }

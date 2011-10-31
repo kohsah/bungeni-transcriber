@@ -25,7 +25,7 @@
  ***********************************************************************/
 
 #include "listViewDelegate.hpp"
-#include "inplaceEditor.hpp"
+#include "speechEditor.hpp"
 #include "agendaItemEditor.hpp"
 #include <QString>
 #include <QTextDocument>
@@ -58,14 +58,14 @@ QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem &option,
     TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(
                 index.data());
     TranscriptionItem *item = wrapper->ptr;
-    bool cur;
+    bool isCurrent;
     if (current == index) {
-        cur = true;
+        isCurrent = true;
     }
     else{
-        cur = false;
+        isCurrent = false;
     }
-    return item->sizeHint(option, editing, cur);
+    return item->sizeHint(option, editing, isCurrent);
 }
 	
 QWidget *ListViewDelegate::createEditor(QWidget *parent,
@@ -122,12 +122,4 @@ void ListViewDelegate::display(QModelIndex index)
     emit sizeHintChanged(index);
 }
 
-void ListViewDelegate::setMPList(QStringList list)
-{
-    MPList = list;
-}
 
-void ListViewDelegate::setAgendaList(QStringList list)
-{
-    agendaList = list;
-}

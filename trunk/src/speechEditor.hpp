@@ -62,11 +62,13 @@ public:
     void setIndex(const QModelIndex& );
     void setDuration(int);
     void setAutoCompleteWordlist(const QStringList &);
+    void setMPList(QStringList list);
 private:
     Ui::speechEditor ui;
     QxtSpanSlider *horizontalSlider; 
     customTextEdit *speechText;
     QModelIndex index;
+    QStringList MPList;
 public slots:
     void updateStartTime( const QTime & );
     void updateEndTime( const QTime & );

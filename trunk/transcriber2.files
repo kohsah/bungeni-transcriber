@@ -9,8 +9,6 @@
 /home/undesa/transcriber/trunk/src/network/formpost/formpost.hpp
 /home/undesa/transcriber/trunk/src/network/formpost/formpost.moc.cpp
 /home/undesa/transcriber/trunk/src/network/formpost/formpostinterface.hpp
-/home/undesa/transcriber/trunk/src/network/bungeni/rest.cpp
-/home/undesa/transcriber/trunk/src/network/bungeni/rest.hpp
 /home/undesa/transcriber/trunk/src/pixmaps/add.png
 /home/undesa/transcriber/trunk/src/pixmaps/faster.png
 /home/undesa/transcriber/trunk/src/pixmaps/next.png
@@ -72,5 +70,5 @@
 /home/undesa/transcriber/trunk/src/transcribeWidget.hpp
 src/transcriptionItemEditor.hpp
 src/transcriptionItemEditor.cpp
-src/fileManager.cpp
-src/fileManager.hpp
+src/network/bungeni/rest.hpp
+src/network/bungeni/rest.cpp

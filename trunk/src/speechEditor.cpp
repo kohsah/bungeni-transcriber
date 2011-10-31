@@ -307,3 +307,8 @@ void SpeechEditor::setEndTime(QTime end)
     //ui.endTime->setTime(QTime::fromString(SpeechEditor::timeSecondstoString(end)));
     //horizontalSlider->setLowerValue(end);
 }
+
+void SpeechEditor::setMPList(QStringList list)
+{
+    MPList = list;
+}

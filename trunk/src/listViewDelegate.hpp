@@ -41,8 +41,6 @@ class ListViewDelegate : public QAbstractItemDelegate {
 private:
     QModelIndex current;
     bool editing;
-    QStringList MPList;
-    QStringList agendaList;
 public:
 	ListViewDelegate(QObject *parent);
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;                 
