@@ -1,12 +1,12 @@
 #INCLUDEPATH for libvlc on Ubuntu. May be different on other distros
-INCLUDEPATH = /usr/include/vlc
+INCLUDEPATH = /home/undesa/vlc-1.1.11/include/vlc
 LIBS += -lvlc
 
 HEADERS +=  src/transcribeWidget.hpp \
             src/controlsWidget.hpp \
             src/listViewDelegate.hpp \
             src/customTextEdit.hpp \
-            src/inplaceEditor.hpp \
+            src/speechEditor.hpp \
             src/agendaItemEditor.hpp \
             src/playlistWidget.hpp \
             src/network/formpost/formpost.hpp \
@@ -24,7 +24,7 @@ HEADERS +=  src/transcribeWidget.hpp \
             src/model/speech.hpp \
             src/model/transcriptionModel.hpp 
 FORMS   +=  src/ui/transcribe.ui \
-            src/ui/inplace_editor.ui \
+            src/ui/speechEditor.ui \
             src/ui/uploadProgress.ui \
             src/ui/controls.ui \
             src/ui/addToPlaylist.ui \
@@ -36,7 +36,7 @@ SOURCES +=  src/transcribeWidget.cpp \
             src/main.cpp \
             src/listViewDelegate.cpp \
             src/customTextEdit.cpp \
-            src/inplaceEditor.cpp \
+            src/speechEditor.cpp \
             src/agendaItemEditor.cpp \
             src/playlistWidget.cpp \
             src/network/formpost/formpost.cpp \

@@ -1,6 +1,6 @@
 #include <QDebug>
 #include "speech.hpp"
-#include "../inplaceEditor.hpp"
+#include "../speechEditor.hpp"
 Speech::Speech(QTime startTime_, QTime endTime_, QString speech_,
                QString personName_, int id_, bool complete_) : TranscriptionItem(){
     startTime = startTime_;
@@ -12,12 +12,12 @@ Speech::Speech(QTime startTime_, QTime endTime_, QString speech_,
 }
 
 TranscriptionItemEditor * Speech::newEditor(QWidget *parent){
-    InplaceEditor *editor = new InplaceEditor(parent);
+    SpeechEditor *editor = new SpeechEditor(parent);
     return editor;
 }
 
 QWidget * Speech::getEditor(QWidget *editor_){
-    InplaceEditor *editor = static_cast<InplaceEditor*>(editor_);
+    SpeechEditor *editor = static_cast<SpeechEditor*>(editor_);
     return editor;
 }
 void Speech::setStartTime(QTime startTime_){
@@ -114,7 +114,7 @@ QSize Speech::sizeHint(const QStyleOptionViewItem &option,
 }
 
 void Speech::setEditorData(QWidget *editor_){
-    InplaceEditor *editor = static_cast<InplaceEditor*>(editor_);
+    SpeechEditor *editor = static_cast<SpeechEditor*>(editor_);
     editor->setName(this->getPersonName());
     editor->setSpeech(this->getSpeech());
     editor->setStartTime(this->getStartTime());
@@ -123,7 +123,7 @@ void Speech::setEditorData(QWidget *editor_){
 }
 
 void Speech::setModelData(QWidget *editor_){
-    InplaceEditor *editor = static_cast<InplaceEditor*>(editor_);
+    SpeechEditor *editor = static_cast<SpeechEditor*>(editor_);
     //this->setStartTime(editor->getStartTime());
     //this->setEndTime(editor->getEndTime());
     this->setPersonName(editor->getName());

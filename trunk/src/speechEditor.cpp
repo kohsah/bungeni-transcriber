@@ -1,5 +1,5 @@
 /********************************************************************
- * inplaceEditor.cpp
+ * speechEditor.cpp
  ********************************************************************
  * This file is part of Bungeni Transcribe
  *
@@ -33,10 +33,10 @@
 #include <QHBoxLayout>
 #include <QGroupBox>
 
-#include "inplaceEditor.hpp"
+#include "speechEditor.hpp"
 #include "transcribeWidget.hpp"
 #include "util/util.hpp"
-InplaceEditor::InplaceEditor(QWidget * parent) : TranscriptionItemEditor(parent)
+SpeechEditor::SpeechEditor(QWidget * parent) : TranscriptionItemEditor(parent)
 {
     ui.setupUi(this);
     horizontalSlider = new QxtSpanSlider();
@@ -70,38 +70,38 @@ InplaceEditor::InplaceEditor(QWidget * parent) : TranscriptionItemEditor(parent)
     this->setDuration(TranscribeWidget::getInstance()->getFileDuration());
 }
 
-InplaceEditor::~InplaceEditor()
+SpeechEditor::~SpeechEditor()
 {}
 /*
-void InplaceEditor::setValues(QString _name, QString _speech, int _startTime, int _endTime)
+void SpeechEditor::setValues(QString _name, QString _speech, int _startTime, int _endTime)
 {
     ui.name->setText(_name);
     speechText->setText(_speech);
 }
 */
 
-void InplaceEditor::setAutoCompleteWordlist(const QStringList & wordlist )
+void SpeechEditor::setAutoCompleteWordlist(const QStringList & wordlist )
 {
     QCompleter *completer = new QCompleter(wordlist);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui.name->setCompleter(completer);
 }
 
-void InplaceEditor::updateEndTime( const QTime & time )
+void SpeechEditor::updateEndTime( const QTime & time )
 {
 	int temp;
 	temp = time.hour() * 3600 + time.minute()*60 + time.second();
 	horizontalSlider->setUpperValue(temp);
 }
 
-void InplaceEditor::updateStartTime( const QTime & time )
+void SpeechEditor::updateStartTime( const QTime & time )
 {
 	int temp;
 	temp = time.hour() * 3600 + time.minute()*60 + time.second();
 	horizontalSlider->setLowerValue(temp);
 }
 
-void InplaceEditor::updateStartTime( int time )
+void SpeechEditor::updateStartTime( int time )
 {
 	//int hours, minutes, seconds;
 	QString temp;
@@ -113,7 +113,7 @@ void InplaceEditor::updateStartTime( int time )
 	
 }
 
-void InplaceEditor::updateEndTime( int time )
+void SpeechEditor::updateEndTime( int time )
 {
 	//int hours, minutes, seconds;
 	QString temp;
@@ -123,7 +123,7 @@ void InplaceEditor::updateEndTime( int time )
 	end = QTime::fromString(timeText);
 	ui.endTime->setTime(end);
 }
-void InplaceEditor::bold()
+void SpeechEditor::bold()
 {
     QTextCursor cursor(speechText->textCursor());
     QTextCharFormat format;
@@ -146,7 +146,7 @@ void InplaceEditor::bold()
     cursor.setCharFormat(format);
 }
 
-void InplaceEditor::underline()
+void SpeechEditor::underline()
 {
     QTextCursor cursor(speechText->textCursor());
     QTextCharFormat format;
@@ -169,7 +169,7 @@ void InplaceEditor::underline()
     cursor.setCharFormat(format);
 }
 
-void InplaceEditor::italics()
+void SpeechEditor::italics()
 {
     QTextCursor cursor(speechText->textCursor());
     QTextCharFormat format;
@@ -192,45 +192,45 @@ void InplaceEditor::italics()
     cursor.setCharFormat(format);
 }
 
-void InplaceEditor::save()
+void SpeechEditor::save()
 {
     emit close(this);
     emit closeIndex(index);
 }
 
-void InplaceEditor::play()
+void SpeechEditor::play()
 {
     TranscribeWidget *instance = TranscribeWidget::getInstance();
     instance->play();
     instance->changePosition(horizontalSlider->lowerValue());
 }
 
-void InplaceEditor::cancel()
+void SpeechEditor::cancel()
 {
     emit cancelled(this);
     emit closeIndex(index);
 }
 
-void InplaceEditor::setIndex(const QModelIndex & index_)
+void SpeechEditor::setIndex(const QModelIndex & index_)
 {
     this->index = index_;
 }
 
 
-QString InplaceEditor::getName()
+QString SpeechEditor::getName()
 {
     return ui.name->text();
 }
 
 
-QString InplaceEditor::getSpeech()
+QString SpeechEditor::getSpeech()
 {
     return speechText->toPlainText();
     //return speechText->toHtml();
 }
 
 
-int InplaceEditor::getStartTime()
+int SpeechEditor::getStartTime()
 {
   //  qDebug() << "inplace editor getStartTime " << ui.startTime->time();
    // return ui.startTime->time();
@@ -239,14 +239,14 @@ int InplaceEditor::getStartTime()
    return horizontalSlider->lowerValue();
 }
     
-int InplaceEditor::getEndTime()
+int SpeechEditor::getEndTime()
 {
     //qDebug() << "inplace editor getendTime " << ui.endTime->time();
    // return ui.endTime->time();
    return horizontalSlider->upperValue();
 }
 
-bool InplaceEditor::getComplete()
+bool SpeechEditor::getComplete()
 {
     if ( ui.incomplete->isChecked())
     {
@@ -258,12 +258,12 @@ bool InplaceEditor::getComplete()
     }
 }
 
-void InplaceEditor::setName(QString name)
+void SpeechEditor::setName(QString name)
 {
     ui.name->setText(name);
 }
 
-void InplaceEditor::setComplete(bool incomplete)
+void SpeechEditor::setComplete(bool incomplete)
 {
     if (incomplete)
     {
@@ -275,7 +275,7 @@ void InplaceEditor::setComplete(bool incomplete)
     }
 }
 
-void InplaceEditor::setDuration(int sec)
+void SpeechEditor::setDuration(int sec)
 {
     horizontalSlider->setMaximum(sec);
     int hour = sec / 3600;
@@ -285,13 +285,13 @@ void InplaceEditor::setDuration(int sec)
     ui.endTime->setMaximumTime(QTime(hour, min, seconds));
 }
  
-void InplaceEditor::setSpeech(QString speech)
+void SpeechEditor::setSpeech(QString speech)
 {
    // ui.speech->setText(speech);
    speechText->setHtml(speech);
 }
     
-void InplaceEditor::setStartTime(QTime start)
+void SpeechEditor::setStartTime(QTime start)
 {
     /*
     int hour = start / 3600;
@@ -302,8 +302,8 @@ void InplaceEditor::setStartTime(QTime start)
     //horizontalSlider->setLowerValue(start);
 }
     
-void InplaceEditor::setEndTime(QTime end)
+void SpeechEditor::setEndTime(QTime end)
 {
-    //ui.endTime->setTime(QTime::fromString(InplaceEditor::timeSecondstoString(end)));
+    //ui.endTime->setTime(QTime::fromString(SpeechEditor::timeSecondstoString(end)));
     //horizontalSlider->setLowerValue(end);
 }

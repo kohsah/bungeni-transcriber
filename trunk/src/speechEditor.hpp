@@ -1,5 +1,5 @@
 /**********************************************************
- * inplaceEditor.hpp
+ * speechEditor.hpp
  **********************************************************
  * This file is part of Bungeni Transcribe
  *
@@ -26,11 +26,11 @@
  
  
 
-#ifndef _INPLACEEDITOR_H_
-#define _INPLACEEDITOR_H_
+#ifndef _SPEECHEDITOR_H_
+#define _SPEECHEDITOR_H_
 
 #include "qxtspanslider/qxtspanslider.h"
-#include "ui/ui_inplace_editor.h"
+#include "ui/ui_speechEditor.h"
 #include <QWidget>
 #include <QLabel>
 #include <QTextEdit>
@@ -40,12 +40,12 @@
 #include <QCompleter>
 #include <QTime>
 #include "transcriptionItemEditor.hpp"
-class InplaceEditor : public TranscriptionItemEditor
+class SpeechEditor : public TranscriptionItemEditor
 {
     Q_OBJECT
 public:
-    InplaceEditor(QWidget * parent = 0);
-    virtual ~InplaceEditor();
+    SpeechEditor(QWidget * parent = 0);
+    virtual ~SpeechEditor();
    // void setValues(QString _name, QString _speech, int _startTime, int _endTime);
     QString getName();
     QString getSpeech();
@@ -63,7 +63,7 @@ public:
     void setDuration(int);
     void setAutoCompleteWordlist(const QStringList &);
 private:
-    Ui::inPlaceEditor ui;
+    Ui::speechEditor ui;
     QxtSpanSlider *horizontalSlider; 
     customTextEdit *speechText;
     QModelIndex index;
