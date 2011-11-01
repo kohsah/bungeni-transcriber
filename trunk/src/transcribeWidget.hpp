@@ -64,19 +64,18 @@ class TranscribeWidget : public QMainWindow
             return instance;
         }
         int getFileDuration();
-        void setFileDuration();
         void endReached();
     public slots:
         void updateInterface();
         void changeVolume(int newVolume);
         void changePosition(int newPosition);
         void playFile(QString file);
+        void setFileDuration();
         void play();
         void stop();
         void about();
         void preferences();
         void hotkeySettings();
-        void loadMetaData(QString);
         void skipForward(int sec);
         void skipBackward(int sec);
         void playFaster();

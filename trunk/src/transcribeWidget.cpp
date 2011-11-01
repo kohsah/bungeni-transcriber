@@ -99,8 +99,6 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
                      this, SLOT(changePosition(int)));
     QObject::connect( playlist, SIGNAL(playMediaFile(QString)),
                       this, SLOT(playFile(QString)));
-    QObject::connect( playlist, SIGNAL(playMediaFile(QString)),
-                      this, SLOT(loadMetaData(QString)));
     QObject::connect( playlist, SIGNAL(loadTranscriptFile(int,QString)),
                       this, SLOT(loadNextFileSlot(int,QString)));
 
@@ -153,7 +151,6 @@ void TranscribeWidget::play()
         {
             qDebug() << "Bungeni Transcribe : play(), Playback continued";
             libvlc_media_player_play (_mp);
-            _file_duration = libvlc_media_player_get_length( _mp);
             _isPlaying = true;
             controls->changeIcon(true);
         }
@@ -208,13 +205,6 @@ void TranscribeWidget::playSlower()
 
 }
 
-void TranscribeWidget::loadMetaData(QString file)
-{
-    _file_duration = libvlc_media_player_get_length( _mp) / 1000;
-    qDebug() << "Bungeni Transcribe : loadMetaData(), file_duration ->" << _file_duration;
-
-}
-
 int TranscribeWidget::getFileDuration()
 {
     qDebug() << "Bungeni Transcribe : getFileDuration(), file_duration ->" << _file_duration;
@@ -248,7 +238,7 @@ void TranscribeWidget::playFile(QString file)
     timer->setSingleShot(true);
     timer->start(1500);
     QObject::connect( controls, SIGNAL(playSignal()), timer, SLOT(start()));
-    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(getLength()));
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(setFileDuration()));
     qDebug() << "Bungeni Transcribe : playFile(), Now playing " << currentMediaFile;
 }
 
