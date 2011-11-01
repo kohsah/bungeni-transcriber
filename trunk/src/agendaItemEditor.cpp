@@ -61,50 +61,28 @@ AgendaItemEditor::AgendaItemEditor(QWidget * parent) : TranscriptionItemEditor(p
 
 AgendaItemEditor::~AgendaItemEditor()
 {}
-/*
-void InplaceEditor::setValues(QString _name, QString _speech, int _startTime, int _endTime)
-{
-    ui.name->setText(_name);
-    speechText->setText(_speech);
-}
-*/
-
 
 void AgendaItemEditor::updateEndTime( const QTime & time )
 {
-	int temp;
-	temp = time.hour() * 3600 + time.minute()*60 + time.second();
-	horizontalSlider->setUpperValue(temp);
+    int temp = time.hour() * 3600 + time.minute()*60 + time.second();
+    horizontalSlider->setUpperValue(temp);
 }
 
 void AgendaItemEditor::updateStartTime( const QTime & time )
 {
-	int temp;
-	temp = time.hour() * 3600 + time.minute()*60 + time.second();
-	horizontalSlider->setLowerValue(temp);
+    int temp = time.hour() * 3600 + time.minute()*60 + time.second();
+    horizontalSlider->setLowerValue(temp);
 }
 
 void AgendaItemEditor::updateStartTime( int time )
 {
-	//int hours, minutes, seconds;
-	QString temp;
-	QTime start;
-	QString timeText = "";
-        timeText = timeSecondstoString(time);
-	start = QTime::fromString(timeText);
-	ui.startTime->setTime(start);
+    ui.startTime->setTime(QTime::fromString(timeSecondstoString(time)));
 	
 }
 
 void AgendaItemEditor::updateEndTime( int time )
 {
-	//int hours, minutes, seconds;
-	QString temp;
-	QTime end;
-	QString timeText = "";
-        timeText = timeSecondstoString(time);
-	end = QTime::fromString(timeText);
-	ui.endTime->setTime(end);
+    ui.endTime->setTime(QTime::fromString(timeSecondstoString(time)));
 }
 
 void AgendaItemEditor::save()
@@ -132,14 +110,12 @@ void AgendaItemEditor::setAgendaList(const QStringList & list)
 
 QTime AgendaItemEditor::getStartTime()
 {
-   //return horizontalSlider->lowerValue();
-    return QTime();
+    return ui.startTime->time();
 }
     
 QTime AgendaItemEditor::getEndTime()
 {
-   //return horizontalSlider->upperValue();
-    return QTime();
+    return ui.endTime->time();
 }
 
 QString AgendaItemEditor::getAgendaItem()
@@ -159,12 +135,12 @@ void AgendaItemEditor::setDuration(int sec)
 
 void AgendaItemEditor::setStartTime(QTime start)
 {
-    //horizontalSlider->setLowerValue(start);
+    ui.startTime->setTime(start);
 }
     
 void AgendaItemEditor::setEndTime(QTime end)
 {
-    //horizontalSlider->setLowerValue(end);
+    ui.endTime->setTime(end);
 }
 
 void AgendaItemEditor::setAgendaList(QStringList list)

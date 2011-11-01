@@ -51,8 +51,8 @@ public:
     QString getSpeech();
     //QTime getStartTime();
    // QTime getEndTime();
-    int getStartTime();
-    int getEndTime();
+    QTime getStartTime();
+    QTime getEndTime();
     bool getComplete();
     void setComplete(bool incomplete);
     void setName(QString);

@@ -122,8 +122,8 @@ void Speech::setEditorData(QWidget *editor_){
 
 void Speech::setModelData(QWidget *editor_){
     SpeechEditor *editor = static_cast<SpeechEditor*>(editor_);
-    //this->setStartTime(editor->getStartTime());
-    //this->setEndTime(editor->getEndTime());
+    this->setStartTime(editor->getStartTime());
+    this->setEndTime(editor->getEndTime());
     this->setPersonName(editor->getName());
     this->setComplete(editor->getComplete());
     this->setSpeech(editor->getSpeech());

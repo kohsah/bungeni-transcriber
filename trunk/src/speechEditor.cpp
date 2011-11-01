@@ -87,42 +87,28 @@ void SpeechEditor::setAutoCompleteWordlist(const QStringList & wordlist )
     ui.name->setCompleter(completer);
 }
 
-void SpeechEditor::updateEndTime( const QTime & time )
-{
-	int temp;
-	temp = time.hour() * 3600 + time.minute()*60 + time.second();
-	horizontalSlider->setUpperValue(temp);
-}
-
 void SpeechEditor::updateStartTime( const QTime & time )
 {
-	int temp;
-	temp = time.hour() * 3600 + time.minute()*60 + time.second();
-	horizontalSlider->setLowerValue(temp);
+    int temp = time.hour() * 3600 + time.minute()*60 + time.second();
+    horizontalSlider->setLowerValue(temp);
 }
 
 void SpeechEditor::updateStartTime( int time )
 {
-	//int hours, minutes, seconds;
-	QString temp;
-	QTime start;
-	QString timeText = "";
-	timeText = timeSecondstoString(time);
-	start = QTime::fromString(timeText);
-	ui.startTime->setTime(start);
-	
+    ui.startTime->setTime(QTime::fromString(timeSecondstoString(time)));
+}
+
+void SpeechEditor::updateEndTime( const QTime & time )
+{
+    int temp = time.hour() * 3600 + time.minute()*60 + time.second();
+    horizontalSlider->setUpperValue(temp);
 }
 
 void SpeechEditor::updateEndTime( int time )
 {
-	//int hours, minutes, seconds;
-	QString temp;
-	QTime end;
-	QString timeText = "";
-	timeText = timeSecondstoString(time);
-	end = QTime::fromString(timeText);
-	ui.endTime->setTime(end);
+    ui.endTime->setTime(QTime::fromString(timeSecondstoString(time)));
 }
+
 void SpeechEditor::bold()
 {
     QTextCursor cursor(speechText->textCursor());
@@ -216,34 +202,24 @@ void SpeechEditor::setIndex(const QModelIndex & index_)
     this->index = index_;
 }
 
-
 QString SpeechEditor::getName()
 {
     return ui.name->text();
 }
 
-
 QString SpeechEditor::getSpeech()
 {
     return speechText->toPlainText();
-    //return speechText->toHtml();
 }
 
-
-int SpeechEditor::getStartTime()
+QTime SpeechEditor::getStartTime()
 {
-  //  qDebug() << "inplace editor getStartTime " << ui.startTime->time();
-   // return ui.startTime->time();
-   qDebug() << "inplace editor getStartTime " << horizontalSlider->lowerValue();
-   qDebug() << "inplace editor ui.starttime->time " << ui.startTime->time();;
-   return horizontalSlider->lowerValue();
+    return ui.startTime->time();
 }
     
-int SpeechEditor::getEndTime()
+QTime SpeechEditor::getEndTime()
 {
-    //qDebug() << "inplace editor getendTime " << ui.endTime->time();
-   // return ui.endTime->time();
-   return horizontalSlider->upperValue();
+    return ui.endTime->time();
 }
 
 bool SpeechEditor::getComplete()
@@ -287,25 +263,17 @@ void SpeechEditor::setDuration(int sec)
  
 void SpeechEditor::setSpeech(QString speech)
 {
-   // ui.speech->setText(speech);
    speechText->setHtml(speech);
 }
     
 void SpeechEditor::setStartTime(QTime start)
 {
-    /*
-    int hour = start / 3600;
-    int min = (start % 3600 ) / 60;
-    int seconds = (start % 3600) % 60;
-    ui.startTime->setTime(QTime(hour, min, seconds));
-    */
-    //horizontalSlider->setLowerValue(start);
+    ui.startTime->setTime(start);
 }
     
 void SpeechEditor::setEndTime(QTime end)
 {
-    //ui.endTime->setTime(QTime::fromString(SpeechEditor::timeSecondstoString(end)));
-    //horizontalSlider->setLowerValue(end);
+    ui.endTime->setTime(end);
 }
 
 void SpeechEditor::setMPList(QStringList list)

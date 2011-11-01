@@ -89,7 +89,7 @@ void AgendaItem::setEditorData(QWidget *editor_){
 
 void AgendaItem::setModelData(QWidget *editor_){
     AgendaItemEditor *editor = static_cast<AgendaItemEditor*>(editor_);
-    //this->setStartTime(editor->getStartTime());
-    //this->setEndTime(editor->getEndTime());
+    this->setStartTime(editor->getStartTime());
+    this->setEndTime(editor->getEndTime());
     this->setTitle(editor->getAgendaItem());
 }
