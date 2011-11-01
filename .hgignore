@@ -1,0 +1,20 @@
+#glob syntax.
+syntax: glob
+
+*.o
+
+#QT creator files
+*.config
+*.files
+*.includes
+*.user
+*.creator
+
+# moc files
+moc_*.cpp
+
+# ui files
+ui_*.h
+
+# qrc files
+qrc_*.cpp
