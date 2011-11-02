@@ -27,7 +27,7 @@ protected:
     QTime endTime;
 };
 
-typedef struct TranscriptionItemWrapper
+struct TranscriptionItemWrapper
 {
     TranscriptionItem * ptr;
     TranscriptionItemWrapper()

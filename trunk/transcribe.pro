@@ -1,3 +1,5 @@
+#INCLUDEPATH for libvlc on Ubuntu. May be different on other distros
+INCLUDEPATH = /usr/include/vlc
 LIBS += -lvlc
 
 HEADERS +=  src/transcribeWidget.hpp \
@@ -18,7 +20,7 @@ HEADERS +=  src/transcribeWidget.hpp \
             src/transcribeKeySelector.hpp \
             src/model/agendaItem.hpp \
             src/model/speech.hpp \
-            src/model/transcriptionModel.hpp 
+            src/model/transcriptionModel.hpp
 FORMS   +=  src/ui/transcribe.ui \
             src/ui/speechEditor.ui \
             src/ui/uploadProgress.ui \

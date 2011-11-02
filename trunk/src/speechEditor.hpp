@@ -51,8 +51,6 @@ public:
    // void setValues(QString _name, QString _speech, int _startTime, int _endTime);
     QString getName();
     QString getSpeech();
-    //QTime getStartTime();
-   // QTime getEndTime();
     QTime getStartTime();
     QTime getEndTime();
     bool getComplete();

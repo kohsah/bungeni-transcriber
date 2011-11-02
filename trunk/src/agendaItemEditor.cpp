@@ -60,15 +60,13 @@ AgendaItemEditor::~AgendaItemEditor()
 void AgendaItemEditor::updateStartTime( const QTime & time )
 {
     int temp = time.hour() * 3600 + time.minute()*60 + time.second();
-    horizontalSlider->setLowerValue(temp);
-    qDebug() << "Update start time called" << temp;
+    horizontalSlider->setLowerPosition(temp);
 }
 
 void AgendaItemEditor::updateEndTime( const QTime & time )
 {
     int temp = time.hour() * 3600 + time.minute()*60 + time.second();
-    horizontalSlider->setUpperValue(temp);
-    qDebug() << "Update end time called"<< temp;
+    horizontalSlider->setUpperPosition(temp);
 }
 
 void AgendaItemEditor::updateStartTime( int time )
