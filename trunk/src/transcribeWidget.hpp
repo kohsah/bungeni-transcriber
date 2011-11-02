@@ -46,7 +46,6 @@
 
 #include "ui/ui_transcribe.h"
 #include "listViewDelegate.hpp"
-#include "qxtspanslider/qxtspanslider.h"
 #include "ui/ui_uploadProgress.h"
 #include "network/formpost/formpost.hpp"
 #include "controlsWidget.hpp"
@@ -124,7 +123,6 @@ class TranscribeWidget : public QMainWindow
         QAction *exitAct;
         QAction *aboutAct;
         QAction *hotkeyAct;
-        QxtSpanSlider *horizontalSlider; 
         ControlsWidget *controls;
         PlaylistWidget *playlist;
 

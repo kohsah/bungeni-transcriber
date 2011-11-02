@@ -38,46 +38,42 @@
 AgendaItemEditor::AgendaItemEditor(QWidget * parent) : TranscriptionItemEditor(parent)
 {
     ui.setupUi(this);
-    //TranscribeWidget *transcribe = static_cast<TranscribeWidget*>(parent);
-   // p_intf = transcribe->getp_intf();
     horizontalSlider = new QxtSpanSlider();
     horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
     horizontalSlider->setOrientation(Qt::Horizontal);
-    //horizontalSlider->setMaximum(10000);
     ui.gridLayout->addWidget(horizontalSlider, 0, 1, 1, 3);
-    QObject::connect(ui.startTime, SIGNAL(timeChanged( const QTime & )), this, SLOT(updateStartTime( const QTime &)));
-    QObject::connect(ui.endTime, SIGNAL(timeChanged( const QTime & )), this, SLOT(updateEndTime( const QTime &)));
-    QObject::connect(horizontalSlider, SIGNAL( lowerValueChanged( int ) ), this, SLOT( updateStartTime( int ) ));
-    QObject::connect(horizontalSlider, SIGNAL( upperValueChanged( int ) ), this, SLOT( updateEndTime( int ) ));  
-    
-    QObject::connect( horizontalSlider, SIGNAL(lowerValueChanged( int )), TranscribeWidget::getInstance(), SLOT(changePosition( int ) ));
-    QObject::connect( horizontalSlider, SIGNAL(upperValueChanged( int )), TranscribeWidget::getInstance(), SLOT(changePosition( int ) ));
-    
-    
-    QObject::connect( ui.save, SIGNAL(clicked( )), this, SLOT( save( ) ) );
-    QObject::connect( ui.cancel, SIGNAL(clicked( )), this, SLOT( cancel( ) ) );
     this->setDuration(TranscribeWidget::getInstance()->getFileDuration());
+    QObject::connect(ui.startTime, SIGNAL(timeChanged(const QTime &)), this, SLOT(updateStartTime(const QTime &)));
+    QObject::connect(ui.endTime, SIGNAL(timeChanged(const QTime &)), this, SLOT(updateEndTime(const QTime &)));
+    QObject::connect(horizontalSlider, SIGNAL(lowerValueChanged(int)), this, SLOT( updateStartTime(int )));
+    QObject::connect(horizontalSlider, SIGNAL(upperValueChanged(int)), this, SLOT( updateEndTime(int)));
+    QObject::connect( horizontalSlider, SIGNAL(lowerValueChanged(int)), TranscribeWidget::getInstance(), SLOT(changePosition( int ) ));
+    QObject::connect( horizontalSlider, SIGNAL(upperValueChanged(int)), TranscribeWidget::getInstance(), SLOT(changePosition( int ) ));
+    QObject::connect( ui.save, SIGNAL(clicked()), this, SLOT( save()));
+    QObject::connect( ui.cancel, SIGNAL(clicked()), this, SLOT( cancel()));
+
 }
 
 AgendaItemEditor::~AgendaItemEditor()
 {}
 
-void AgendaItemEditor::updateEndTime( const QTime & time )
-{
-    int temp = time.hour() * 3600 + time.minute()*60 + time.second();
-    horizontalSlider->setUpperValue(temp);
-}
-
 void AgendaItemEditor::updateStartTime( const QTime & time )
 {
     int temp = time.hour() * 3600 + time.minute()*60 + time.second();
     horizontalSlider->setLowerValue(temp);
+    qDebug() << "Update start time called" << temp;
+}
+
+void AgendaItemEditor::updateEndTime( const QTime & time )
+{
+    int temp = time.hour() * 3600 + time.minute()*60 + time.second();
+    horizontalSlider->setUpperValue(temp);
+    qDebug() << "Update end time called"<< temp;
 }
 
 void AgendaItemEditor::updateStartTime( int time )
 {
     ui.startTime->setTime(QTime::fromString(timeSecondstoString(time)));
-	
 }
 
 void AgendaItemEditor::updateEndTime( int time )
@@ -125,6 +121,7 @@ QString AgendaItemEditor::getAgendaItem()
 
 void AgendaItemEditor::setDuration(int sec)
 {
+    horizontalSlider->setMinimum(0);
     horizontalSlider->setMaximum(sec);
     int hour = sec / 3600;
     int min = (sec % 3600 ) / 60;

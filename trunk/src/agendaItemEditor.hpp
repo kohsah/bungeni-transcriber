@@ -29,16 +29,17 @@
 #ifndef _AGENDAITEMEDITOR_H_
 #define _AGENDAITEMEDITOR_H_
 
-#include "qxtspanslider/qxtspanslider.h"
-#include "ui/ui_agendaItemEditor.h"
+
 #include <QWidget>
 #include <QLabel>
 #include <QTextEdit>
 #include <QTimeEdit>
 #include <QModelIndex>
 #include <QTime>
+#include <QxtSpanSlider>
 #include "util/util.hpp"
 #include "transcriptionItemEditor.hpp"
+#include "ui/ui_agendaItemEditor.h"
 class AgendaItemEditor : public TranscriptionItemEditor
 {
     Q_OBJECT

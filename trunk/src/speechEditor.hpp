@@ -29,8 +29,7 @@
 #ifndef _SPEECHEDITOR_H_
 #define _SPEECHEDITOR_H_
 
-#include "qxtspanslider/qxtspanslider.h"
-#include "ui/ui_speechEditor.h"
+
 #include <QWidget>
 #include <QLabel>
 #include <QTextEdit>
@@ -39,7 +38,10 @@
 #include "customTextEdit.hpp"
 #include <QCompleter>
 #include <QTime>
+#include <QxtSpanSlider>
 #include "transcriptionItemEditor.hpp"
+#include "ui/ui_speechEditor.h"
+
 class SpeechEditor : public TranscriptionItemEditor
 {
     Q_OBJECT

@@ -1,5 +1,3 @@
-#INCLUDEPATH for libvlc on Ubuntu. May be different on other distros
-INCLUDEPATH = /home/undesa/vlc-1.1.11/include/vlc
 LIBS += -lvlc
 
 HEADERS +=  src/transcribeWidget.hpp \
@@ -11,8 +9,6 @@ HEADERS +=  src/transcribeWidget.hpp \
             src/playlistWidget.hpp \
             src/network/formpost/formpost.hpp \
             src/addToPlaylistWidget.hpp \
-            src/qxtspanslider/qxtspanslider_p.h \
-            src/qxtspanslider/qxtspanslider.h \
             src/about.hpp \
             src/hotkeyWidget.hpp \
             src/util/vlc_keys.h \
@@ -41,7 +37,6 @@ SOURCES +=  src/transcribeWidget.cpp \
             src/playlistWidget.cpp \
             src/network/formpost/formpost.cpp \
             src/addToPlaylistWidget.cpp \
-            src/qxtspanslider/qxtspanslider.cpp \
             src/about.cpp \
             src/hotkeyWidget.cpp \
             src/util/util.cpp \
@@ -54,5 +49,6 @@ SOURCES +=  src/transcribeWidget.cpp \
             src/model/transcriptionModel.cpp
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           
-CONFIG  +=  qt debug
+CONFIG  +=  qt debug qxt
 QT += network xml
+QXT += core gui
