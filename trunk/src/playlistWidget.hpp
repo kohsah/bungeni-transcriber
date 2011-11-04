@@ -28,7 +28,7 @@
 #define _PLAYLISTWIDGET_H_
 
 #include <QStandardItemModel>
-#include <QTableView>
+#include <QTreeView>
 #include <QWidget>
 #include <QGridLayout>
 #include <QHeaderView>
@@ -36,6 +36,7 @@
 #include <QSpacerItem>
 
 #include "addToPlaylistWidget.hpp"
+#include "model/playlistModel.hpp"
 #define setupSmallButton( aButton ){  \
     aButton->setMaximumSize( QSize( 26, 26 ) ); \
     aButton->setMinimumSize( QSize( 26, 26 ) ); \
@@ -54,12 +55,12 @@ class PlaylistWidget : public QWidget
         QString getMediaLocation();
         QString getSittingName();
         void addTakeToPlaylist(QString sittingName, QString mediaFileLocation, QString trsFile);
-        QStandardItemModel * getModel();
+        PlaylistModel * getModel();
         void clearPlaylist();
     private:
-        QStandardItemModel *model;
+        PlaylistModel *model;
         void setupModelView();
-        QTableView *table;
+        QTreeView *treeView;
         QGridLayout *layout;
         QPushButton *addToPlaylistButton;
         QPushButton *removeFromPlaylistButton;
