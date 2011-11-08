@@ -1,19 +1,20 @@
+#include <QDebug>
 #include "playlistModel.hpp"
 
 PlaylistModel::PlaylistModel(QObject *parent)
     : QAbstractItemModel(parent){
+    rootItem = new PlaylistItem("Root Item", QDateTime(), QDateTime());
 }
 
 
 QVariant PlaylistModel::data(const QModelIndex &index, int role) const{
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QVariant();
-
-    if (role != Qt::DisplayRole)
+    }
+    if (role != Qt::DisplayRole) {
         return QVariant();
-
+    }
     PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
-
     return item->data(index.column());
 }
 Qt::ItemFlags PlaylistModel::flags(const QModelIndex &index) const{
@@ -24,7 +25,7 @@ Qt::ItemFlags PlaylistModel::flags(const QModelIndex &index) const{
 
 QVariant PlaylistModel::headerData(int section, Qt::Orientation orientation,
                      int role) const{
-    QVariant headers[3] = {"Group Name", "Start Date/Time", "End Date/Time"};
+    QVariant headers[3] = {"Name", "Start Date/Time", "End Date/Time"};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
         return headers[section];
     return QVariant();
@@ -32,16 +33,18 @@ QVariant PlaylistModel::headerData(int section, Qt::Orientation orientation,
 
 QModelIndex PlaylistModel::index(int row, int column,
                    const QModelIndex &parent) const{
-    if (!hasIndex(row, column, parent))
+    if (!hasIndex(row, column, parent)) {
         return QModelIndex();
+    }
     PlaylistItem * parentItem;
     if (!parent.isValid())
         parentItem = rootItem;
     else
         parentItem = static_cast<PlaylistItem*>(parent.internalPointer());
     PlaylistItem *childItem = parentItem->child(row);
-    if (childItem)
+    if (childItem){
         return createIndex(row, column, childItem);
+    }
     else
         return QModelIndex();
 }
@@ -76,6 +79,15 @@ int PlaylistModel::columnCount(const QModelIndex &parent) const {
         return rootItem->columnCount();
 }
 
-void PlaylistModel::insertItem (Sitting *item){
-    rootItem->appendChild(static_cast<PlaylistItem*>(item));
+void PlaylistModel::insertItem(QModelIndex &parent, PlaylistItem *item){
+    PlaylistItem * parentItem;
+    if (parent.isValid())
+        parentItem = static_cast<PlaylistItem*>(parent.internalPointer());
+    else
+        parentItem = rootItem;
+    this->beginInsertRows(parent, parentItem->childCount(), parentItem->childCount());
+    parentItem->appendChild(item);
+    qDebug() << "Bungeni Transcribe : Item added to playlist";
+    qDebug() << "Number of sittings in playlist" << rootItem->childCount();
+    this->endInsertRows();
 }

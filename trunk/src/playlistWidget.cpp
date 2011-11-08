@@ -59,10 +59,11 @@ void PlaylistWidget :: addItemToPlaylist()
     else
     {
         QString sittingName = addToPlaylist->getSittingName();
-        //QDateTime startTime = addToPlaylist->getStartTime();
-        //QDateTime endTime = addToPlaylist->getEndTime();
-        Sitting *newSitting = new Sitting(sittingName, QDateTime(), QDateTime());
-        model->insertItem(newSitting);
+        QDateTime startTime = addToPlaylist->getStartDateTime();
+        QDateTime endTime = addToPlaylist->getEndDateTime();
+        Sitting *newSitting = new Sitting(sittingName, startTime, endTime);
+        QModelIndex temp = QModelIndex();
+        model->insertItem(temp, newSitting);
     }
 }
 
@@ -144,11 +145,13 @@ QString PlaylistWidget :: getMediaLocation()
 { /*
     return model->data(model->index(current, 1)).toString();
     */
+    return QString();
 }
 
 QString PlaylistWidget :: getSittingName()
 {
      //return model->data(model->index(current, 0)).toString();
+    return QString();
 }
 
 void PlaylistWidget :: clearPlaylist()
@@ -165,7 +168,11 @@ void PlaylistWidget :: setupModelView()
     QSizePolicy sizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
-    
+    treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(treeView,
+            SIGNAL(customContextMenuRequested(const QPoint &)),
+            this, SLOT(contextualMenu(const QPoint &)));
+
     addToPlaylistButton = new QPushButton("");
     addToPlaylistButton->setSizePolicy( sizePolicy );
     setupSmallButton( addToPlaylistButton );
@@ -185,4 +192,10 @@ void PlaylistWidget :: setupModelView()
     layout->addItem(horizontalSpacer, 1, 2);
     
     setLayout(layout);
+}
+
+void PlaylistWidget::contextualMenu(const QPoint & point){
+    QModelIndex index = treeView->indexAt(point);
+    PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
+    item->menu();
 }

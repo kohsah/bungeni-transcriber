@@ -1,3 +1,5 @@
+#include <QMenu>
+#include <QCursor>
 #include "playlistItem.hpp"
 PlaylistItem::PlaylistItem(QString name_, QDateTime start_,
                            QDateTime end_){
@@ -12,11 +14,14 @@ PlaylistItem::~PlaylistItem(){
 }
 
 void PlaylistItem::appendChild(PlaylistItem *child){
+    child->parentItem = this;
     childItems.append(child);
 }
 
 PlaylistItem * PlaylistItem::child(int row){
-    return childItems.at(row);
+    if(row < childItems.count())
+        return childItems.at(row);
+    return NULL;
 }
 
 int PlaylistItem::childCount() const{
@@ -45,4 +50,10 @@ int PlaylistItem::row() const {
 
 PlaylistItem *PlaylistItem::parent(){
     return parentItem;
+}
+
+void PlaylistItem::menu(){
+    QMenu contextMenu;
+    contextMenu.addAction("test");
+    contextMenu.exec(QCursor::pos());
 }

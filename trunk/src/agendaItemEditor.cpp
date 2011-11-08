@@ -41,6 +41,7 @@ AgendaItemEditor::AgendaItemEditor(QWidget * parent) : TranscriptionItemEditor(p
     horizontalSlider = new QxtSpanSlider();
     horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
     horizontalSlider->setOrientation(Qt::Horizontal);
+    horizontalSlider->setHandleMovementMode(QxtSpanSlider::NoCrossing);
     ui.gridLayout->addWidget(horizontalSlider, 0, 1, 1, 3);
     this->setDuration(TranscribeWidget::getInstance()->getFileDuration());
     QObject::connect(ui.startTime, SIGNAL(timeChanged(const QTime &)), this, SLOT(updateStartTime(const QTime &)));

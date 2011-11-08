@@ -50,11 +50,11 @@ class PlaylistWidget : public QWidget
     public:
         PlaylistWidget();
         ~PlaylistWidget();
-        void setTranscriptFileLocation(QString transcriptFileLocation, int logicalIndex);
+        void setTranscriptFileLocation(QString, int);
         int getSelected();
         QString getMediaLocation();
         QString getSittingName();
-        void addTakeToPlaylist(QString sittingName, QString mediaFileLocation, QString trsFile);
+        void addTakeToPlaylist(QString, QString, QString);
         PlaylistModel * getModel();
         void clearPlaylist();
     private:
@@ -71,11 +71,12 @@ class PlaylistWidget : public QWidget
         void addItemToPlaylist();
         void addToPlaylistDialog();
         void play(int logicalIndex);
-        void play(const QModelIndex & index);
+        void play(const QModelIndex&);
         void prev();
         void next();
+        void contextualMenu(const QPoint&);
     signals:
-        void playMediaFile(QString mediaFilePath);
-        void loadTranscriptFile(int currentLogicalIndex, QString transcriptFilePath);
+        void playMediaFile(QString);
+        void loadTranscriptFile(int, QString);
 };
 #endif

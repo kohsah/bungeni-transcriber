@@ -42,6 +42,7 @@ SpeechEditor::SpeechEditor(QWidget * parent) : TranscriptionItemEditor(parent)
     horizontalSlider = new QxtSpanSlider();
     horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
     horizontalSlider->setOrientation(Qt::Horizontal);
+    horizontalSlider->setHandleMovementMode(QxtSpanSlider::NoCrossing);
     ui.gridLayout->addWidget(horizontalSlider, 0, 3, 1, 3);
     ui.play->setIcon(QIcon(":/pixmaps/play.png"));
     speechText = new customTextEdit(parent);
@@ -90,7 +91,7 @@ void SpeechEditor::setAutoCompleteWordlist(const QStringList & wordlist )
 void SpeechEditor::updateStartTime( const QTime & time )
 {
     int temp = time.hour() * 3600 + time.minute()*60 + time.second();
-    horizontalSlider->setLowerValue(temp);
+    horizontalSlider->setLowerPosition(temp);
 }
 
 void SpeechEditor::updateStartTime( int time )
@@ -101,7 +102,7 @@ void SpeechEditor::updateStartTime( int time )
 void SpeechEditor::updateEndTime( const QTime & time )
 {
     int temp = time.hour() * 3600 + time.minute()*60 + time.second();
-    horizontalSlider->setUpperValue(temp);
+    horizontalSlider->setUpperPosition(temp);
 }
 
 void SpeechEditor::updateEndTime( int time )

@@ -4,6 +4,7 @@
 #include <QDateTime>
 #include <QList>
 #include <QVariant>
+#include <QModelIndex>
 class PlaylistItem
 {
 public:
@@ -18,7 +19,7 @@ public:
     QVariant data(int column) const;
     int row() const;
     PlaylistItem *parent();
-
+    void menu();
 protected:
     QList<PlaylistItem*> childItems;
 

@@ -38,8 +38,8 @@ class AddToPlaylistWidget : public QDialog
         ~AddToPlaylistWidget();
         QString getTrsFileLocation();
         QString getSittingName();
-        //QDateTime getStartTime();
-        //QDateTime getEndTime();
+        QDateTime getStartDateTime();
+        QDateTime getEndDateTime();
         QString getMediaFileLocation();
         bool addExisting();
     private:

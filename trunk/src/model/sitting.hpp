@@ -8,6 +8,7 @@ class Sitting : public PlaylistItem {
 public:
     Sitting(QString, QDateTime, QDateTime);
     void appendChild(Take *child);
+    void menu();
 };
 
 #endif // SITTING_HPP

@@ -24,13 +24,15 @@
  * Boston, MA  02110-1301  USA
  ***********************************************************************/
  
-#include <QFileDialog> 
+#include <QFileDialog>
 #include "addToPlaylistWidget.hpp"
 
 AddToPlaylistWidget :: AddToPlaylistWidget() : QDialog()
 {
     ui.setupUi(this);
     this->setModal(true);
+    ui.startDateTime->setDateTime(QDateTime::currentDateTime());
+    ui.endDateTime->setDateTime(QDateTime::currentDateTime());
     QObject::connect( ui.addNewGroupBox, SIGNAL(clicked(bool)), this, SLOT(addNewGroupBoxProceessChecked(bool)));
     QObject::connect( ui.addExistingGroupBox, SIGNAL(clicked(bool)), this, SLOT(addExistingGroupBoxProceessChecked(bool)));
     QObject::connect( ui.locateExistingButton, SIGNAL(clicked()), this, SLOT(locateExistingPathSlot()));
@@ -50,17 +52,17 @@ QString AddToPlaylistWidget ::getSittingName()
 {
     return ui.sittingNameLineEdit->text();
 }
-/*
-QDateTime AddToPlaylistWidget ::getStartTime()
+
+QDateTime AddToPlaylistWidget ::getStartDateTime()
 {
-    return ui.startTime->dateTime();
+    return ui.startDateTime->dateTime();
 }
 
-QDateTime AddToPlaylistWidget ::getEndTime()
+QDateTime AddToPlaylistWidget ::getEndDateTime()
 {
-    return ui.endTime->dateTime();
+    return ui.endDateTime->dateTime();
 }
-*/
+
 QString AddToPlaylistWidget ::getMediaFileLocation()
 {
     return ui.newPathLineEdit->text();
