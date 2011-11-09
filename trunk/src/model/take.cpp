@@ -2,8 +2,10 @@
 #include <QMenu>
 #include "take.hpp"
 
-Take::Take(QString name_, QDateTime start_, QDateTime end_) :
+Take::Take(QString name_, QDateTime start_,
+           QDateTime end_, QString mediaLocation_) :
     PlaylistItem(name_, start_, end_){
+    mediaLocation = mediaLocation_;
 }
 
 void Take::appendChild(Take *child){

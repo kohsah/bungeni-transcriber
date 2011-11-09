@@ -197,5 +197,5 @@ void PlaylistWidget :: setupModelView()
 void PlaylistWidget::contextualMenu(const QPoint & point){
     QModelIndex index = treeView->indexAt(point);
     PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
-    item->menu();
+    item->menu(this, index);
 }

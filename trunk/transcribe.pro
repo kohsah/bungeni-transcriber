@@ -25,7 +25,8 @@ HEADERS += src/transcribeWidget.hpp \
     src/model/playlistModel.hpp \
     src/model/sitting.hpp \
     src/model/take.hpp \
-    src/model/playlistItem.hpp
+    src/model/playlistItem.hpp \
+    src/addTakeWidget.hpp
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
@@ -34,7 +35,8 @@ FORMS += src/ui/transcribe.ui \
     src/ui/addToPlaylist.ui \
     src/ui/about.ui \
     src/ui/serverSettings.ui \
-    src/ui/agendaItemEditor.ui
+    src/ui/agendaItemEditor.ui \
+    src/ui/addTake.ui
 
 SOURCES += src/transcribeWidget.cpp \
     src/controlsWidget.cpp \
@@ -58,9 +60,13 @@ SOURCES += src/transcribeWidget.cpp \
     src/model/sitting.cpp \
     src/model/take.cpp \
     src/model/playlistModel.cpp \
-    src/model/playlistItem.cpp
+    src/model/playlistItem.cpp \
+    src/addTakeWidget.cpp
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           
 CONFIG  +=  qt debug qxt
 QT += network xml
 QXT += core gui
+
+
+

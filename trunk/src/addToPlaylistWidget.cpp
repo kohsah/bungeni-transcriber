@@ -36,7 +36,6 @@ AddToPlaylistWidget :: AddToPlaylistWidget() : QDialog()
     QObject::connect( ui.addNewGroupBox, SIGNAL(clicked(bool)), this, SLOT(addNewGroupBoxProceessChecked(bool)));
     QObject::connect( ui.addExistingGroupBox, SIGNAL(clicked(bool)), this, SLOT(addExistingGroupBoxProceessChecked(bool)));
     QObject::connect( ui.locateExistingButton, SIGNAL(clicked()), this, SLOT(locateExistingPathSlot()));
-    QObject::connect( ui.locateNewButton, SIGNAL(clicked()), this, SLOT(locateNewPathSlot()));
 }
 
 AddToPlaylistWidget :: ~AddToPlaylistWidget()
@@ -63,22 +62,10 @@ QDateTime AddToPlaylistWidget ::getEndDateTime()
     return ui.endDateTime->dateTime();
 }
 
-QString AddToPlaylistWidget ::getMediaFileLocation()
-{
-    return ui.newPathLineEdit->text();
-}
-
-
 void AddToPlaylistWidget :: locateExistingPathSlot()
 {
     QString existingFilePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Transcript Files (*.trs);;Any File (*.*)"));
     ui.existingPathLineEdit->setText(existingFilePath);
-}
-
-void AddToPlaylistWidget :: locateNewPathSlot()
-{
-    QString newFilePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Media Files (*.ogv *.ogg);;Any File (*.*)"));
-    ui.newPathLineEdit->setText(newFilePath);
 }
 
 void AddToPlaylistWidget :: addExistingGroupBoxProceessChecked(bool checked)

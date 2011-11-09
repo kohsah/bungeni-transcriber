@@ -40,7 +40,6 @@ class AddToPlaylistWidget : public QDialog
         QString getSittingName();
         QDateTime getStartDateTime();
         QDateTime getEndDateTime();
-        QString getMediaFileLocation();
         bool addExisting();
     private:
         Ui::addToPlaylist ui;
@@ -48,6 +47,5 @@ class AddToPlaylistWidget : public QDialog
         void addExistingGroupBoxProceessChecked(bool checked);
         void addNewGroupBoxProceessChecked(bool checked);
         void locateExistingPathSlot();
-        void locateNewPathSlot();
 };
 #endif

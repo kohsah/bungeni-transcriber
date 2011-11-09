@@ -7,8 +7,10 @@
 class Take : public PlaylistItem
 {
 public:
-    Take(QString, QDateTime, QDateTime);
+    Take(QString, QDateTime, QDateTime, QString);
     void appendChild(Take *child);
     void menu();
+private:
+    QString mediaLocation;
 };
 #endif // TAKE_HPP
