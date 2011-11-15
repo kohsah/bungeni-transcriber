@@ -91,3 +91,7 @@ void PlaylistModel::insertItem(QModelIndex &parent, PlaylistItem *item){
     qDebug() << "Number of sittings in playlist" << rootItem->childCount();
     this->endInsertRows();
 }
+
+void PlaylistModel::customDataChanged(QModelIndex& top, QModelIndex& bottom){
+    emit dataChanged(top, bottom);
+}

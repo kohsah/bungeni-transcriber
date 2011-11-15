@@ -1,5 +1,5 @@
 /********************************************************************
- * addToPlaylistWidget.cpp
+ * addSittingWidget.cpp
  ********************************************************************
  * This file is part of Bungeni Transcribe
  *
@@ -20,55 +20,51 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, 
+ * Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA  02110-1301  USA
  ***********************************************************************/
- 
-#include <QFileDialog>
-#include "addToPlaylistWidget.hpp"
 
-AddToPlaylistWidget :: AddToPlaylistWidget() : QDialog()
+#include <QFileDialog>
+#include "addSittingWidget.hpp"
+
+AddSittingWidget :: AddSittingWidget() : QDialog()
 {
     ui.setupUi(this);
     this->setModal(true);
     ui.startDateTime->setDateTime(QDateTime::currentDateTime());
     ui.endDateTime->setDateTime(QDateTime::currentDateTime());
-    QObject::connect( ui.addNewGroupBox, SIGNAL(clicked(bool)), this, SLOT(addNewGroupBoxProceessChecked(bool)));
-    QObject::connect( ui.addExistingGroupBox, SIGNAL(clicked(bool)), this, SLOT(addExistingGroupBoxProceessChecked(bool)));
-    QObject::connect( ui.locateExistingButton, SIGNAL(clicked()), this, SLOT(locateExistingPathSlot()));
 }
 
-AddToPlaylistWidget :: ~AddToPlaylistWidget()
+AddSittingWidget :: ~AddSittingWidget()
 {
 }
 
-QString AddToPlaylistWidget ::getTrsFileLocation()
+QString AddSittingWidget ::getTrsFileLocation()
 {
     return ui.existingPathLineEdit->text();
 }
 
-QString AddToPlaylistWidget ::getSittingName()
+QString AddSittingWidget ::getSittingName()
 {
     return ui.sittingNameLineEdit->text();
 }
 
-QDateTime AddToPlaylistWidget ::getStartDateTime()
+QDateTime AddSittingWidget ::getStartDateTime()
 {
     return ui.startDateTime->dateTime();
 }
 
-QDateTime AddToPlaylistWidget ::getEndDateTime()
+QDateTime AddSittingWidget ::getEndDateTime()
 {
     return ui.endDateTime->dateTime();
 }
-
-void AddToPlaylistWidget :: locateExistingPathSlot()
+void AddSittingWidget :: locateExistingPathSlot()
 {
     QString existingFilePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Transcript Files (*.trs);;Any File (*.*)"));
     ui.existingPathLineEdit->setText(existingFilePath);
 }
 
-void AddToPlaylistWidget :: addExistingGroupBoxProceessChecked(bool checked)
+void AddSittingWidget :: addExistingGroupBoxProceessChecked(bool checked)
 {
     if (checked)
     {
@@ -80,7 +76,7 @@ void AddToPlaylistWidget :: addExistingGroupBoxProceessChecked(bool checked)
     }
 }
 
-bool AddToPlaylistWidget :: addExisting()
+bool AddSittingWidget :: addExisting()
 {
     if (ui.addExistingGroupBox->isChecked())
     {
@@ -92,7 +88,7 @@ bool AddToPlaylistWidget :: addExisting()
     }
 }
 
-void AddToPlaylistWidget :: addNewGroupBoxProceessChecked(bool checked)
+void AddSittingWidget :: addNewGroupBoxProceessChecked(bool checked)
 {
     if (checked)
     {
@@ -102,4 +98,4 @@ void AddToPlaylistWidget :: addNewGroupBoxProceessChecked(bool checked)
     {
         ui.addExistingGroupBox->setChecked(true);
     }
-} 
+}

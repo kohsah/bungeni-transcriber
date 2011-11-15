@@ -44,7 +44,7 @@ PlaylistWidget :: ~PlaylistWidget()
 
 void PlaylistWidget :: addToPlaylistDialog()
 {
-    addToPlaylist = new AddToPlaylistWidget();
+    addToPlaylist = new AddSittingWidget();
     addToPlaylist->show();
     QObject::connect( addToPlaylist, SIGNAL(accepted()), this, SLOT(addItemToPlaylist()));
     

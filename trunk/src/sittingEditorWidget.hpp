@@ -1,5 +1,5 @@
 /**********************************************************
- * addToPlaylistWidget.hpp
+ * sittingEditorWidget.hpp
  **********************************************************
  * This file is part of Bungeni Transcribe
  *
@@ -22,30 +22,27 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, 
  * Boston, MA  02110-1301  USA
  */
-#ifndef _ADDTOPLAYLISTWIDGET_H_
-#define _ADDTOPLAYLISTWIDGET_H_
+#ifndef _SITTINGEDITORWIDGET_H_
+#define _SITTINGEDITORWIDGET_H_
 
 #include <QString>
 #include <QDateTime>
  
-#include "ui/ui_addToPlaylist.h" 
+#include "ui/ui_sittingEditor.h"
 
-class AddToPlaylistWidget : public QDialog
+class SittingEditorWidget : public QDialog
 {
     Q_OBJECT
     public:
-        AddToPlaylistWidget();
-        ~AddToPlaylistWidget();
-        QString getTrsFileLocation();
+        SittingEditorWidget();
+        ~SittingEditorWidget();
         QString getSittingName();
         QDateTime getStartDateTime();
         QDateTime getEndDateTime();
-        bool addExisting();
+        void setStartDateTime(QDateTime);
+        void setEndDateTime(QDateTime);
+        void setSittingName(QString);
     private:
-        Ui::addToPlaylist ui;
-    public slots:
-        void addExistingGroupBoxProceessChecked(bool checked);
-        void addNewGroupBoxProceessChecked(bool checked);
-        void locateExistingPathSlot();
+        Ui::sittingEditor ui;
 };
 #endif

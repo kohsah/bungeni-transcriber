@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>addToPlaylist</class>
- <widget class="QDialog" name="addToPlaylist">
+ <class>addSittingWidget</class>
+ <widget class="QDialog" name="addSittingWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -149,7 +149,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>addToPlaylist</receiver>
+   <receiver>addSittingWidget</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -165,7 +165,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>addToPlaylist</receiver>
+   <receiver>addSittingWidget</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

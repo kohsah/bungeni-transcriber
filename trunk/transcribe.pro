@@ -10,7 +10,6 @@ HEADERS += src/transcribeWidget.hpp \
     src/agendaItemEditor.hpp \
     src/playlistWidget.hpp \
     src/network/formpost/formpost.hpp \
-    src/addToPlaylistWidget.hpp \
     src/about.hpp \
     src/hotkeyWidget.hpp \
     src/util/vlc_keys.h \
@@ -23,20 +22,23 @@ HEADERS += src/transcribeWidget.hpp \
     src/model/transcriptionModel.hpp \
     src/model/transcriptionItem.hpp \
     src/model/playlistModel.hpp \
+    src/model/playlistItem.hpp \
     src/model/sitting.hpp \
     src/model/take.hpp \
-    src/model/playlistItem.hpp \
-    src/addTakeWidget.hpp
+    src/takeEditorWidget.hpp \
+    src/sittingEditorWidget.hpp \
+    src/addSittingWidget.hpp
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
     src/ui/uploadProgress.ui \
     src/ui/controls.ui \
-    src/ui/addToPlaylist.ui \
     src/ui/about.ui \
     src/ui/serverSettings.ui \
     src/ui/agendaItemEditor.ui \
-    src/ui/addTake.ui
+    src/ui/takeEditor.ui \
+    src/ui/sittingEditor.ui \
+    src/ui/addSittingWidget.ui
 
 SOURCES += src/transcribeWidget.cpp \
     src/controlsWidget.cpp \
@@ -47,7 +49,6 @@ SOURCES += src/transcribeWidget.cpp \
     src/agendaItemEditor.cpp \
     src/playlistWidget.cpp \
     src/network/formpost/formpost.cpp \
-    src/addToPlaylistWidget.cpp \
     src/about.cpp \
     src/hotkeyWidget.cpp \
     src/util/util.cpp \
@@ -61,12 +62,37 @@ SOURCES += src/transcribeWidget.cpp \
     src/model/take.cpp \
     src/model/playlistModel.cpp \
     src/model/playlistItem.cpp \
-    src/addTakeWidget.cpp
+    src/sittingEditorWidget.cpp \
+    src/takeEditorWidget.cpp \
+    src/addSittingWidget.cpp
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           
 CONFIG  +=  qt debug qxt
 QT += network xml
 QXT += core gui
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -25,6 +25,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     void insertItem(QModelIndex &parent, PlaylistItem *item);
+    void customDataChanged(QModelIndex&, QModelIndex&);
 private:
     PlaylistItem *rootItem;
 };

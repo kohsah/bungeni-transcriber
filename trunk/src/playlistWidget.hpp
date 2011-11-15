@@ -35,7 +35,7 @@
 #include <QPushButton>
 #include <QSpacerItem>
 
-#include "addToPlaylistWidget.hpp"
+#include "addSittingWidget.hpp"
 #include "model/playlistModel.hpp"
 #define setupSmallButton( aButton ){  \
     aButton->setMaximumSize( QSize( 26, 26 ) ); \
@@ -65,7 +65,7 @@ class PlaylistWidget : public QWidget
         QPushButton *addToPlaylistButton;
         QPushButton *removeFromPlaylistButton;
         QSpacerItem *horizontalSpacer;
-        AddToPlaylistWidget *addToPlaylist;
+        AddSittingWidget *addToPlaylist;
         int current;
     public slots:
         void addItemToPlaylist();

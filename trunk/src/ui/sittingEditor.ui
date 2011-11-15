@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>addTakeDialog</class>
- <widget class="QDialog" name="addTakeDialog">
+ <class>sittingEditor</class>
+ <widget class="QDialog" name="sittingEditor">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>579</width>
-    <height>158</height>
+    <width>657</width>
+    <height>124</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Edit Sitting</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>110</y>
-     <width>551</width>
+     <x>300</x>
+     <y>80</y>
+     <width>341</width>
      <height>32</height>
     </rect>
    </property>
@@ -29,62 +29,45 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QWidget" name="gridLayoutWidget">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>20</y>
-     <width>561</width>
-     <height>95</height>
+     <x>20</x>
+     <y>10</y>
+     <width>623</width>
+     <height>62</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="3">
-     <widget class="QPushButton" name="pushButton">
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_8">
       <property name="text">
-       <string>Locate</string>
+       <string>Sitting Name</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="1" colspan="2">
-     <widget class="QLineEdit" name="mediaLocation"/>
+    <item row="0" column="2" colspan="3">
+     <widget class="QLineEdit" name="sittingNameLineEdit"/>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Take Media Location</string>
-      </property>
-     </widget>
+    <item row="1" column="2">
+     <widget class="QDateTimeEdit" name="startDateTime"/>
+    </item>
+    <item row="1" column="4">
+     <widget class="QDateTimeEdit" name="endDateTime"/>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>Start Date/Time</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QDateTimeEdit" name="startDateTime"/>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>End Date/Time</string>
+       <string>Sitting Start Date/Time</string>
       </property>
      </widget>
     </item>
     <item row="1" column="3">
-     <widget class="QDateTimeEdit" name="endDateTime"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_4">
+     <widget class="QLabel" name="lbl_endDateTime">
       <property name="text">
-       <string>Take Name</string>
+       <string>Sitting End Date/Time</string>
       </property>
      </widget>
-    </item>
-    <item row="0" column="1" colspan="2">
-     <widget class="QLineEdit" name="takeName"/>
     </item>
    </layout>
   </widget>
@@ -94,7 +77,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>addTakeDialog</receiver>
+   <receiver>sittingEditor</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -110,7 +93,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>addTakeDialog</receiver>
+   <receiver>sittingEditor</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

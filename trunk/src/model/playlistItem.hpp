@@ -24,8 +24,6 @@ public:
     virtual void menu(QWidget *, QModelIndex);
 protected:
     QList<PlaylistItem*> childItems;
-
-private:
     QString name;
     QDateTime start;
     QDateTime end;

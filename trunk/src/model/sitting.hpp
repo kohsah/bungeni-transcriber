@@ -4,7 +4,7 @@
 #include <QDateTime>
 #include "playlistItem.hpp"
 #include "take.hpp"
-#include "../addTakeWidget.hpp"
+
 class Sitting : public PlaylistItem {
     Q_OBJECT
 public:
@@ -13,12 +13,9 @@ public:
     void menu(QWidget *, QModelIndex);
 public slots:
     void editSitting();
-    void addTakeDialog();
-    void removeSitting();
     void addTake();
+    void removeSitting();
 private:
-    AddTakeWidget *addTakeWidget;
-    QString name;
     QModelIndex index;
     QWidget *playlist;
 };
