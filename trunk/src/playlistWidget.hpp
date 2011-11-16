@@ -67,6 +67,8 @@ class PlaylistWidget : public QWidget
         QSpacerItem *horizontalSpacer;
         AddSittingWidget *addToPlaylist;
         int current;
+        void takeMenu();
+        void sittingMenu();
     public slots:
         void addItemToPlaylist();
         void addToPlaylistDialog();
@@ -75,6 +77,11 @@ class PlaylistWidget : public QWidget
         void prev();
         void next();
         void contextualMenu(const QPoint&);
+        void editTake();
+        void removeTake();
+        void editSitting();
+        void addTake();
+        void removeSitting();
     signals:
         void playMediaFile(QString);
         void loadTranscriptFile(int, QString);

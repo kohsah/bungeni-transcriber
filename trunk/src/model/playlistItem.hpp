@@ -21,7 +21,16 @@ public:
     QVariant data(int column) const;
     int row() const;
     PlaylistItem *parent();
-    virtual void menu(QWidget *, QModelIndex);
+    enum ItemType {
+        RootItem, TypeSitting, TypeTake
+    };
+    virtual PlaylistItem::ItemType getType();
+    QDateTime getStartDateTime();
+    QDateTime getEndDateTime();
+    QString getName();
+    void setStartDateTime(QDateTime);
+    void setEndDateTime(QDateTime);
+    void setName(QString);
 protected:
     QList<PlaylistItem*> childItems;
     QString name;

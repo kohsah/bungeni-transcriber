@@ -10,13 +10,10 @@ class Take : public PlaylistItem {
 public:
     Take(QString, QDateTime, QDateTime, QString);
     void appendChild();
-    void menu(QWidget*, QModelIndex);
-public slots:
-    void editTake();
-    void removeTake();
+    PlaylistItem::ItemType getType();
+    QString getMediaLocation();
+    void setMediaLocation(QString);
 private:
     QString mediaLocation;
-    QModelIndex index;
-    QWidget *playlist;
 };
 #endif // TAKE_HPP

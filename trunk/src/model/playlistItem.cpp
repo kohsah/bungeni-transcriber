@@ -1,6 +1,7 @@
 #include <QMenu>
 #include <QCursor>
 #include "playlistItem.hpp"
+
 PlaylistItem::PlaylistItem(QString name_, QDateTime start_,
                            QDateTime end_) : QObject(){
     name = name_;
@@ -52,6 +53,31 @@ PlaylistItem *PlaylistItem::parent(){
     return parentItem;
 }
 
-void PlaylistItem::menu(QWidget * playlistWidget_, QModelIndex index_){
-    //UNDEFINED
+PlaylistItem::ItemType PlaylistItem::getType(){
+    return PlaylistItem::RootItem;
+}
+
+QDateTime PlaylistItem::getStartDateTime(){
+    return start;
+}
+
+QDateTime PlaylistItem::getEndDateTime(){
+    return end;
+}
+
+QString PlaylistItem::getName(){
+    return name;
+}
+
+
+void PlaylistItem::setStartDateTime(QDateTime start_){
+    start = start_;
+}
+
+void PlaylistItem::setEndDateTime(QDateTime end_){
+    end = end_;
+}
+
+void PlaylistItem::setName(QString name_){
+    name = name_;
 }

@@ -6,7 +6,6 @@
 #include <QVariant>
 
 #include "playlistItem.hpp"
-#include "sitting.hpp"
 
 class PlaylistModel : public QAbstractItemModel
 {

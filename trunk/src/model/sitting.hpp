@@ -10,14 +10,7 @@ class Sitting : public PlaylistItem {
 public:
     Sitting(QString, QDateTime, QDateTime);
     void appendChild(Take *child);
-    void menu(QWidget *, QModelIndex);
-public slots:
-    void editSitting();
-    void addTake();
-    void removeSitting();
-private:
-    QModelIndex index;
-    QWidget *playlist;
+    PlaylistItem::ItemType getType();
 };
 
 #endif // SITTING_HPP

@@ -29,8 +29,13 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QAbstractItemView>
+#include <QSignalMapper>
+#include <QMenu>
 #include "playlistWidget.hpp"
+#include "model/take.hpp"
 #include "model/sitting.hpp"
+#include "takeEditorWidget.hpp"
+#include "sittingEditorWidget.hpp"
 PlaylistWidget :: PlaylistWidget() : QWidget()
 {
     this->setupModelView();
@@ -92,7 +97,13 @@ void PlaylistWidget :: play(int logicalIndex)
 }
 
 void PlaylistWidget :: play(const QModelIndex & index)
-{   /*
+{
+    PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
+    if (item->getType() == PlaylistItem::TypeTake) {
+        Take *take = static_cast<Take*>(item);
+        emit playMediaFile(take->getMediaLocation());
+    }
+    /*
     emit loadTranscriptFile(current, model->data(index).toString());
     qDebug() << "other play executed";
     current = index.row();
@@ -197,5 +208,124 @@ void PlaylistWidget :: setupModelView()
 void PlaylistWidget::contextualMenu(const QPoint & point){
     QModelIndex index = treeView->indexAt(point);
     PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
-    item->menu(this, index);
+    int itemType = item->getType();
+    if (itemType == PlaylistItem::TypeSitting){
+        this->sittingMenu();
+    }
+    else if (itemType == PlaylistItem::TypeTake){
+        this->takeMenu();
+    }
+}
+
+
+void PlaylistWidget::takeMenu(){
+    QMenu contextMenu;
+    QAction *editAct = new QAction(tr("&Edit"), this);
+    connect(editAct, SIGNAL(triggered()), this, SLOT(editTake()));
+    editAct->setStatusTip(tr("Edit take"));
+    contextMenu.addAction(editAct);
+
+    QAction *removeAct = new QAction(tr("&Remove"), this);
+    connect(removeAct, SIGNAL(triggered()), this, SLOT(removeTake()));
+    removeAct->setStatusTip(tr("Remove take"));
+    contextMenu.addAction(removeAct);
+
+    contextMenu.exec(QCursor::pos());
+}
+
+void PlaylistWidget::editTake(){
+    QModelIndex index = treeView->selectionModel()->currentIndex();
+    Take *item = static_cast<Take*>(index.internalPointer());
+    TakeEditorWidget *takeEditor = new TakeEditorWidget();
+    takeEditor->setStartTime(item->getStartDateTime());
+    takeEditor->setEndTime(item->getEndDateTime());
+    takeEditor->setTakeName(item->getName());
+    takeEditor->setMediaLocation(item->getMediaLocation());
+    int result = takeEditor->exec();
+    if (result == QDialog::Accepted){
+        item->setName(takeEditor->getTakeName());
+        item->setStartDateTime(takeEditor->getStartTime());
+        item->setEndDateTime(takeEditor->getEndTime());
+        item->setMediaLocation(takeEditor->getMediaLocation());
+        model->customDataChanged(index, index);
+    }
+    delete takeEditor;
+}
+
+void PlaylistWidget::removeTake(){
+    QMessageBox msgBox;
+    msgBox.setInformativeText("Are you sure you want to remove the item from the playlist");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+    int result = msgBox.exec();
+    if (result == QMessageBox::Yes){
+
+    }
+}
+
+void PlaylistWidget::sittingMenu(){
+    QMenu contextMenu;
+
+    QAction *editAct = new QAction(tr("&Edit"), this);
+    editAct->setStatusTip(tr("Edit selected sitting"));
+    connect(editAct, SIGNAL(triggered()), this, SLOT(editSitting()));
+    contextMenu.addAction(editAct);
+
+    QAction *addTakeAct = new QAction(tr("&Add Take"), this);
+    addTakeAct->setStatusTip(tr("Add a take to the selected sitting"));
+    connect(addTakeAct, SIGNAL(triggered()), this, SLOT(addTake()));
+    contextMenu.addAction(addTakeAct);
+
+    QAction *removeAct = new QAction(tr("&Remove"), this);
+    removeAct->setStatusTip(tr("Remove selected sitting"));
+    connect(removeAct, SIGNAL(triggered()), this, SLOT(removeSitting()));
+    contextMenu.addAction(removeAct);
+
+    contextMenu.exec(QCursor::pos());
+}
+
+void PlaylistWidget::editSitting(){
+    QModelIndex index = treeView->selectionModel()->currentIndex();
+    Sitting *item = static_cast<Sitting*>(index.internalPointer());
+    SittingEditorWidget *sittingEditor = new SittingEditorWidget();
+    sittingEditor->setStartDateTime(item->getStartDateTime());
+    sittingEditor->setEndDateTime(item->getEndDateTime());
+    sittingEditor->setSittingName(item->getName());
+    int result = sittingEditor->exec();
+    if (result == QDialog::Accepted) {
+        item->setName(sittingEditor->getSittingName());
+        item->setStartDateTime(sittingEditor->getStartDateTime());
+        item->setEndDateTime(sittingEditor->getEndDateTime());
+        model->customDataChanged(index, index);
+    }
+    delete sittingEditor;
+}
+
+void PlaylistWidget::addTake(){
+    QModelIndex index = treeView->selectionModel()->currentIndex();
+    TakeEditorWidget *addTakeWidget = new TakeEditorWidget();
+    addTakeWidget->setStartTime(QDateTime::currentDateTime());
+    addTakeWidget->setEndTime(QDateTime::currentDateTime());
+    int result = addTakeWidget->exec();
+    if (result == QDialog::Accepted){
+        QString takeName = addTakeWidget->getTakeName();
+        QDateTime startTime = addTakeWidget->getStartTime();
+        QDateTime endTime = addTakeWidget->getEndTime();
+        QString mediaLocation = addTakeWidget->getMediaLocation();
+        Take * newTake = new Take(takeName, startTime, endTime, mediaLocation);
+        model->insertItem(index, newTake);
+    }
+    delete addTakeWidget;
+}
+
+void PlaylistWidget::removeSitting(){
+    QMessageBox msgBox;
+    msgBox.setText("Remove Take");
+    msgBox.setInformativeText("Are you sure you want to remove the item from the playlist");
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+    int result = msgBox.exec();
+    if (result == QMessageBox::Yes){
+
+    }
 }
