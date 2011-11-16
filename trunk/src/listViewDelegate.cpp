@@ -49,7 +49,14 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(
                 index.data());
     TranscriptionItem *item = wrapper->ptr;
-    item->draw(painter, option);
+    if (item->getType() == TranscriptionItem::TypeSpeech){
+        Speech *speech = static_cast<Speech*>(item);
+        speechDraw(painter, option, speech);
+    }
+    else if (item->getType() == TranscriptionItem::TypeAgendaItem){
+        AgendaItem *agendaItem = static_cast<AgendaItem*>(item);
+        this->agendaItemDraw(painter, option, agendaItem);
+    }
 }
 
 
@@ -65,7 +72,14 @@ QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem &option,
     else{
         isCurrent = false;
     }
-    return item->sizeHint(option, editing, isCurrent);
+    if (item->getType() == TranscriptionItem::TypeSpeech){
+        Speech *speech = static_cast<Speech*>(item);
+        return speechSizeHint(option, editing, isCurrent, speech);
+    }
+    else if (item->getType() == TranscriptionItem::TypeAgendaItem){
+        AgendaItem *agendaItem = static_cast<AgendaItem*>(item);
+        return agendaItemSizeHint(option, editing, isCurrent, agendaItem);
+    }
 }
 	
 QWidget *ListViewDelegate::createEditor(QWidget *parent,
@@ -73,7 +87,13 @@ QWidget *ListViewDelegate::createEditor(QWidget *parent,
      const QModelIndex & index ) const {
     TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(index.data());
     TranscriptionItem *item = wrapper->ptr;
-    TranscriptionItemEditor *editor = item->newEditor(parent);
+    TranscriptionItemEditor *editor;
+    if (item->getType() == TranscriptionItem::TypeSpeech){
+        editor = this->newSpeechEditor(parent);
+    }
+    else if (item->getType() == TranscriptionItem::TypeAgendaItem){
+        editor = this->newAgendaItemEditor(parent);
+    }
     editor->setIndex(index);
     QObject::connect( editor, SIGNAL(close(QWidget *)), this, SLOT( editorClose(QWidget *) ) );
     QObject::connect( this, SIGNAL(commitData(QWidget *)), this, SIGNAL( closeEditor(QWidget *) ) );
@@ -91,7 +111,14 @@ void ListViewDelegate::setEditorData(QWidget *editor_,
                                      const QModelIndex &index) const {
     TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(index.data());
     TranscriptionItem *item = wrapper->ptr;
-    item->setEditorData(editor_);
+    if (item->getType() == TranscriptionItem::TypeSpeech){
+        Speech *speech = static_cast<Speech*>(item);
+        this->setSpeechEditorData(editor_, speech);
+    }
+    else if (item->getType() == TranscriptionItem::TypeAgendaItem){
+        AgendaItem *agendaItem = static_cast<AgendaItem*>(item);
+        this->setAgendaItemEditorData(editor_, agendaItem);
+    }
 }
 
 void ListViewDelegate::setModelData(QWidget *editor_, QAbstractItemModel *model,
@@ -99,7 +126,14 @@ void ListViewDelegate::setModelData(QWidget *editor_, QAbstractItemModel *model,
 {
     TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(index.data());
     TranscriptionItem *item = wrapper->ptr;
-    item->setModelData(editor_);
+    if (item->getType() == TranscriptionItem::TypeSpeech){
+        Speech *speech = static_cast<Speech*>(item);
+        this->setSpeechModelData(editor_, speech);
+    }
+    else if (item->getType() == TranscriptionItem::TypeAgendaItem){
+        AgendaItem *agendaItem = static_cast<AgendaItem*>(item);
+        this->setAgendaItemModelData(editor_, agendaItem);
+    }
  }
  
 void ListViewDelegate::updateEditorGeometry(QWidget *editor,
@@ -123,3 +157,117 @@ void ListViewDelegate::display(QModelIndex index)
 }
 
 
+void ListViewDelegate::speechDraw(QPainter *&painter, const QStyleOptionViewItem &option, Speech* speech)const{
+    QTextDocument *qtext = new QTextDocument();
+    qtext->setHtml(speech->getSpeech());
+    QString speechText = qtext->toPlainText();
+    QString startTimeTxt = "Start Time : "+speech->getStartTime().toString(Qt::TextDate);
+    QString endTimeTxt = "End Time : "+speech->getEndTime().toString(Qt::TextDate);
+    QRect rStartTime = option.rect.adjusted(2, 2, 200, 29);
+    painter->drawText(rStartTime.left(), rStartTime.top(),
+                      rStartTime.width(), rStartTime.height(),
+                      Qt::AlignTop|Qt::AlignLeft|Qt::TextWordWrap,
+                      startTimeTxt, &rStartTime);
+    QRect rEndTime = option.rect.adjusted(201, 2, 200, 29);
+    painter->drawText(rEndTime.left(), rEndTime.top(), rEndTime.width(),
+                      rEndTime.height(), Qt::AlignTop|Qt::AlignLeft|Qt::TextWordWrap,
+                      endTimeTxt, &rEndTime);
+    QRect rPersonName = option.rect.adjusted(2, 30, 200, -2);
+    painter->drawText(rPersonName.left(), rPersonName.top(),
+                      rPersonName.width(), rPersonName.height(),
+                      Qt::AlignTop|Qt::AlignLeft|Qt::TextWordWrap,
+                      speech->getPersonName(), &rPersonName);
+    QRect rSpeech = option.rect.adjusted(201, 30, -2, -2);
+    painter->drawText(rSpeech.left(), rSpeech.top(),
+                      rSpeech.width(), rSpeech.height(),
+                      Qt::AlignTop|Qt::AlignLeft|Qt::TextWordWrap, speechText, &rSpeech);
+}
+
+QSize ListViewDelegate::speechSizeHint(const QStyleOptionViewItem &option,
+                           bool editing, bool current, Speech *speech)const{
+    if ((editing == true) && (current == true)){
+        return QSize(option.rect.width(), 350);
+    }
+    else if ((editing == false) && (current == true)){
+        QTextDocument *qtext = new QTextDocument();
+        qtext->setHtml(speech->getSpeech());
+        QString text = qtext->toPlainText();
+        int numberoflines = (text.length() / 65 ) ;
+        return QSize(option.rect.width(), 50 + (25 * numberoflines));
+    }
+    else {
+        return QSize(option.rect.width(), 50);
+    }
+}
+
+void ListViewDelegate::setSpeechEditorData(QWidget *editor_, Speech *speech)const{
+    SpeechEditor *editor = static_cast<SpeechEditor*>(editor_);
+    editor->setName(speech->getPersonName());
+    editor->setSpeech(speech->getSpeech());
+    editor->setStartTime(speech->getStartTime());
+    editor->setEndTime(speech->getEndTime());
+    editor->setComplete(false);
+}
+
+void ListViewDelegate::setSpeechModelData(QWidget *editor_, Speech* speech)const{
+    SpeechEditor *editor = static_cast<SpeechEditor*>(editor_);
+    speech->setStartTime(editor->getStartTime());
+    speech->setEndTime(editor->getEndTime());
+    speech->setPersonName(editor->getName());
+    speech->setComplete(editor->getComplete());
+    speech->setSpeech(editor->getSpeech());
+}
+
+
+TranscriptionItemEditor * ListViewDelegate::newSpeechEditor(QWidget *parent)const{
+    SpeechEditor *editor = new SpeechEditor(parent);
+    return editor;
+}
+
+TranscriptionItemEditor * ListViewDelegate::newAgendaItemEditor(QWidget *parent)const{
+    AgendaItemEditor *editor = new AgendaItemEditor(parent);
+    return editor;
+}
+
+void ListViewDelegate::agendaItemDraw(QPainter *& painter, const QStyleOptionViewItem &option, AgendaItem* agendaItem)const{
+    QString agendaItemTxt = agendaItem->getTitle();
+    QString startTimeTxt = "Start Time : "+agendaItem->getStartTime().toString(Qt::TextDate);
+    QString endTimeTxt = "End Time : "+agendaItem->getEndTime().toString(Qt::TextDate);
+    QRect rStartTime = option.rect.adjusted(2, 2, 200, 29);
+    painter->drawText(rStartTime.left(), rStartTime.top(), rStartTime.width(),
+                      rStartTime.height(), Qt::AlignTop|Qt::AlignLeft|Qt::TextWordWrap,
+                      startTimeTxt, &rStartTime);
+
+    QRect rEndTime = option.rect.adjusted(201, 2, 200, 29);
+    painter->drawText(rEndTime.left(), rEndTime.top(), rEndTime.width(),
+                      rEndTime.height(), Qt::AlignTop|Qt::AlignLeft|Qt::TextWordWrap,
+                      endTimeTxt, &rEndTime);
+
+    QRect rText = option.rect.adjusted(2, 30, 200, -2);
+    painter->drawText(rText.left(), rText.top(), rText.width(), rText.height(),
+                      Qt::AlignTop|Qt::AlignLeft|Qt::TextWordWrap,
+                      "Agenda Item : "+agendaItemTxt, &rText);
+}
+
+QSize ListViewDelegate::agendaItemSizeHint(const QStyleOptionViewItem &option,
+                           bool editing, bool current, AgendaItem* agendaItem)const{
+    if ((editing == true) && (current == true)){
+        return QSize(option.rect.width(), 100);
+    }
+    else {
+        return QSize(option.rect.width(), 50);
+    }
+}
+
+void ListViewDelegate::setAgendaItemEditorData(QWidget *editor_, AgendaItem* agendaItem)const{
+    AgendaItemEditor *editor = static_cast<AgendaItemEditor*>(editor_);
+    editor->setStartTime(agendaItem->getStartTime());
+    editor->setEndTime(agendaItem->getEndTime());
+}
+
+void ListViewDelegate::setAgendaItemModelData(QWidget *editor_, AgendaItem* agendaItem)const{
+    AgendaItemEditor *editor = static_cast<AgendaItemEditor*>(editor_);
+    agendaItem->setStartTime(editor->getStartTime());
+    agendaItem->setEndTime(editor->getEndTime());
+    agendaItem->setTitle(editor->getAgendaItem());
+}

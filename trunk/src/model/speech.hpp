@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTime>
 #include "transcriptionItem.hpp"
-#include "../transcriptionItemEditor.hpp"
+
 class Speech : public TranscriptionItem{
 public:
     explicit Speech(QTime, QTime, QString, QString, int, bool);
@@ -14,18 +14,13 @@ public:
     QString getPersonName();
     QString getSpeech();
     int getId();
-    QWidget * getEditor(QWidget*);
-    TranscriptionItemEditor *newEditor(QWidget *parent);
     void setStartTime(QTime);
     void setEndTime(QTime);
     QTime getStartTime();
     QTime getEndTime();
     void setComplete(bool);
     bool isComplete();
-    void draw(QPainter *&, const QStyleOptionViewItem&);
-    QSize sizeHint(const QStyleOptionViewItem&, bool, bool);
-    void setEditorData(QWidget*);
-    void setModelData(QWidget *editor_);
+    ItemType getType();
 protected:
     QString personName;
     QString speech;

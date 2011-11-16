@@ -50,13 +50,9 @@ class PlaylistWidget : public QWidget
     public:
         PlaylistWidget();
         ~PlaylistWidget();
-        void setTranscriptFileLocation(QString, int);
-        int getSelected();
-        QString getMediaLocation();
-        QString getSittingName();
-        void addTakeToPlaylist(QString, QString, QString);
         PlaylistModel * getModel();
         void clearPlaylist();
+        int getSelected();
     private:
         PlaylistModel *model;
         void setupModelView();

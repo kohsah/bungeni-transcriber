@@ -3,7 +3,6 @@
 #include <QString>
 
 #include "transcriptionItem.hpp"
-#include "../transcriptionItemEditor.hpp"
 
 class AgendaItem : public TranscriptionItem
 {
@@ -13,16 +12,11 @@ public:
     void setId(int id);
     QString getTitle();
     int getId();
-    virtual QWidget * getEditor(QWidget*);
-    TranscriptionItemEditor *newEditor(QWidget *parent);
     virtual void setStartTime(QTime);
     virtual void setEndTime(QTime);
     virtual QTime getStartTime();
     virtual QTime getEndTime();
-    void draw(QPainter *&, const QStyleOptionViewItem &);
-    QSize sizeHint(const QStyleOptionViewItem &, bool, bool);
-    void setEditorData(QWidget *);
-    void setModelData(QWidget *);
+    ItemType getType();
 protected:
     QString title;
     int id;

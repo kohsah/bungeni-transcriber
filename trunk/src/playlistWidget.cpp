@@ -77,11 +77,6 @@ PlaylistModel * PlaylistWidget :: getModel()
     return model;
 }
 
-void PlaylistWidget :: addTakeToPlaylist(QString sittingName, QString mediaFileLocation, QString trsFile)
-{
-    // TODO
-}
-
 void PlaylistWidget :: play(int logicalIndex)
 {   /*
     qDebug() << "doubleclick" << logicalIndex;
@@ -112,16 +107,6 @@ void PlaylistWidget :: play(const QModelIndex & index)
     emit playMediaFile(mediaFilePath); */
 }
 
-void PlaylistWidget :: setTranscriptFileLocation(QString transcriptFileLocation, int logicalIndex)
-{ /*
-    qDebug() << "Current Logical Index is " << current;
-    if (logicalIndex < 0)
-        model->setData(model->index(current, 2, QModelIndex()), transcriptFileLocation);
-    else
-        model->setData(model->index(logicalIndex, 2, QModelIndex()), transcriptFileLocation);
-        */
-}
-
 int PlaylistWidget ::getSelected()
 {
     if (model->rowCount()>0)
@@ -150,25 +135,6 @@ void PlaylistWidget :: prev()
         QString mediaFilePath = model->data(model->index(current - 1, 1)).toString();
         play(current-1);
     } */
-}
-
-QString PlaylistWidget :: getMediaLocation()
-{ /*
-    return model->data(model->index(current, 1)).toString();
-    */
-    return QString();
-}
-
-QString PlaylistWidget :: getSittingName()
-{
-     //return model->data(model->index(current, 0)).toString();
-    return QString();
-}
-
-void PlaylistWidget :: clearPlaylist()
-{
-    qDebug() << "Clear playlist";
-   // model->removeRows(0,model->rowCount());
 }
 
 void PlaylistWidget :: setupModelView()
