@@ -6,7 +6,7 @@
 #include <QVariant>
 
 #include "playlistItem.hpp"
-
+#include "transcriptionItem.hpp"
 class PlaylistModel : public QAbstractItemModel
 {
     Q_OBJECT

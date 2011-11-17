@@ -7,6 +7,7 @@
 #include <QMetaType>
 #include <QPainter>
 #include <QSize>
+#include <QList>
 #include <QStyleOptionViewItem>
 #include "../transcriptionItemEditor.hpp"
 class TranscriptionItem

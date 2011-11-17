@@ -9,6 +9,7 @@ Take::Take(QString name_, QDateTime start_,
            QDateTime end_, QString mediaLocation_) :
     PlaylistItem(name_, start_, end_){
     mediaLocation = mediaLocation_;
+    items = new QList<TranscriptionItem*>();
 }
 
 void Take::appendChild(){
@@ -24,4 +25,8 @@ QString Take::getMediaLocation(){
 }
 void Take::setMediaLocation(QString mediaLocation_){
     mediaLocation = mediaLocation_;
+}
+QList<TranscriptionItem*>* Take::getItems(){
+    qDebug() << "take getItems called";
+    return items;
 }

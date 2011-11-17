@@ -99,10 +99,12 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
                      this, SLOT(changePosition(int)));
     QObject::connect( playlist, SIGNAL(playMediaFile(QString)),
                       this, SLOT(playFile(QString)));
-    QObject::connect( playlist, SIGNAL(loadTranscriptFile(int,QString)),
-                      this, SLOT(loadNextFileSlot(int,QString)));
+
 
     this->setupModelView();
+    qRegisterMetaType<QList<TranscriptionItem*>* >("QList<TranscriptionItem*>*");
+    QObject::connect( playlist, SIGNAL(loadTranscriptionItems(QList<TranscriptionItem*>*)),
+                      model, SLOT(loadTranscriptionItems(QList<TranscriptionItem*>*)));
     this->createActions();
     this->createMenus();
 
@@ -351,7 +353,7 @@ void TranscribeWidget::addAgendaItem()
             newAgendaItem = new AgendaItem(QTime(0,0,0), QTime(0,2,0),
                                     "Agenda Item", 0);
         }
-        model->insertItem(model->rowCount(), newAgendaItem);
+        //model->insertItem(model->rowCount(), newAgendaItem);
     }
     else
     {

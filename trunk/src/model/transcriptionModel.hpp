@@ -17,8 +17,10 @@ public:
     bool insertItem (int row, TranscriptionItem *item);
     bool setData(const QModelIndex & index, TranscriptionItem &item, int role);
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
+public slots:
+    void loadTranscriptionItems(QList<TranscriptionItem *>*);
 private:
-    QList<TranscriptionItem *> items;
+    QList<TranscriptionItem *> *items;
 };
 
 #endif // TRANSCRIPIONMODEL_HPP

@@ -40,7 +40,7 @@ PlaylistWidget :: PlaylistWidget() : QWidget()
 {
     this->setupModelView();
     QObject::connect( addToPlaylistButton, SIGNAL(clicked()), this, SLOT(addToPlaylistDialog()));
-    QObject::connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( play( const QModelIndex & ) ) );
+    QObject::connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
 }
 
 PlaylistWidget :: ~PlaylistWidget()
@@ -91,11 +91,12 @@ void PlaylistWidget :: play(int logicalIndex)
     */
 }
 
-void PlaylistWidget :: play(const QModelIndex & index)
+void PlaylistWidget :: itemClicked(const QModelIndex & index)
 {
     PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
     if (item->getType() == PlaylistItem::TypeTake) {
         Take *take = static_cast<Take*>(item);
+        emit loadTranscriptionItems(take->getItems());
         emit playMediaFile(take->getMediaLocation());
     }
     /*

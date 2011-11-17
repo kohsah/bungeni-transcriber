@@ -37,6 +37,7 @@
 
 #include "addSittingWidget.hpp"
 #include "model/playlistModel.hpp"
+#include "model/transcriptionItem.hpp"
 #define setupSmallButton( aButton ){  \
     aButton->setMaximumSize( QSize( 26, 26 ) ); \
     aButton->setMinimumSize( QSize( 26, 26 ) ); \
@@ -69,7 +70,7 @@ class PlaylistWidget : public QWidget
         void addItemToPlaylist();
         void addToPlaylistDialog();
         void play(int logicalIndex);
-        void play(const QModelIndex&);
+        void itemClicked(const QModelIndex&);
         void prev();
         void next();
         void contextualMenu(const QPoint&);
@@ -80,6 +81,6 @@ class PlaylistWidget : public QWidget
         void removeSitting();
     signals:
         void playMediaFile(QString);
-        void loadTranscriptFile(int, QString);
+        void loadTranscriptionItems(QList<TranscriptionItem*>*);
 };
 #endif
