@@ -31,11 +31,14 @@
 #include <QAbstractItemView>
 #include <QSignalMapper>
 #include <QMenu>
+#include <QFileDialog>
 #include "playlistWidget.hpp"
 #include "model/take.hpp"
 #include "model/sitting.hpp"
 #include "takeEditorWidget.hpp"
 #include "sittingEditorWidget.hpp"
+#include "aknHandler.hpp"
+
 PlaylistWidget :: PlaylistWidget() : QWidget()
 {
     this->setupModelView();
@@ -233,10 +236,26 @@ void PlaylistWidget::removeTake(){
 void PlaylistWidget::sittingMenu(){
     QMenu contextMenu;
 
+    QModelIndex index = treeView->selectionModel()->currentIndex();
+    Sitting *sitting = static_cast<Sitting*>(index.internalPointer());
+
     QAction *editAct = new QAction(tr("&Edit"), this);
     editAct->setStatusTip(tr("Edit selected sitting"));
     connect(editAct, SIGNAL(triggered()), this, SLOT(editSitting()));
     contextMenu.addAction(editAct);
+
+    QAction *saveAct = new QAction(tr("&Save"), this);
+    saveAct->setStatusTip(tr("Edit selected sitting"));
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(saveSitting()));
+    contextMenu.addAction(saveAct);
+
+    QString f = sitting->getAknFilePath();
+    if(!f.isNull()){
+        QAction *saveAsAct = new QAction(tr("&Save As"), this);
+        editAct->setStatusTip(tr("Save as"));
+        connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAsSitting()));
+        contextMenu.addAction(saveAsAct);
+    }
 
     QAction *addTakeAct = new QAction(tr("&Add Take"), this);
     addTakeAct->setStatusTip(tr("Add a take to the selected sitting"));
@@ -250,6 +269,23 @@ void PlaylistWidget::sittingMenu(){
 
     contextMenu.exec(QCursor::pos());
 }
+
+void PlaylistWidget::saveSitting(){
+    QModelIndex index = treeView->selectionModel()->currentIndex();
+    Sitting *sitting = static_cast<Sitting*>(index.internalPointer());
+    QString f = sitting->getAknFilePath();
+    if (f.isNull()){
+        QString aknFilePath = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Akoma Ntoso (*.akn);;Any File (*.*)"));
+        sitting->setAknFilePath(aknFilePath);
+    }
+    AknHandler* akn = new AknHandler();
+    akn->saveSittingToFile(sitting, sitting->getAknFilePath());
+}
+
+void PlaylistWidget::saveAsSitting(){
+
+}
+
 
 void PlaylistWidget::editSitting(){
     QModelIndex index = treeView->selectionModel()->currentIndex();

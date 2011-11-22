@@ -79,6 +79,8 @@ class PlaylistWidget : public QWidget
         void editSitting();
         void addTake();
         void removeSitting();
+        void saveSitting();
+        void saveAsSitting();
     signals:
         void playMediaFile(QString);
         void loadTranscriptionItems(QList<TranscriptionItem*>*);

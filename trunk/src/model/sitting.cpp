@@ -9,6 +9,7 @@
 
 Sitting::Sitting(QString name_, QDateTime start_, QDateTime end_) :
     PlaylistItem(name_, start_, end_){
+    aknFilePath = QString();
 }
 
 void Sitting::appendChild(Take *child){
@@ -17,4 +18,12 @@ void Sitting::appendChild(Take *child){
 
 PlaylistItem::ItemType Sitting::getType(){
     return PlaylistItem::TypeSitting;
+}
+
+QString Sitting::getAknFilePath(){
+    return aknFilePath;
+}
+
+void Sitting::setAknFilePath(QString aknFilePath_){
+    aknFilePath = aknFilePath_;
 }

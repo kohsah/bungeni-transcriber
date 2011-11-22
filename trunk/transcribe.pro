@@ -27,7 +27,8 @@ HEADERS += src/transcribeWidget.hpp \
     src/model/take.hpp \
     src/takeEditorWidget.hpp \
     src/sittingEditorWidget.hpp \
-    src/addSittingWidget.hpp
+    src/addSittingWidget.hpp \
+    src/aknHandler.hpp
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
@@ -64,12 +65,19 @@ SOURCES += src/transcribeWidget.cpp \
     src/model/playlistItem.cpp \
     src/sittingEditorWidget.cpp \
     src/takeEditorWidget.cpp \
-    src/addSittingWidget.cpp
+    src/addSittingWidget.cpp \
+    src/aknHandler.cpp
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           
 CONFIG  +=  qt debug qxt
 QT += network xml
 QXT += core gui
+
+
+
+
+
+
 
 
 

@@ -11,6 +11,10 @@ public:
     Sitting(QString, QDateTime, QDateTime);
     void appendChild(Take *child);
     PlaylistItem::ItemType getType();
+    QString getAknFilePath();
+    void setAknFilePath(QString);
+private:
+    QString aknFilePath;
 };
 
 #endif // SITTING_HPP
