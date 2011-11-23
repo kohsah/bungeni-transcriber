@@ -11,6 +11,7 @@ public:
     bool saveSittingToFile(Sitting*, QString);
     Sitting* loadSittingFromFile(QString);
 private:
+    void writeSpeeches(QXmlStreamWriter*, Sitting*);
     void writeFRBRWork(QXmlStreamWriter*, Sitting*);
     void writeFRBRExpression(QXmlStreamWriter*, Sitting*);
     void writeFRBRManifestation(QXmlStreamWriter*, Sitting*);

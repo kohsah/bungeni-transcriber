@@ -98,7 +98,7 @@ class TranscribeWidget : public QMainWindow
         libvlc_media_t *_m;
         // Models
         TranscriptionModel *model;
-        QSortFilterProxyModel *filterModel;
+        TranscriptionSortModel *filterModel;
         QItemSelectionModel *selectionModel;
 
         // Delegates

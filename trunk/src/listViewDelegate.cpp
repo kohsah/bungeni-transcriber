@@ -51,7 +51,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     TranscriptionItem *item = wrapper->ptr;
     if (item->getType() == TranscriptionItem::TypeSpeech){
         Speech *speech = static_cast<Speech*>(item);
-        speechDraw(painter, option, speech);
+        this->speechDraw(painter, option, speech);
     }
     else if (item->getType() == TranscriptionItem::TypeAgendaItem){
         AgendaItem *agendaItem = static_cast<AgendaItem*>(item);

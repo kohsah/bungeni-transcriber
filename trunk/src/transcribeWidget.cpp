@@ -365,18 +365,18 @@ void TranscribeWidget::setupModelView(){
     model = new TranscriptionModel();
     ui.table->setItemDelegate(delegate);
     ui.table->setAlternatingRowColors(true);
-    //filterModel = new QSortFilterProxyModel();
-    //filterModel->setSourceModel(model);
-    //filterModel->setDynamicSortFilter(true);
-    //filterModel->sort(2, Qt::AscendingOrder);
-    ui.table->setModel(model);
+    filterModel = new TranscriptionSortModel();
+    filterModel->setSourceModel(model);
+    filterModel->setDynamicSortFilter(true);
+    filterModel->sort(2, Qt::AscendingOrder);
+    ui.table->setModel(filterModel);
 
     //selectionModel = new QItemSelectionModel(filterModel);
-    selectionModel = new QItemSelectionModel(model);
-    ui.table->setSelectionModel(selectionModel);
+    //selectionModel = new QItemSelectionModel(filterModel);
+    //ui.table->setSelectionModel(selectionModel);
     //Set selection
-    ui.table->setSelectionMode(QAbstractItemView::ContiguousSelection);
-    ui.table->setSelectionRectVisible(true);
+    //ui.table->setSelectionMode(QAbstractItemView::ContiguousSelection);
+    //ui.table->setSelectionRectVisible(true);
 }
 
 

@@ -27,3 +27,7 @@ QString Sitting::getAknFilePath(){
 void Sitting::setAknFilePath(QString aknFilePath_){
     aknFilePath = aknFilePath_;
 }
+const QList<PlaylistItem*>* Sitting::getTakes() const{
+    const QList<PlaylistItem*>* temp = &childItems;
+    return temp;
+}
