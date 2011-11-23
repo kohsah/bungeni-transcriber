@@ -59,3 +59,21 @@ void TranscriptionModel::loadTranscriptionItems(QList<TranscriptionItem *>* item
     items = items_;
     emit dataChanged(this->index(0,0), this->index(items->size(),0));
 }
+
+
+TranscriptionSortModel::TranscriptionSortModel(QObject *parent)
+    : QSortFilterProxyModel(parent) {
+}
+
+bool TranscriptionSortModel::lessThan(const QModelIndex &left,
+                                       const QModelIndex &right) const {
+    TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(sourceModel()->data(left));
+    TranscriptionItem *leftItem = wrapper->ptr;
+    wrapper = qvariant_cast<TranscriptionItemWrapper*>(sourceModel()->data(right));
+    TranscriptionItem *rightItem = wrapper->ptr;
+    return leftItem->getStartTime() < rightItem->getStartTime();
+ }
+
+void TranscriptionSortModel::sort(int column, Qt::SortOrder order = Qt::AscendingOrder) {
+
+}
