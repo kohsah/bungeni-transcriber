@@ -1,3 +1,28 @@
+/********************************************************************
+ * transcriptionModel.cpp
+ ********************************************************************
+ * This file is part of Bungeni Transcribe
+ *
+ * Copyright (C) 2011 - UNDESA <www.parliaments.info>
+ *
+ *
+ * Author - Miano Njoka <miano@parliaments.info>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA  02110-1301  USA
+ ***********************************************************************/
 #include "transcriptionModel.hpp"
 #include <QDebug>
 TranscriptionModel::TranscriptionModel(QObject *parent) :
@@ -6,6 +31,10 @@ TranscriptionModel::TranscriptionModel(QObject *parent) :
 }
 
 QVariant TranscriptionModel::data(const QModelIndex &index, int role ) const{
+    if (role == Qt::UserRole) {
+        TranscriptionItem *item = items->value(index.row());
+        return item->getStartTime();
+    }
     return QVariant::fromValue(new TranscriptionItemWrapper(items->value(index.row())));
 }
 
@@ -43,8 +72,8 @@ bool TranscriptionModel::insertItem (int row, TranscriptionItem * item){
 }
 
 bool TranscriptionModel::setData(const QModelIndex & index,
-                                 TranscriptionItem &item, int role = Qt::EditRole){
-    items->replace(index.row(), &item);
+                                 TranscriptionItem *item, int role = Qt::EditRole){
+    items->replace(index.row(), item);
     emit dataChanged(index, index);
     return true;
 }
@@ -55,11 +84,14 @@ int TranscriptionModel::rowCount(const QModelIndex &parent) const
 }
 
 void TranscriptionModel::loadTranscriptionItems(QList<TranscriptionItem *>* items_){
-    qDebug() << "load items called" << items->size();
+    this->beginResetModel();
     items = items_;
-    emit dataChanged(this->index(0,0), this->index(items->size(),0));
+    this->endResetModel();
 }
 
+void TranscriptionModel::transcriptionItemDataChanged(const QModelIndex &index){
+    emit dataChanged(index, index);
+}
 
 TranscriptionSortModel::TranscriptionSortModel(QObject *parent)
     : QSortFilterProxyModel(parent) {
@@ -72,8 +104,4 @@ bool TranscriptionSortModel::lessThan(const QModelIndex &left,
     wrapper = qvariant_cast<TranscriptionItemWrapper*>(sourceModel()->data(right));
     TranscriptionItem *rightItem = wrapper->ptr;
     return leftItem->getStartTime() < rightItem->getStartTime();
- }
-
-void TranscriptionSortModel::sort(int column, Qt::SortOrder order = Qt::AscendingOrder) {
-
 }

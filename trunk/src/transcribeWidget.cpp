@@ -59,6 +59,7 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     //Setup UI
     ui.setupUi(this);
     delegate = new ListViewDelegate(this);
+    this->setupModelView();
     // Connect UI elements to their respective slots
     QObject::connect(ui.addButton, SIGNAL(clicked()), this, SLOT(addSpeech()));
     QObject::connect(ui.removeButton, SIGNAL(clicked()),
@@ -101,8 +102,7 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
                       this, SLOT(playFile(QString)));
 
 
-    this->setupModelView();
-    qRegisterMetaType<QList<TranscriptionItem*>* >("QList<TranscriptionItem*>*");
+
     QObject::connect( playlist, SIGNAL(loadTranscriptionItems(QList<TranscriptionItem*>*)),
                       model, SLOT(loadTranscriptionItems(QList<TranscriptionItem*>*)));
     this->createActions();
@@ -352,8 +352,9 @@ void TranscribeWidget::addAgendaItem()
         else {
             newAgendaItem = new AgendaItem(QTime(0,0,0), QTime(0,2,0),
                                     "Agenda Item", 0);
+            qDebug() << "NEW AGENDA ITEM CREATED";
         }
-        //model->insertItem(model->rowCount(), newAgendaItem);
+        model->insertItem(model->rowCount(), newAgendaItem);
     }
     else
     {
@@ -368,15 +369,14 @@ void TranscribeWidget::setupModelView(){
     filterModel = new TranscriptionSortModel();
     filterModel->setSourceModel(model);
     filterModel->setDynamicSortFilter(true);
-    filterModel->sort(2, Qt::AscendingOrder);
+    filterModel->setSortRole(Qt::UserRole);
+    filterModel->sort(0, Qt::AscendingOrder);
     ui.table->setModel(filterModel);
 
-    //selectionModel = new QItemSelectionModel(filterModel);
-    //selectionModel = new QItemSelectionModel(filterModel);
-    //ui.table->setSelectionModel(selectionModel);
-    //Set selection
-    //ui.table->setSelectionMode(QAbstractItemView::ContiguousSelection);
-    //ui.table->setSelectionRectVisible(true);
+    selectionModel = new QItemSelectionModel(filterModel);
+    ui.table->setSelectionModel(selectionModel);
+    ui.table->setSelectionMode(QAbstractItemView::ContiguousSelection);
+    ui.table->setSelectionRectVisible(true);
 }
 
 

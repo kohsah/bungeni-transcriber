@@ -37,6 +37,8 @@
 #include "util/util.hpp"
 #include "model/transcriptionItem.hpp"
 #include "transcriptionItemEditor.hpp"
+#include "model/transcriptionModel.hpp"
+
 ListViewDelegate::ListViewDelegate(QObject *parent)
     		: QAbstractItemDelegate(parent)
 	{
@@ -62,8 +64,7 @@ void ListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
 QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem &option,
                              const QModelIndex &index) const {
-    TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(
-                index.data());
+    TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(index.data());
     TranscriptionItem *item = wrapper->ptr;
     bool isCurrent;
     if (current == index) {
@@ -76,7 +77,8 @@ QSize ListViewDelegate::sizeHint(const QStyleOptionViewItem &option,
         Speech *speech = static_cast<Speech*>(item);
         return speechSizeHint(option, editing, isCurrent, speech);
     }
-    else if (item->getType() == TranscriptionItem::TypeAgendaItem){
+    else {
+        qDebug() << "Agenda Item Size Hint";
         AgendaItem *agendaItem = static_cast<AgendaItem*>(item);
         return agendaItemSizeHint(option, editing, isCurrent, agendaItem);
     }
@@ -126,6 +128,7 @@ void ListViewDelegate::setModelData(QWidget *editor_, QAbstractItemModel *model,
 {
     TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(index.data());
     TranscriptionItem *item = wrapper->ptr;
+    TranscriptionModel* newModel = static_cast<TranscriptionModel*>(model);
     if (item->getType() == TranscriptionItem::TypeSpeech){
         Speech *speech = static_cast<Speech*>(item);
         this->setSpeechModelData(editor_, speech);
@@ -134,6 +137,7 @@ void ListViewDelegate::setModelData(QWidget *editor_, QAbstractItemModel *model,
         AgendaItem *agendaItem = static_cast<AgendaItem*>(item);
         this->setAgendaItemModelData(editor_, agendaItem);
     }
+    newModel->transcriptionItemDataChanged(index);
  }
  
 void ListViewDelegate::updateEditorGeometry(QWidget *editor,

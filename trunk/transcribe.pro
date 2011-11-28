@@ -72,35 +72,3 @@ RESOURCES   =  src/resources.qrc
 CONFIG  +=  qt debug qxt
 QT += network xml
 QXT += core gui
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

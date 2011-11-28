@@ -1,5 +1,5 @@
 /**********************************************************
- * takeEditorWidget.hpp
+ * takeEditorWidget.cpp
  **********************************************************
  * This file is part of Bungeni Transcribe
  *
