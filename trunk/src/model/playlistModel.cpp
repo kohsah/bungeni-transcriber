@@ -4,6 +4,7 @@
 PlaylistModel::PlaylistModel(QObject *parent)
     : QAbstractItemModel(parent){
     rootItem = new PlaylistItem("Root Item", QDateTime(), QDateTime());
+    currentTakeIndex = QModelIndex();
 }
 
 
@@ -11,11 +12,22 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const{
     if (!index.isValid()) {
         return QVariant();
     }
-    if (role != Qt::DisplayRole) {
+    if (role == Qt::DisplayRole) {
+        PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
+        return item->data(index.column());
+    }
+    else if (role == Qt::BackgroundRole) {
+        if ((index.row() == currentTakeIndex.row()) && (index.parent() == currentTakeIndex.parent())) {
+            return QVariant(QColor(Qt::darkGray));
+        }
+        else {
+            return QVariant();
+        }
+    }
+    else {
         return QVariant();
     }
-    PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
-    return item->data(index.column());
+
 }
 Qt::ItemFlags PlaylistModel::flags(const QModelIndex &index) const{
     if (!index.isValid())
@@ -94,4 +106,8 @@ void PlaylistModel::insertItem(QModelIndex &parent, PlaylistItem *item){
 
 void PlaylistModel::customDataChanged(QModelIndex& top, QModelIndex& bottom){
     emit dataChanged(top, bottom);
+}
+
+void PlaylistModel::setCurrentTakeIndex(const QModelIndex& index){
+    currentTakeIndex = index;
 }

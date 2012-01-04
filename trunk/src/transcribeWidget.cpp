@@ -100,11 +100,8 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
                      this, SLOT(changePosition(int)));
     QObject::connect( playlist, SIGNAL(playMediaFile(QString)),
                       this, SLOT(playFile(QString)));
-
-
-
     QObject::connect( playlist, SIGNAL(loadTranscriptionItems(QList<TranscriptionItem*>*)),
-                      model, SLOT(loadTranscriptionItems(QList<TranscriptionItem*>*)));
+                  model, SLOT(loadTranscriptionItems(QList<TranscriptionItem*>*)));
     this->createActions();
     this->createMenus();
 

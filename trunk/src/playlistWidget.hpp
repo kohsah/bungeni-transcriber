@@ -84,5 +84,6 @@ class PlaylistWidget : public QWidget
     signals:
         void playMediaFile(QString);
         void loadTranscriptionItems(QList<TranscriptionItem*>*);
+        void currentTakeIndex(const QModelIndex&);
 };
 #endif

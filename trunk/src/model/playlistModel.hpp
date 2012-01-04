@@ -4,6 +4,7 @@
 #include <QAbstractListModel>
 #include <QModelIndex>
 #include <QVariant>
+#include <QModelIndex>
 
 #include "playlistItem.hpp"
 #include "transcriptionItem.hpp"
@@ -25,8 +26,11 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     void insertItem(QModelIndex &parent, PlaylistItem *item);
     void customDataChanged(QModelIndex&, QModelIndex&);
+public slots:
+    void setCurrentTakeIndex(const QModelIndex&);
 private:
     PlaylistItem *rootItem;
+    QModelIndex currentTakeIndex;
 };
 
 #endif // PLAYLISTMODEL_HPP
