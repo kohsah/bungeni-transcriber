@@ -152,6 +152,8 @@ void PlaylistWidget :: setupModelView()
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
     treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    treeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+    treeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     connect(treeView,
             SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(contextualMenu(const QPoint &)));

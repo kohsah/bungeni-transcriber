@@ -5,6 +5,7 @@
 #include <QModelIndex>
 #include <QVariant>
 #include <QModelIndex>
+#include <QPersistentModelIndex>
 
 #include "playlistItem.hpp"
 #include "transcriptionItem.hpp"
@@ -30,7 +31,7 @@ public slots:
     void setCurrentTakeIndex(const QModelIndex&);
 private:
     PlaylistItem *rootItem;
-    QModelIndex currentTakeIndex;
+    QPersistentModelIndex currentItemIndex;
 };
 
 #endif // PLAYLISTMODEL_HPP
