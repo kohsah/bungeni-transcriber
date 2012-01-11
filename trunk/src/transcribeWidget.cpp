@@ -40,10 +40,12 @@
 #include <QKeyEvent>
 #include <QWheelEvent>
 #include <QPalette>
+#include <QDesktopServices>
 #include "transcribeWidget.hpp"
 #include "about.hpp"
 #include "hotkeyWidget.hpp"
 #include "settings.hpp"
+#include "personsWidget.hpp"
 #include "model/speech.hpp"
 #include "model/agendaItem.hpp"
 
@@ -60,6 +62,10 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     ui.setupUi(this);
     delegate = new ListViewDelegate(this);
     this->setupModelView();
+    if (!this->setupPersonsModel()){
+        QMessageBox::warning(0, tr("Error"),
+                             tr("Could not initialise persons model"));
+    }
     // Connect UI elements to their respective slots
     QObject::connect(ui.addButton, SIGNAL(clicked()), this, SLOT(addSpeech()));
     QObject::connect(ui.removeButton, SIGNAL(clicked()),
@@ -376,6 +382,38 @@ void TranscribeWidget::setupModelView(){
     ui.table->setSelectionRectVisible(true);
 }
 
+bool TranscribeWidget::setupPersonsModel(){
+    personsModel = new QStandardItemModel(0, 3);
+    personsModel->setHeaderData(0, Qt::Horizontal, "Id");
+    personsModel->setHeaderData(1, Qt::Horizontal, "Name");
+    personsModel->setHeaderData(2, Qt::Horizontal, "URL");
+    QString applicationDataPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    QDir applicationDataDir = QDir(applicationDataPath);
+    if (!applicationDataDir.exists("bungeni_transcriber")){
+        applicationDataDir.mkdir("bungeni_transcriber");
+    }
+    QFile personsDataFile(applicationDataDir.path()+"bungeni_transcriber/persons.xml");
+    if (personsDataFile.exists()){
+        //Load file into model
+        QList< QList<QStandardItem*> > persons = readPersonsFile(QFileInfo(personsDataFile).filePath());
+        for (int i = 0; i < persons.size(); ++i) {
+             personsModel->appendRow(persons.at(i));
+         }
+        return true;
+    }
+    else{
+        //create file
+        if (!personsDataFile.open(QFile::WriteOnly | QFile::Text)) {
+            QMessageBox::warning(0, tr("Error"),
+                                 tr("Cannot write file:\n%2.")
+                                 .arg(personsDataFile.errorString()));
+            return false;
+        }
+        personsDataFile.close();
+        return true;
+    }
+}
+
 
 void TranscribeWidget::createMenus()
 {
@@ -393,6 +431,7 @@ void TranscribeWidget::createMenus()
     editMenu = menuBar()->addMenu("&Edit");
     editMenu->addAction(preferencesAct);
     editMenu->addAction(hotkeyAct);
+    editMenu->addAction(personsAct);
 
     helpMenu = menuBar()->addMenu("&Help");
     helpMenu->addAction(aboutAct);
@@ -423,6 +462,10 @@ void TranscribeWidget::createActions()
     preferencesAct = new QAction("Preferences", this);
     preferencesAct->setStatusTip("Bungeni Transcribe Preferences");
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
+
+    personsAct = new QAction("Persons", this);
+    personsAct->setStatusTip("Persons");
+    connect(personsAct, SIGNAL(triggered()), this, SLOT(persons()));
 
     hotkeyAct = new QAction("Hotkey Settings", this);
     hotkeyAct->setStatusTip("Hotkey Settings");
@@ -458,6 +501,12 @@ void TranscribeWidget::about()
 {
     aboutWidget *about = new aboutWidget();
     about->show();
+}
+
+void TranscribeWidget::persons(){
+    PersonsWidget * personsWidget = new PersonsWidget(this);
+    personsWidget->setModel(personsModel);
+    personsWidget->show();
 }
 
 void TranscribeWidget::jumpPosition(int change)

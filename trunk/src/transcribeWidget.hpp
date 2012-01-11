@@ -84,6 +84,8 @@ class TranscribeWidget : public QMainWindow
         void addSpeech();
         // Remove transcription item
         void removeTranscriptionItem();
+        // Persons widget slot
+        void persons();
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -100,7 +102,7 @@ class TranscribeWidget : public QMainWindow
         TranscriptionModel *model;
         TranscriptionSortModel *filterModel;
         QItemSelectionModel *selectionModel;
-
+        QStandardItemModel *personsModel;
         // Delegates
         ListViewDelegate *delegate;
 
@@ -123,6 +125,7 @@ class TranscribeWidget : public QMainWindow
         QAction *exitAct;
         QAction *aboutAct;
         QAction *hotkeyAct;
+        QAction *personsAct;
         ControlsWidget *controls;
         PlaylistWidget *playlist;
 
@@ -132,7 +135,7 @@ class TranscribeWidget : public QMainWindow
 
         // Model Setup routines
         void setupModelView();
-
+        bool setupPersonsModel();
         // Poller to update the user interface
         QTimer *poller;
 

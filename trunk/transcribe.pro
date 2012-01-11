@@ -28,7 +28,8 @@ HEADERS += src/transcribeWidget.hpp \
     src/takeEditorWidget.hpp \
     src/sittingEditorWidget.hpp \
     src/addSittingWidget.hpp \
-    src/aknHandler.hpp
+    src/aknHandler.hpp \
+    src/personsWidget.hpp
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
@@ -39,7 +40,8 @@ FORMS += src/ui/transcribe.ui \
     src/ui/agendaItemEditor.ui \
     src/ui/takeEditor.ui \
     src/ui/sittingEditor.ui \
-    src/ui/addSittingWidget.ui
+    src/ui/addSittingWidget.ui \
+    src/ui/personsWidget.ui
 
 SOURCES += src/transcribeWidget.cpp \
     src/controlsWidget.cpp \
@@ -66,9 +68,19 @@ SOURCES += src/transcribeWidget.cpp \
     src/sittingEditorWidget.cpp \
     src/takeEditorWidget.cpp \
     src/addSittingWidget.cpp \
-    src/aknHandler.cpp
+    src/aknHandler.cpp \
+    src/personsWidget.cpp
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           
 CONFIG  +=  qt debug qxt
 QT += network xml
 QXT += core gui
+
+
+
+
+
+
+
+
+
