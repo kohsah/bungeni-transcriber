@@ -56,6 +56,9 @@ bool AknHandler::saveSittingToFile(Sitting *sitting, QString filePath){
     this->writeFRBRExpression(writer, sitting);
     this->writeFRBRManifestation(writer, sitting);
     writer->writeEndElement();  //end identification
+    //this->writePublication();
+    //this->writeReferences();
+    //this->writeNotes();
     writer->writeEndElement();  //end meta
 
     writer->writeStartElement("debateContent");
@@ -87,6 +90,9 @@ void AknHandler::writeSpeeches(QXmlStreamWriter* writer, Sitting* sitting){
                 Speech* speech = static_cast<Speech*>(transcriptionItem);
                 writer->writeStartElement("speech");
                 writer->writeAttribute("by", speech->getPersonName());
+                writer->writeStartElement("from");
+                writer->writeCharacters("test");
+
                 writer->writeStartElement("p");
                 writer->writeCharacters(speech->getSpeech());
                 writer->writeEndElement();

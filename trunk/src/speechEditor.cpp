@@ -113,39 +113,23 @@ void SpeechEditor::updateEndTime( int time )
 void SpeechEditor::bold()
 {
     QTextCursor cursor(speechText->textCursor());
-    QTextCharFormat format;
-    if (cursor.charFormat().fontItalic()==true)
+    QTextCharFormat format = cursor.charFormat();
+    if (format.fontWeight()==QFont::Bold)
     {    
-        format.setFontItalic(true);
-    }
-    if (cursor.charFormat().fontUnderline()==true)
-    {    
-        format.setFontUnderline(true);
-    }
-    if (cursor.charFormat().fontWeight()==QFont::Bold)
-    {    
-        format.setFontWeight(QFont::Light);     
+        format.setFontWeight(QFont::Normal);
     }
     else
     {
         format.setFontWeight(QFont::Bold);
     }
-    cursor.setCharFormat(format);
+    cursor.mergeCharFormat(format);
 }
 
 void SpeechEditor::underline()
 {
     QTextCursor cursor(speechText->textCursor());
-    QTextCharFormat format;
-    if (cursor.charFormat().fontItalic()==true)
-    {    
-        format.setFontItalic(true);
-    }
-    if (cursor.charFormat().fontWeight()==QFont::Bold)
-    {    
-        format.setFontWeight(QFont::Bold);     
-    }
-    if (cursor.charFormat().fontUnderline()==true)
+    QTextCharFormat format = cursor.charFormat();
+    if (format.fontUnderline()==true)
     {    
         format.setFontUnderline(false);
     }
@@ -153,22 +137,14 @@ void SpeechEditor::underline()
     {
         format.setFontUnderline(true);
     }
-    cursor.setCharFormat(format);
+    cursor.mergeCharFormat(format);
 }
 
 void SpeechEditor::italics()
 {
     QTextCursor cursor(speechText->textCursor());
-    QTextCharFormat format;
-    if (cursor.charFormat().fontUnderline()==true)
-    {    
-        format.setFontUnderline(true);
-    }
-    if (cursor.charFormat().fontWeight()==QFont::Bold)
-    {    
-        format.setFontWeight(QFont::Bold);     
-    }
-    if (cursor.charFormat().fontItalic()==true)
+    QTextCharFormat format = cursor.charFormat();
+    if (format.fontItalic()==true)
     {    
         format.setFontItalic(false);
     }
@@ -176,7 +152,7 @@ void SpeechEditor::italics()
     {
         format.setFontItalic(true);
     }
-    cursor.setCharFormat(format);
+    cursor.mergeCharFormat(format);
 }
 
 void SpeechEditor::save()
