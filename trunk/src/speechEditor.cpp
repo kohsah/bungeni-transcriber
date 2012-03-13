@@ -32,6 +32,7 @@
 
 #include <QHBoxLayout>
 #include <QGroupBox>
+#include <QStack>
 
 #include "speechEditor.hpp"
 #include "transcribeWidget.hpp"
@@ -147,6 +148,8 @@ void SpeechEditor::italics()
     if (format.fontItalic()==true)
     {    
         format.setFontItalic(false);
+        //cursor.setPosition(speechText->textCursor().position());
+        //cursor.insertHtml('<i>');
     }
     else
     {
@@ -154,6 +157,58 @@ void SpeechEditor::italics()
     }
     cursor.mergeCharFormat(format);
 }
+
+void SpeechEditor::formatText(QTextCursor cursor, QString text, QString tag){
+    QStack<QString> startTagStack;
+    QStack<QString> endTagStack;
+    QRegExp rx("<(/*)(\\D+\\d*)>");
+    int pos = 0;
+    int matched_chars = 0;
+    bool start_tag = false;
+    // char_pos keeps track of source characters
+    int char_pos = 0;
+    while ((pos = rx.indexIn(text, pos)) != -1) {
+        if (rx.cap(1) == "/"){
+            //this is an end tag
+            if (!startTagStack.isEmpty()){
+                if(rx.cap(2) == startTagStack.top()){
+                    startTagStack.pop();
+                    while (!startTagStack.isEmpty() && !endTagStack.isEmpty()){
+                        if (startTagStack.top() == endTagStack.top()){
+                            startTagStack.pop();
+                            endTagStack.pop();
+                        }
+                    }
+                }
+                else {
+                    endTagStack.push(rx.cap(2));
+                }
+            }
+        }
+        else {
+            //this is a start tag
+            startTagStack.push(rx.cap(2));
+        }
+        matched_chars += rx.matchedLength();
+        char_pos = pos - matched_chars;
+        if (char_pos >= cursor.position() && !start_tag){
+            if (tag == startTagStack.top()){
+                //insert end tag
+            }
+            else
+            {
+                //insert start tag
+            }
+            start_tag = true;
+        }
+        else if (char_pos >= cursor.anchor() && start_tag){
+            //insert end tag
+        }
+
+    }
+
+}
+
 
 void SpeechEditor::save()
 {
@@ -186,7 +241,7 @@ QString SpeechEditor::getName()
 
 QString SpeechEditor::getSpeech()
 {
-    return speechText->toPlainText();
+    return speechText->toHtml();
 }
 
 QTime SpeechEditor::getStartTime()
@@ -240,7 +295,7 @@ void SpeechEditor::setDuration(int sec)
  
 void SpeechEditor::setSpeech(QString speech)
 {
-   speechText->setHtml(speech);
+    speechText->setHtml("<i>"+speech+"</i>");
 }
     
 void SpeechEditor::setStartTime(QTime start)

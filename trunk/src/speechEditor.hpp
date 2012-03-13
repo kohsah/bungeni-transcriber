@@ -69,6 +69,7 @@ private:
     customTextEdit *speechText;
     QModelIndex index;
     QStringList MPList;
+    void formatText(QTextCursor, QString);
 public slots:
     void updateStartTime( const QTime & );
     void updateEndTime( const QTime & );
