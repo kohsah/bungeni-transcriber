@@ -32,11 +32,11 @@
 #include <QSettings>
 #include <QKeyEvent>
 
-customTextEdit::customTextEdit(QWidget *parent) : QTextEdit(parent)
+CustomTextEdit::CustomTextEdit(QWidget *parent) : QTextEdit(parent)
 {
 }
 
-void customTextEdit::keyPressEvent( QKeyEvent *keyEvent )
+void CustomTextEdit::keyPressEvent( QKeyEvent *keyEvent )
 {
     if (keyEvent->modifiers() == Qt::NoModifier)
     {
@@ -109,6 +109,89 @@ void customTextEdit::keyPressEvent( QKeyEvent *keyEvent )
     {
         qDebug() << "ignore";
     	keyEvent->ignore();
+    }    
+}
+
+
+void CustomTextEdit::emitFragment(const QTextFragment &fragment){
+    const QTextCharFormat format = fragment.charFormat();
+    bool bold = false;
+    bool italics = false;
+    bool underline = false;
+    if (format.hasProperty(QTextFormat::FontWeight)
+        && format.fontWeight() != defaultCharFormat.fontWeight()) {
+        html += QLatin1String("<b>");
+        bold = true;
     }
-    
+
+    if (format.hasProperty(QTextFormat::FontItalic)
+        && format.fontItalic() != defaultCharFormat.fontItalic()) {
+        html += QLatin1String("<i>");
+        italics = true;
+    }
+
+    if ((format.hasProperty(QTextFormat::FontUnderline) || format.hasProperty(QTextFormat::TextUnderlineStyle))
+        && format.fontUnderline() != defaultCharFormat.fontUnderline()) {
+        html += QLatin1String("<u>");
+        underline = true;
+    }
+
+    QString txt = Qt::escape(fragment.text());
+
+    // split for [\n{LineSeparator}]
+    QString forcedLineBreakRegExp = QString::fromLatin1("[\\na]");
+    forcedLineBreakRegExp[3] = QChar::LineSeparator;
+
+    const QStringList lines = txt.split(QRegExp(forcedLineBreakRegExp));
+    for (int i = 0; i < lines.count(); ++i) {
+        if (i > 0)
+            html += QLatin1String("<br />");
+        html += lines.at(i);
+    }
+    if (bold)
+        html += QLatin1String("</b>");
+    if (italics)
+        html += QLatin1String("</i>");
+    if (underline)
+        html += QLatin1String("</u>");
+}
+
+void CustomTextEdit::emitBlock(const QTextBlock &block){
+    QTextBlock::Iterator it = block.begin();
+    for (; !it.atEnd(); ++it)
+        emitFragment(it.fragment());
+}
+
+void CustomTextEdit::emitFrame(QTextFrame::Iterator frameIt)
+{
+    if (!frameIt.atEnd()) {
+        QTextFrame::Iterator next = frameIt;
+        ++next;
+        if (next.atEnd()
+            && frameIt.currentFrame() == 0
+            && frameIt.parentFrame() != doc->rootFrame()
+            && frameIt.currentBlock().begin().atEnd())
+            return;
+    }
+
+    for (QTextFrame::Iterator it = frameIt;
+         !it.atEnd(); ++it) {
+        if (it.currentBlock().isValid()) {
+            emitBlock(it.currentBlock());
+        }
+    }
+}
+
+QString CustomTextEdit::toHtml(){
+    doc = this->document();
+    html = QLatin1String("");
+    const QFont defaultFont = doc->defaultFont();
+    defaultCharFormat.setFont(defaultFont);
+    defaultCharFormat.clearProperty(QTextFormat::FontUnderline);
+    defaultCharFormat.clearProperty(QTextFormat::FontOverline);
+    defaultCharFormat.clearProperty(QTextFormat::FontStrikeOut);
+    defaultCharFormat.clearProperty(QTextFormat::TextUnderlineStyle);
+    emitFrame(doc->rootFrame()->begin());
+    qDebug() << "HTML" << html;
+    return html;
 }

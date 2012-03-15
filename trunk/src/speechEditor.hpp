@@ -66,10 +66,11 @@ public:
 private:
     Ui::speechEditor ui;
     QxtSpanSlider *horizontalSlider; 
-    customTextEdit *speechText;
+    CustomTextEdit *speechText;
     QModelIndex index;
     QStringList MPList;
-    void formatText(QTextCursor, QString);
+    //void formatText(QTextCursor, QString);
+    QString speech;
 public slots:
     void updateStartTime( const QTime & );
     void updateEndTime( const QTime & );

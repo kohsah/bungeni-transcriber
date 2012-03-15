@@ -46,7 +46,7 @@ SpeechEditor::SpeechEditor(QWidget * parent) : TranscriptionItemEditor(parent)
     horizontalSlider->setHandleMovementMode(QxtSpanSlider::NoCrossing);
     ui.gridLayout->addWidget(horizontalSlider, 0, 3, 1, 3);
     ui.play->setIcon(QIcon(":/pixmaps/play.png"));
-    speechText = new customTextEdit(parent);
+    speechText = new CustomTextEdit(parent);
     speechText->setObjectName(QString::fromUtf8("speech"));
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     sizePolicy.setHorizontalStretch(0);
@@ -148,8 +148,6 @@ void SpeechEditor::italics()
     if (format.fontItalic()==true)
     {    
         format.setFontItalic(false);
-        //cursor.setPosition(speechText->textCursor().position());
-        //cursor.insertHtml('<i>');
     }
     else
     {
@@ -157,58 +155,6 @@ void SpeechEditor::italics()
     }
     cursor.mergeCharFormat(format);
 }
-
-void SpeechEditor::formatText(QTextCursor cursor, QString text, QString tag){
-    QStack<QString> startTagStack;
-    QStack<QString> endTagStack;
-    QRegExp rx("<(/*)(\\D+\\d*)>");
-    int pos = 0;
-    int matched_chars = 0;
-    bool start_tag = false;
-    // char_pos keeps track of source characters
-    int char_pos = 0;
-    while ((pos = rx.indexIn(text, pos)) != -1) {
-        if (rx.cap(1) == "/"){
-            //this is an end tag
-            if (!startTagStack.isEmpty()){
-                if(rx.cap(2) == startTagStack.top()){
-                    startTagStack.pop();
-                    while (!startTagStack.isEmpty() && !endTagStack.isEmpty()){
-                        if (startTagStack.top() == endTagStack.top()){
-                            startTagStack.pop();
-                            endTagStack.pop();
-                        }
-                    }
-                }
-                else {
-                    endTagStack.push(rx.cap(2));
-                }
-            }
-        }
-        else {
-            //this is a start tag
-            startTagStack.push(rx.cap(2));
-        }
-        matched_chars += rx.matchedLength();
-        char_pos = pos - matched_chars;
-        if (char_pos >= cursor.position() && !start_tag){
-            if (tag == startTagStack.top()){
-                //insert end tag
-            }
-            else
-            {
-                //insert start tag
-            }
-            start_tag = true;
-        }
-        else if (char_pos >= cursor.anchor() && start_tag){
-            //insert end tag
-        }
-
-    }
-
-}
-
 
 void SpeechEditor::save()
 {
@@ -295,7 +241,7 @@ void SpeechEditor::setDuration(int sec)
  
 void SpeechEditor::setSpeech(QString speech)
 {
-    speechText->setHtml("<i>"+speech+"</i>");
+    speechText->setHtml(speech);
 }
     
 void SpeechEditor::setStartTime(QTime start)

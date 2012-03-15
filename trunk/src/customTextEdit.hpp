@@ -27,15 +27,23 @@
 #define _CUSTOM_LINE_EDIT_H_
 
 #include <QTextEdit>
+#include <QTextFragment>
 
-class customTextEdit : public QTextEdit
+class CustomTextEdit : public QTextEdit
 {
     Q_OBJECT;
 public:
-	customTextEdit(QWidget *parent);
-
+    CustomTextEdit(QWidget *parent);
+    QString toHtml();
 protected:
 	virtual void keyPressEvent( QKeyEvent *keyEvent );
+private:
+    void emitFrame(QTextFrame::Iterator);
+    void emitBlock(const QTextBlock &);
+    void emitFragment(const QTextFragment &);
+    QString html;
+    QTextDocument *doc;
+    QTextCharFormat defaultCharFormat;
 };
 
 #endif
