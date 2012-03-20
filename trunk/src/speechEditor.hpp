@@ -39,6 +39,7 @@
 #include <QCompleter>
 #include <QTime>
 #include <QxtSpanSlider>
+#include <QStandardItemModel>
 #include "transcriptionItemEditor.hpp"
 #include "ui/ui_speechEditor.h"
 
@@ -61,8 +62,8 @@ public:
     void setEndTime(QTime);
     void setIndex(const QModelIndex& );
     void setDuration(int);
-    void setAutoCompleteWordlist(const QStringList &);
-    void setMPList(QStringList list);
+    void setPersonsModel(QStandardItemModel*);
+
 private:
     Ui::speechEditor ui;
     QxtSpanSlider *horizontalSlider; 

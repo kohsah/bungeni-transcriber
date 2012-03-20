@@ -225,6 +225,7 @@ void ListViewDelegate::setSpeechModelData(QWidget *editor_, Speech* speech)const
 
 TranscriptionItemEditor * ListViewDelegate::newSpeechEditor(QWidget *parent)const{
     SpeechEditor *editor = new SpeechEditor(parent);
+    editor->setPersonsModel(personsModel);
     return editor;
 }
 
@@ -274,4 +275,8 @@ void ListViewDelegate::setAgendaItemModelData(QWidget *editor_, AgendaItem* agen
     agendaItem->setStartTime(editor->getStartTime());
     agendaItem->setEndTime(editor->getEndTime());
     agendaItem->setTitle(editor->getAgendaItem());
+}
+
+void ListViewDelegate::setPersonsModel(QStandardItemModel* personsModel_){
+    personsModel = personsModel_;
 }

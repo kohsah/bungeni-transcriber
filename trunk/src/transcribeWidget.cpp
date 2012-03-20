@@ -380,6 +380,7 @@ void TranscribeWidget::setupModelView(){
     ui.table->setSelectionModel(selectionModel);
     ui.table->setSelectionMode(QAbstractItemView::ContiguousSelection);
     ui.table->setSelectionRectVisible(true);
+
 }
 
 bool TranscribeWidget::setupPersonsModel(){
@@ -399,6 +400,7 @@ bool TranscribeWidget::setupPersonsModel(){
         for (int i = 0; i < persons.size(); ++i) {
              personsModel->appendRow(persons.at(i));
          }
+        delegate->setPersonsModel(personsModel);
         return true;
     }
     else{
@@ -412,6 +414,7 @@ bool TranscribeWidget::setupPersonsModel(){
         personsDataFile.close();
         return true;
     }
+
 }
 
 
@@ -419,12 +422,12 @@ void TranscribeWidget::createMenus()
 {
     fileMenu = menuBar()->addMenu("&File");
     fileMenu->addAction(addToPlaylistAct);
-    fileMenu->addSeparator();
+    /*fileMenu->addSeparator();
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addSeparator();
     fileMenu->addAction(getTakesAct);
-    fileMenu->addAction(postTakesAct);
+    fileMenu->addAction(postTakesAct); */
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 

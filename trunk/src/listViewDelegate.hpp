@@ -35,6 +35,7 @@ class QAbstractItemModel;
 class QObject;
 class QPainter;
 class QModelIndex;
+class QStandardItemModel;
 #include "transcriptionItemEditor.hpp"
 #include "model/speech.hpp"
 #include "model/agendaItem.hpp"
@@ -51,7 +52,7 @@ public:
     void setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const;
     void updateEditorGeometry ( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
     QWidget * createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    void setMPList(QStringList);
+    void setPersonsModel(QStandardItemModel*);
     void setAgendaList(QStringList);
 private:
     void speechDraw(QPainter *&, const QStyleOptionViewItem&, Speech*) const;
@@ -64,6 +65,7 @@ private:
     void setAgendaItemEditorData(QWidget*, AgendaItem*)const;
     void setAgendaItemModelData(QWidget *editor_, AgendaItem*)const;
     TranscriptionItemEditor *newAgendaItemEditor(QWidget *parent)const;
+    QStandardItemModel *personsModel;
 public slots:
     void currentEditing(QModelIndex index);
     void display(QModelIndex index);

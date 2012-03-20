@@ -122,6 +122,7 @@ int PlaylistWidget ::getSelected()
     else
     {
         return -1;
+        qDebug() << "getSelected" << "less than one";
     }
 }
 

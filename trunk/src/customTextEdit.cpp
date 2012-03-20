@@ -72,16 +72,17 @@ void CustomTextEdit::keyPressEvent( QKeyEvent *keyEvent )
     }
     else if (keyEvent->modifiers() == Qt::ControlModifier)
     {
-        if( (keyEvent->key() == Qt::Key_C) || (keyEvent->key() <= Qt::Key_V) || (keyEvent->key() <= Qt::Key_Z) || (keyEvent->key() <= Qt::Key_X))
+        if( (keyEvent->key() >= Qt::Key_A) && (keyEvent->key() <= Qt::Key_Z))
         {
-            qDebug() << "accept";
-        	QTextEdit::keyPressEvent(keyEvent);
-    	    keyEvent->accept();
+            qDebug() << "ignore";
+            keyEvent->ignore();
         }
         else
         {
-            qDebug() << "ignore";
-    	    keyEvent->ignore();
+            qDebug() << "accept";
+            QTextEdit::keyPressEvent(keyEvent);
+            keyEvent->accept();
+
         }
     }
     else if (keyEvent->modifiers() == Qt::ShiftModifier)

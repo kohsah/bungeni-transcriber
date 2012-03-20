@@ -29,7 +29,8 @@ HEADERS += src/transcribeWidget.hpp \
     src/sittingEditorWidget.hpp \
     src/addSittingWidget.hpp \
     src/aknHandler.hpp \
-    src/personsWidget.hpp
+    src/personsWidget.hpp \
+    src/model/person.hpp
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
@@ -75,6 +76,7 @@ RESOURCES   =  src/resources.qrc
 CONFIG  +=  qt debug qxt
 QT += network xml
 QXT += core gui
+
 
 
 

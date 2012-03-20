@@ -54,7 +54,6 @@ SpeechEditor::SpeechEditor(QWidget * parent) : TranscriptionItemEditor(parent)
     sizePolicy.setHeightForWidth(speechText->sizePolicy().hasHeightForWidth());
     speechText->setSizePolicy(sizePolicy);
     ui.gridLayout->addWidget(speechText, 3, 0, 1, 7);
-    
     QObject::connect(ui.startTime, SIGNAL(timeChanged( const QTime & )), this, SLOT(updateStartTime( const QTime &)));
     QObject::connect(ui.endTime, SIGNAL(timeChanged( const QTime & )), this, SLOT(updateEndTime( const QTime &)));
     QObject::connect(horizontalSlider, SIGNAL( lowerValueChanged( int ) ), this, SLOT( updateStartTime( int ) ));
@@ -81,13 +80,6 @@ void SpeechEditor::setValues(QString _name, QString _speech, int _startTime, int
     speechText->setText(_speech);
 }
 */
-
-void SpeechEditor::setAutoCompleteWordlist(const QStringList & wordlist )
-{
-    QCompleter *completer = new QCompleter(wordlist);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    ui.name->setCompleter(completer);
-}
 
 void SpeechEditor::updateStartTime( const QTime & time )
 {
@@ -254,7 +246,10 @@ void SpeechEditor::setEndTime(QTime end)
     ui.endTime->setTime(end);
 }
 
-void SpeechEditor::setMPList(QStringList list)
-{
-    MPList = list;
+void SpeechEditor::setPersonsModel(QStandardItemModel* personsModel_){
+    QCompleter *completer = new QCompleter(this);
+    completer->setModel(personsModel_);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setCompletionColumn(1);
+    ui.name->setCompleter(completer);
 }

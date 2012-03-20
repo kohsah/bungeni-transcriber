@@ -64,6 +64,7 @@ class TranscribeWidget : public QMainWindow
         }
         int getFileDuration();
         void endReached();
+        QStandardItemModel* getPersonsModel();
     public slots:
         void updateInterface();
         void changeVolume(int newVolume);
