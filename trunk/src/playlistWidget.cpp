@@ -98,7 +98,7 @@ void PlaylistWidget :: play(int logicalIndex)
 void PlaylistWidget :: itemClicked(const QModelIndex & index)
 {
     PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
-    if (item->getType() == PlaylistItem::TypeTake) {
+    if (item && item->getType() == PlaylistItem::TypeTake) {
         Take *take = static_cast<Take*>(item);
         emit loadTranscriptionItems(take->getItems());
         emit playMediaFile(take->getMediaLocation());
@@ -183,11 +183,10 @@ void PlaylistWidget :: setupModelView()
 void PlaylistWidget::contextualMenu(const QPoint & point){
     QModelIndex index = treeView->indexAt(point);
     PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
-    int itemType = item->getType();
-    if (itemType == PlaylistItem::TypeSitting){
+    if (item && item->getType() == PlaylistItem::TypeSitting){
         this->sittingMenu();
     }
-    else if (itemType == PlaylistItem::TypeTake){
+    else if (item && item->getType() == PlaylistItem::TypeTake){
         this->takeMenu();
     }
 }
