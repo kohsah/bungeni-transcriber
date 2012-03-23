@@ -42,7 +42,7 @@
 #include <QEvent>
 #include <QInputEvent>
 
-#include <vlc.h>
+#include <vlc/vlc.h>
 
 #include "ui/ui_transcribe.h"
 #include "listViewDelegate.hpp"

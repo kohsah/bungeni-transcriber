@@ -110,7 +110,7 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
                   model, SLOT(loadTranscriptionItems(QList<TranscriptionItem*>*)));
     this->createActions();
     this->createMenus();
-
+    unsetenv ("DESKTOP_STARTUP_ID");
     //create a new libvlc instance
     _vlcinstance=libvlc_new(0, NULL);
     // Create a media player playing environement

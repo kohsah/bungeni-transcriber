@@ -1,5 +1,7 @@
-#INCLUDEPATH for libvlc on Ubuntu. May be different on other distros
-INCLUDEPATH = /usr/include/vlc
+#Change INCLUDEPATH and LIBPATH below to where you have installed VLC
+#this will go away soon
+INCLUDEPATH = /home/undesa/libraries/vlc/include
+LIBPATH = /home/undesa/libraries/vlc/lib
 LIBS += -lvlc
 
 HEADERS += src/transcribeWidget.hpp \
@@ -30,7 +32,8 @@ HEADERS += src/transcribeWidget.hpp \
     src/addSittingWidget.hpp \
     src/aknHandler.hpp \
     src/personsWidget.hpp \
-    src/model/person.hpp
+    src/model/person.hpp \
+    src/model/personModel.hpp
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
@@ -70,12 +73,17 @@ SOURCES += src/transcribeWidget.cpp \
     src/takeEditorWidget.cpp \
     src/addSittingWidget.cpp \
     src/aknHandler.cpp \
-    src/personsWidget.cpp
+    src/personsWidget.cpp \
+    src/model/person.cpp \
+    src/model/personsModel.cpp
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           
 CONFIG  +=  qt debug qxt
 QT += network xml
 QXT += core gui
+
+
+
 
 
 
