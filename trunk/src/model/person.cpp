@@ -1,29 +1,13 @@
 #include "person.hpp"
 
-Person::Person(QString firstName_, QString middleName_, QString surname_,
-               QString title_, QString uri_, QString id_){
-    firstName = firstName_;
-    middleName = middleName_;
-    surname = surname;
-    title = title_;
-    uri = uri_;
+Person::Person(QString name_=QString(), QString id_=QString(), QString uri_=QString()){
+    name = name_;
     id = id_;
+    uri = uri_;
 }
 
-void Person::setFirstName(QString firstName_){
-    firstName = firstName_;
-}
-
-void Person::setMiddleName(QString middleName_){
-    middleName = middleName_;
-}
-
-void Person::setSurname(QString surname_){
-    surname = surname_;
-}
-
-void Person::setTitle(QString title_){
-    title = title_;
+void Person::setName(QString name_){
+    name = name_;
 }
 
 void Person::setUri(QString uri_){
@@ -39,19 +23,7 @@ void Person::setFirstName(QString firstName_){
 }
 
 QString Person::getFirstName(){
-    return firstName;
-}
-
-QString Person::getMiddleName(){
-    return middleName;
-}
-
-QString Person::getSurname(){
-    return surname;
-}
-
-QString Person::getTitle(){
-    return title;
+    return name;
 }
 
 QString Person::getUri(){
@@ -60,4 +32,22 @@ QString Person::getUri(){
 
 QString Person::getId(){
     return id;
+}
+
+bool Person::setData(const QModelIndex &index, const QVariant &value){
+    if(index.column() == 0){
+        this->setName(value);
+        return true;
+    }
+    else if (index.column() == 1){
+        this->setUri(value);
+        return true;
+    }
+    else if (index.column() == 1) {
+        this->setUri(value);
+        return true;
+    }
+    else{
+        return false;
+    }
 }

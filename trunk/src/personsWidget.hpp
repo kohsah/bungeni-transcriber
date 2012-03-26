@@ -28,12 +28,13 @@
 #define PERSONS_HPP
 #include <QStandardItemModel>
 #include "ui/ui_personsWidget.h"
+#include "model/personsModel.hpp"
 
 class PersonsWidget : public QDialog {
     Q_OBJECT
 public:
     PersonsWidget(QWidget*);
-    void setModel(QStandardItemModel *);
+    void setModel(PersonsModel *);
 private:
     Ui::PersonsWidget ui;
 };

@@ -51,7 +51,9 @@
 #include "controlsWidget.hpp"
 #include "playlistWidget.hpp"
 #include "model/transcriptionModel.hpp"
+#include "model/personsModel.hpp"
 #include "util/util.hpp"
+
 class TranscribeWidget : public QMainWindow
 {
     Q_OBJECT
@@ -103,7 +105,7 @@ class TranscribeWidget : public QMainWindow
         TranscriptionModel *model;
         TranscriptionSortModel *filterModel;
         QItemSelectionModel *selectionModel;
-        QStandardItemModel *personsModel;
+        PersonsModel *personsModel;
         // Delegates
         ListViewDelegate *delegate;
 

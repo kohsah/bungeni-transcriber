@@ -206,7 +206,7 @@ QSize ListViewDelegate::speechSizeHint(const QStyleOptionViewItem &option,
 
 void ListViewDelegate::setSpeechEditorData(QWidget *editor_, Speech *speech)const{
     SpeechEditor *editor = static_cast<SpeechEditor*>(editor_);
-    editor->setName(speech->getPersonName());
+    editor->setName(speech->getPerson()->getName());
     editor->setSpeech(speech->getSpeech());
     editor->setStartTime(speech->getStartTime());
     editor->setEndTime(speech->getEndTime());
@@ -217,7 +217,7 @@ void ListViewDelegate::setSpeechModelData(QWidget *editor_, Speech* speech)const
     SpeechEditor *editor = static_cast<SpeechEditor*>(editor_);
     speech->setStartTime(editor->getStartTime());
     speech->setEndTime(editor->getEndTime());
-    speech->setPersonName(editor->getName());
+    speech->setPerson(editor->getPerson());
     speech->setComplete(editor->getComplete());
     speech->setSpeech(editor->getSpeech());
 }
@@ -277,6 +277,6 @@ void ListViewDelegate::setAgendaItemModelData(QWidget *editor_, AgendaItem* agen
     agendaItem->setTitle(editor->getAgendaItem());
 }
 
-void ListViewDelegate::setPersonsModel(QStandardItemModel* personsModel_){
+void ListViewDelegate::setPersonsModel(PersonsModel* personsModel_){
     personsModel = personsModel_;
 }

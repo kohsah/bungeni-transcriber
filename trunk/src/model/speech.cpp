@@ -18,12 +18,8 @@ void Speech::setEndTime(QTime endTime_){
     endTime = endTime_;
 }
 
-void Speech::setPersonName(QString personName_){
-    personName = personName_;
-}
-
-void Speech::setId(int id_){
-    id = id_;
+void Speech::setPerson(Person* person_){
+    person = person_;
 }
 
 void Speech::setComplete(bool complete_){
@@ -33,18 +29,13 @@ void Speech::setSpeech(QString speech_){
     speech = speech_;
 }
 
-QString Speech::getPersonName(){
-    return personName;
+Person* Speech::getPerson(){
+    return person;
 }
 
 QString Speech::getSpeech(){
     return speech;
 }
-
-int Speech::getId(){
-    return id;
-}
-
 
 QTime Speech::getStartTime(){
     return startTime;

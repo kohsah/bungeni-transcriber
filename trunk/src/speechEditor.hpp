@@ -42,7 +42,7 @@
 #include <QStandardItemModel>
 #include "transcriptionItemEditor.hpp"
 #include "ui/ui_speechEditor.h"
-
+#include "model/personsModel.hpp"
 class SpeechEditor : public TranscriptionItemEditor
 {
     Q_OBJECT
@@ -50,19 +50,19 @@ public:
     SpeechEditor(QWidget * parent = 0);
     virtual ~SpeechEditor();
    // void setValues(QString _name, QString _speech, int _startTime, int _endTime);
-    QString getName();
+    Person getPerson();
     QString getSpeech();
     QTime getStartTime();
     QTime getEndTime();
     bool getComplete();
     void setComplete(bool incomplete);
-    void setName(QString);
+    void setPerson(Person);
     void setSpeech(QString);
     void setStartTime(QTime);
     void setEndTime(QTime);
     void setIndex(const QModelIndex& );
     void setDuration(int);
-    void setPersonsModel(QStandardItemModel*);
+    void setPersonsModel(PersonsModel*);
 
 private:
     Ui::speechEditor ui;

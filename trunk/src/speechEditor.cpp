@@ -246,10 +246,10 @@ void SpeechEditor::setEndTime(QTime end)
     ui.endTime->setTime(end);
 }
 
-void SpeechEditor::setPersonsModel(QStandardItemModel* personsModel_){
-    QCompleter *completer = new QCompleter(this);
-    completer->setModel(personsModel_);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setCompletionColumn(1);
-    ui.name->setCompleter(completer);
+void SpeechEditor::setPersonsModel(PersonsModel* personsModel_){
+    //QCompleter *completer = new QCompleter(this);
+    //completer->setModel(personsModel_);
+    //completer->setCaseSensitivity(Qt::CaseInsensitive);
+    //completer->setCompletionColumn(1);
+    //ui.name->setCompleter(completer);
 }

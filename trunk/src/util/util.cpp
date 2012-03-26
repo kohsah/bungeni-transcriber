@@ -159,37 +159,3 @@ QString timeSecondstoString(int time)
     QString timeText = formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds);
     return timeText;
 }
-
-QList< QList<QStandardItem*> > readPersonsFile(QString filePath){
-    QXmlStreamReader reader;
-    QFile newfile(filePath);
-    QList< QList<QStandardItem*> > persons;
-    if (!newfile.open(QFile::ReadOnly | QFile::Text)) {
-        qDebug() << "Error opening file1";
-        return QList< QList<QStandardItem*> >();
-    }
-    reader.setDevice(&newfile);
-    QStandardItem *id, *name, *href;
-    if (reader.readNextStartElement()){
-        if (reader.name() == "persons"){
-            while (!reader.atEnd()){
-                if ((reader.readNext() == QXmlStreamReader::StartElement) &&
-                        (reader.name() == "person")){
-                    QList<QStandardItem*> person;
-                    id = new QStandardItem(reader.attributes().value("id").toString());
-                    person.append(id);
-                    name = new QStandardItem(reader.attributes().value("name").toString());
-                    person.append(name);
-                    href = new QStandardItem(reader.attributes().value("href").toString());
-                    person.append(href);
-                    persons.append(person);
-                }
-            }
-        }
-    }
-    if (reader.hasError()){
-         qDebug()<<"An error occured"<<reader.errorString()<<reader.lineNumber()<<reader.columnNumber()<<reader.characterOffset();
-    }
-    newfile.close();
-    return persons;
-}

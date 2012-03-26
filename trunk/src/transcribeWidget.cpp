@@ -383,11 +383,38 @@ void TranscribeWidget::setupModelView(){
 
 }
 
+QList<Person *>* readPersonsFile(QString filePath){
+    QXmlStreamReader reader;
+    QFile newfile(filePath);
+    QList<Person*>* persons = new QList<Person *>();
+    Person *person = new Person();
+    if (!newfile.open(QFile::ReadOnly | QFile::Text)) {
+        qDebug() << "Error opening file1";
+        return persons;
+    }
+    reader.setDevice(&newfile);
+    if (reader.readNextStartElement()){
+        if (reader.name() == "persons"){
+            while (!reader.atEnd()){
+                if ((reader.readNext() == QXmlStreamReader::StartElement) &&
+                        (reader.name() == "person")){
+                    person->setId(reader.attributes().value("id").toString());
+                    person->setName(reader.attributes().value("name").toString());
+                    person->setUri(reader.attributes().value("href").toString());
+                    persons->append(person);
+                }
+            }
+        }
+    }
+    if (reader.hasError()){
+         qDebug()<<"An error occured"<<reader.errorString()<<reader.lineNumber()<<reader.columnNumber()<<reader.characterOffset();
+    }
+    newfile.close();
+    return persons;
+}
+
 bool TranscribeWidget::setupPersonsModel(){
-    personsModel = new QStandardItemModel(0, 3);
-    personsModel->setHeaderData(0, Qt::Horizontal, "Id");
-    personsModel->setHeaderData(1, Qt::Horizontal, "Name");
-    personsModel->setHeaderData(2, Qt::Horizontal, "URL");
+    personsModel = new PersonsModel();
     QString applicationDataPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
     QDir applicationDataDir = QDir(applicationDataPath);
     if (!applicationDataDir.exists("bungeni_transcriber")){
@@ -396,10 +423,7 @@ bool TranscribeWidget::setupPersonsModel(){
     QFile personsDataFile(applicationDataDir.path()+"bungeni_transcriber/persons.xml");
     if (personsDataFile.exists()){
         //Load file into model
-        QList< QList<QStandardItem*> > persons = readPersonsFile(QFileInfo(personsDataFile).filePath());
-        for (int i = 0; i < persons.size(); ++i) {
-             personsModel->appendRow(persons.at(i));
-         }
+        personsModel->loadPersonData(readPersonsFile(QFileInfo(personsDataFile).filePath()));
         delegate->setPersonsModel(personsModel);
         return true;
     }
@@ -452,16 +476,16 @@ void TranscribeWidget::createActions()
     // addToPlaylistAct->setShortcuts(QKeySequence::New);
     addToPlaylistAct->setStatusTip("Add an existing or new item to playlist");
     connect(addToPlaylistAct, SIGNAL(triggered()), playlist, SLOT(addToPlaylistDialog()));
-
+    /*
     saveAct = new QAction("&Save", this);
-    //   saveAct->setShortcuts(QKeySequence::Save);
+    saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip("Save the document to disk");
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
 
     saveAsAct = new QAction("Save As", this);
     saveAsAct->setStatusTip("Save the document to disk");
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
-
+    */
     preferencesAct = new QAction("Preferences", this);
     preferencesAct->setStatusTip("Bungeni Transcribe Preferences");
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
@@ -473,7 +497,7 @@ void TranscribeWidget::createActions()
     hotkeyAct = new QAction("Hotkey Settings", this);
     hotkeyAct->setStatusTip("Hotkey Settings");
     connect(hotkeyAct, SIGNAL(triggered()), this, SLOT(hotkeySettings()));
-
+    /*
     getTakesAct = new QAction("Get Takes", this);
     getTakesAct->setStatusTip("Get Assigned Takes from Bungeni Portal Server");
     connect(getTakesAct, SIGNAL(triggered()), this, SLOT(takes()));
@@ -481,7 +505,7 @@ void TranscribeWidget::createActions()
     postTakesAct = new QAction("Post Takes", this);
     postTakesAct->setStatusTip("Post Transcribed Takes to Bungeni Portal Server");
     connect(postTakesAct, SIGNAL(triggered()), this, SLOT(post()));
-
+    */
     exitAct = new QAction("E&xit", this);
     //exitAct->setShortcut("Ctrl+Q");
     exitAct->setStatusTip("Exit the application");

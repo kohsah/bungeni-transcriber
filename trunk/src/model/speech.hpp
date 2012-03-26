@@ -29,25 +29,26 @@
 #include <QObject>
 #include <QTime>
 #include "transcriptionItem.hpp"
+#include "person.hpp"
 
 class Speech : public TranscriptionItem{
 public:
     explicit Speech(QTime, QTime, QString, QString, int, bool);
-    void setPersonName(QString);
+    void setPerson(Person*);
     void setSpeech(QString);
     void setId(int id);
-    QString getPersonName();
-    QString getSpeech();
-    int getId();
     void setStartTime(QTime);
     void setEndTime(QTime);
+    Person getPerson();
+    QString getSpeech();
+    int getId();
     QTime getStartTime();
     QTime getEndTime();
     void setComplete(bool);
     bool isComplete();
     ItemType getType();
 protected:
-    QString personName;
+    Person person;
     QString speech;
     int id;
     bool complete;

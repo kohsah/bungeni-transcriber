@@ -33,7 +33,7 @@ HEADERS += src/transcribeWidget.hpp \
     src/aknHandler.hpp \
     src/personsWidget.hpp \
     src/model/person.hpp \
-    src/model/personModel.hpp
+    src/model/personsModel.hpp
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
@@ -81,6 +81,8 @@ RESOURCES   =  src/resources.qrc
 CONFIG  +=  qt debug qxt
 QT += network xml
 QXT += core gui
+
+
 
 
 
