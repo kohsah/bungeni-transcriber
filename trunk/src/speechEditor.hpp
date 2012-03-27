@@ -43,6 +43,7 @@
 #include "transcriptionItemEditor.hpp"
 #include "ui/ui_speechEditor.h"
 #include "model/personsModel.hpp"
+#include "personLineEdit.hpp"
 class SpeechEditor : public TranscriptionItemEditor
 {
     Q_OBJECT
@@ -50,13 +51,13 @@ public:
     SpeechEditor(QWidget * parent = 0);
     virtual ~SpeechEditor();
    // void setValues(QString _name, QString _speech, int _startTime, int _endTime);
-    Person getPerson();
+    Person* getPerson();
     QString getSpeech();
     QTime getStartTime();
     QTime getEndTime();
     bool getComplete();
     void setComplete(bool incomplete);
-    void setPerson(Person);
+    void setPerson(Person*);
     void setSpeech(QString);
     void setStartTime(QTime);
     void setEndTime(QTime);
@@ -72,6 +73,7 @@ private:
     QStringList MPList;
     //void formatText(QTextCursor, QString);
     QString speech;
+    PersonLineEdit *person;
 public slots:
     void updateStartTime( const QTime & );
     void updateEndTime( const QTime & );

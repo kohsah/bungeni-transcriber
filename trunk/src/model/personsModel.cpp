@@ -1,11 +1,11 @@
 #include "personsModel.hpp"
 
-PersonsModel(QObject *parent = 0):QAbstractTableModel(parent){
+PersonsModel::PersonsModel(QObject* parent) : QAbstractTableModel(parent){
     persons = new QList<Person *>();
 }
 
-int PersonsModel::rowCount(const QModelIndex &parent = QModelIndex()) const{
-    return persons.size();
+int PersonsModel::rowCount(const QModelIndex &parent) const{
+    return persons->size();
 }
 
 QVariant PersonsModel::data(const QModelIndex &index, int role) const{
@@ -14,7 +14,7 @@ QVariant PersonsModel::data(const QModelIndex &index, int role) const{
     }
     Person *person = static_cast<Person*>(index.internalPointer());
     if (role == Qt::DisplayRole){
-        return person->data(index.column());
+        return QVariant(person->getName());
     }
     else{
         return QVariant();
@@ -22,7 +22,7 @@ QVariant PersonsModel::data(const QModelIndex &index, int role) const{
 }
 
 QVariant PersonsModel::headerData(int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole) const{
+                         int role) const{
     QVariant headers[3] = {"Name", "ID", "URI"};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
         return headers[section];
@@ -36,7 +36,7 @@ Qt::ItemFlags PersonsModel::flags(const QModelIndex &index) const{
 }
 
 bool PersonsModel::setData(const QModelIndex &index, const QVariant &value,
-                  int role = Qt::EditRole){
+                  int role){
     if (index.isValid()) {
         Person *person = static_cast<Person*>(index.internalPointer());
         if (role == Qt::EditRole && person->setData(index, value))
@@ -45,7 +45,7 @@ bool PersonsModel::setData(const QModelIndex &index, const QVariant &value,
     return false;
 }
 
-bool PersonsModel::insertRows(int position, int rows, const QModelIndex &index = QModelIndex()){
+bool PersonsModel::insertRows(int position, int rows, const QModelIndex &index){
     beginInsertRows(QModelIndex(), position, position+rows-1);
     Person *person;
     for (int row = 0; row < rows; ++row) {
@@ -56,11 +56,11 @@ bool PersonsModel::insertRows(int position, int rows, const QModelIndex &index =
     return true;
 }
 
-bool PersonsModel::removeRows(int position, int rows, const QModelIndex &index = QModelIndex()){
+bool PersonsModel::removeRows(int position, int rows, const QModelIndex &index){
     beginRemoveRows(QModelIndex(), position, position+rows-1);
     for (int row = 0; row < rows; ++row) {
-        delete persons.at(position);
-        persons.removeAt(position);
+        delete persons->at(position);
+        persons->removeAt(position);
     }
     endRemoveRows();
     return true;

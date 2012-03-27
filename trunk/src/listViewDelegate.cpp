@@ -180,7 +180,7 @@ void ListViewDelegate::speechDraw(QPainter *&painter, const QStyleOptionViewItem
     painter->drawText(rPersonName.left(), rPersonName.top(),
                       rPersonName.width(), rPersonName.height(),
                       Qt::AlignTop|Qt::AlignLeft|Qt::TextWordWrap,
-                      speech->getPersonName(), &rPersonName);
+                      speech->getPerson()->getName(), &rPersonName);
     QRect rSpeech = option.rect.adjusted(201, 30, -2, -2);
     painter->drawText(rSpeech.left(), rSpeech.top(),
                       rSpeech.width(), rSpeech.height(),
@@ -206,7 +206,7 @@ QSize ListViewDelegate::speechSizeHint(const QStyleOptionViewItem &option,
 
 void ListViewDelegate::setSpeechEditorData(QWidget *editor_, Speech *speech)const{
     SpeechEditor *editor = static_cast<SpeechEditor*>(editor_);
-    editor->setName(speech->getPerson()->getName());
+    editor->setPerson(speech->getPerson());
     editor->setSpeech(speech->getSpeech());
     editor->setStartTime(speech->getStartTime());
     editor->setEndTime(speech->getEndTime());

@@ -325,11 +325,11 @@ void TranscribeWidget::addSpeech()
             TranscriptionItem *lastItem = wrapper->ptr;
             newSpeech = new Speech(lastItem->getEndTime().addSecs(1),
                                    lastItem->getEndTime().addSecs(120),
-                                   "Speech Text", "Name of Person", 0, true);
+                                   "Speech Text", new Person(), 0, true);
         }
         else {
             newSpeech = new Speech(QTime(0,0,0), QTime(0,2,0),
-                                    "Speech Text", "Name of Person", 0, true);
+                                    "Speech Text", new Person(), 0, true);
         }
         model->insertItem(model->rowCount(), newSpeech);
     }

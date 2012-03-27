@@ -32,7 +32,7 @@ PersonsWidget :: PersonsWidget(QWidget*parent=0) : QDialog(parent){
     ui.personsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
-void PersonsWidget::setModel(QStandardItemModel *personsModel){
+void PersonsWidget::setModel(PersonsModel *personsModel){
     ui.personsTable->setModel(personsModel);
     ui.personsTable->resizeColumnsToContents();
 }

@@ -1,10 +1,10 @@
 #ifndef PERSON_HPP
 #define PERSON_HPP
 #include <QString>
-
+#include <QModelIndex>
 class Person{
 public:
-    Person(QString name=QString(), QString id=QString(), QString uri=QString());
+    Person(QString name_=QString("Name of Person"), QString id_=QString("null"), QString uri_=QString("/Null"));
     QString getName();
     QString getUri();
     QString getId();

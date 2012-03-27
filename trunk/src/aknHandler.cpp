@@ -89,7 +89,7 @@ void AknHandler::writeSpeeches(QXmlStreamWriter* writer, Sitting* sitting){
             if(transcriptionItem->getType()==TranscriptionItem::TypeSpeech){
                 Speech* speech = static_cast<Speech*>(transcriptionItem);
                 writer->writeStartElement("speech");
-                writer->writeAttribute("by", speech->getPersonName());
+                //writer->writeAttribute("by", speech->getName());
                 writer->writeStartElement("from");
                 writer->writeCharacters("test");
 

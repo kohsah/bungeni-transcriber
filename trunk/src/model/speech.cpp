@@ -1,12 +1,11 @@
 #include <QDebug>
 #include "speech.hpp"
 Speech::Speech(QTime startTime_, QTime endTime_, QString speech_,
-               QString personName_, int id_, bool complete_) : TranscriptionItem(){
+               Person *person_, int id_, bool complete_) : TranscriptionItem(){
     startTime = startTime_;
     endTime = endTime_;
     speech = speech_;
-    personName = personName_;
-    id = id_;
+    person = person_;
     complete = complete_;
 }
 

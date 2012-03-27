@@ -40,6 +40,8 @@
 SpeechEditor::SpeechEditor(QWidget * parent) : TranscriptionItemEditor(parent)
 {
     ui.setupUi(this);
+    person = new PersonLineEdit();
+    ui.gridLayout->addWidget(person, 1, 0, 1, -1);
     horizontalSlider = new QxtSpanSlider();
     horizontalSlider->setObjectName(QString::fromUtf8("horizontalSlider"));
     horizontalSlider->setOrientation(Qt::Horizontal);
@@ -172,9 +174,9 @@ void SpeechEditor::setIndex(const QModelIndex & index_)
     this->index = index_;
 }
 
-QString SpeechEditor::getName()
+Person* SpeechEditor::getPerson()
 {
-    return ui.name->text();
+    return person->getPerson();
 }
 
 QString SpeechEditor::getSpeech()
@@ -204,9 +206,9 @@ bool SpeechEditor::getComplete()
     }
 }
 
-void SpeechEditor::setName(QString name)
+void SpeechEditor::setPerson(Person* person_)
 {
-    ui.name->setText(name);
+    person->setPerson(person_);
 }
 
 void SpeechEditor::setComplete(bool incomplete)
@@ -252,4 +254,5 @@ void SpeechEditor::setPersonsModel(PersonsModel* personsModel_){
     //completer->setCaseSensitivity(Qt::CaseInsensitive);
     //completer->setCompletionColumn(1);
     //ui.name->setCompleter(completer);
+    person->setPersonsModel(personsModel_);
 }
