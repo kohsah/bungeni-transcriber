@@ -9,12 +9,19 @@ PersonLineEdit::PersonLineEdit(QWidget *parent) : QLineEdit(parent){
     listView->setWindowFlags(Qt::ToolTip);
     person = new Person();
     filterModel = new PersonSortFilterProxyModel(this);
-    connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(setCompleter(const QString &)));
+    this->setFocusPolicy(Qt::StrongFocus);
+    connect(this, SIGNAL(textEdited(const QString &)), this, SLOT(setCompleter(const QString &)));
     connect(listView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(completeText(const QModelIndex &)));
 }
 
 void PersonLineEdit::focusOutEvent(QFocusEvent *e) {
-    //listView->hide();
+    listView->hide();
+    QLineEdit::focusOutEvent(e);
+}
+
+void PersonLineEdit::focusInEvent(QFocusEvent *e) {
+    this->selectAll();
+    QLineEdit::focusInEvent(e);
 }
 
 void PersonLineEdit::keyPressEvent(QKeyEvent *e) {
@@ -59,6 +66,7 @@ void PersonLineEdit::keyPressEvent(QKeyEvent *e) {
 
 void PersonLineEdit::setPerson(Person* person_){
     person = person_;
+    setText(person->getName());
 }
 
 Person* PersonLineEdit::getPerson(){
@@ -67,6 +75,7 @@ Person* PersonLineEdit::getPerson(){
 
 void PersonLineEdit::setPersonsModel(PersonsModel* personsModel_){
     filterModel->setSourceModel(personsModel_);
+    filterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     listView->setModel(filterModel);
 }
 
@@ -114,7 +123,6 @@ PersonSortFilterProxyModel::PersonSortFilterProxyModel(QObject *parent)
 bool PersonSortFilterProxyModel::filterAcceptsRow(int sourceRow,
          const QModelIndex &sourceParent) const{
      QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
-
      return (sourceModel()->data(index).toString().contains(filterRegExp()));
 }
 

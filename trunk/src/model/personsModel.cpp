@@ -12,9 +12,14 @@ QVariant PersonsModel::data(const QModelIndex &index, int role) const{
     if (!index.isValid()){
         return QVariant();
     }
-    Person *person = static_cast<Person*>(index.internalPointer());
+    Person *person = persons->at(index.row());
     if (role == Qt::DisplayRole){
-        return QVariant(person->getName());
+        if (index.column() == 0)
+            return QVariant(person->getName());
+        else if (index.column() == 1)
+            return QVariant(person->getId());
+        else if (index.column() == 2)
+            return QVariant(person->getUri());
     }
     else{
         return QVariant();
@@ -68,6 +73,13 @@ bool PersonsModel::removeRows(int position, int rows, const QModelIndex &index){
 
 int PersonsModel::columnCount(const QModelIndex&) const {
     return 3;
+}
+
+QModelIndex PersonsModel::index(int row, int column, const QModelIndex &parent) const{
+    if (!hasIndex(row, column, parent)) {
+        return QModelIndex();
+    }
+    return createIndex(row, column, persons->at(row));
 }
 
 void PersonsModel::loadPersonData(QList<Person *>* persons_){

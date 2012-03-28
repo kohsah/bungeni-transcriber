@@ -387,7 +387,7 @@ QList<Person *>* readPersonsFile(QString filePath){
     QXmlStreamReader reader;
     QFile newfile(filePath);
     QList<Person*>* persons = new QList<Person *>();
-    Person *person = new Person();
+    Person *person;
     if (!newfile.open(QFile::ReadOnly | QFile::Text)) {
         qDebug() << "Error opening file1";
         return persons;
@@ -398,6 +398,7 @@ QList<Person *>* readPersonsFile(QString filePath){
             while (!reader.atEnd()){
                 if ((reader.readNext() == QXmlStreamReader::StartElement) &&
                         (reader.name() == "person")){
+                    person = new Person();
                     person->setId(reader.attributes().value("id").toString());
                     person->setName(reader.attributes().value("name").toString());
                     person->setUri(reader.attributes().value("href").toString());
