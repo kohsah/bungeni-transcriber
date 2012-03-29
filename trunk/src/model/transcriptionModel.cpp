@@ -63,7 +63,8 @@ bool TranscriptionModel::removeRows(int row, int count, const QModelIndex &paren
     return true;
 }
 
-bool TranscriptionModel::insertItem (int row, TranscriptionItem * item){
+bool TranscriptionModel::insertItem (int /*row*/, TranscriptionItem * item){
+    // Always inserts items at the end
     int size = items->size();
     beginInsertRows(QModelIndex(), size, size);
     items->insert(size, item);
@@ -78,7 +79,7 @@ bool TranscriptionModel::setData(const QModelIndex & index,
     return true;
 }
 
-int TranscriptionModel::rowCount(const QModelIndex &parent) const
+int TranscriptionModel::rowCount(const QModelIndex &/*parent*/) const
 {
     return items->size();
 }

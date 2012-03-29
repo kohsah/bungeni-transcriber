@@ -4,7 +4,7 @@ PersonsModel::PersonsModel(QObject* parent) : QAbstractTableModel(parent){
     persons = new QList<Person *>();
 }
 
-int PersonsModel::rowCount(const QModelIndex &parent) const{
+int PersonsModel::rowCount(const QModelIndex &/*parent*/) const{
     return persons->size();
 }
 
@@ -21,9 +21,7 @@ QVariant PersonsModel::data(const QModelIndex &index, int role) const{
         else if (index.column() == 2)
             return QVariant(person->getUri());
     }
-    else{
-        return QVariant();
-    }
+    return QVariant();
 }
 
 QVariant PersonsModel::headerData(int section, Qt::Orientation orientation,
@@ -50,7 +48,7 @@ bool PersonsModel::setData(const QModelIndex &index, const QVariant &value,
     return false;
 }
 
-bool PersonsModel::insertRows(int position, int rows, const QModelIndex &index){
+bool PersonsModel::insertRows(int position, int rows, const QModelIndex &/*index*/){
     beginInsertRows(QModelIndex(), position, position+rows-1);
     Person *person;
     for (int row = 0; row < rows; ++row) {
@@ -61,7 +59,7 @@ bool PersonsModel::insertRows(int position, int rows, const QModelIndex &index){
     return true;
 }
 
-bool PersonsModel::removeRows(int position, int rows, const QModelIndex &index){
+bool PersonsModel::removeRows(int position, int rows, const QModelIndex &/*index*/){
     beginRemoveRows(QModelIndex(), position, position+rows-1);
     for (int row = 0; row < rows; ++row) {
         delete persons->at(position);

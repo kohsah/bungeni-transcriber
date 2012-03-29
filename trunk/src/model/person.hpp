@@ -12,10 +12,17 @@ public:
     void setUri(QString);
     void setId(QString);
     bool setData(const QModelIndex &index, const QVariant &value);
+    bool operator==(Person &person1){
+        return (person1.id==id);
+    }
 private:
     QString name;
     QString uri;
     QString id;
 };
+
+inline uint qHash(Person* person){
+    return qHash(person->getId());
+}
 
 #endif // PERSON_HPP

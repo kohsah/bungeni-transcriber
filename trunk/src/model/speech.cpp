@@ -1,7 +1,7 @@
 #include <QDebug>
 #include "speech.hpp"
 Speech::Speech(QTime startTime_, QTime endTime_, QString speech_,
-               Person *person_, int id_, bool complete_) : TranscriptionItem(){
+               Person *person_, bool complete_) : TranscriptionItem(){
     startTime = startTime_;
     endTime = endTime_;
     speech = speech_;

@@ -255,7 +255,7 @@ void ListViewDelegate::agendaItemDraw(QPainter *& painter, const QStyleOptionVie
 }
 
 QSize ListViewDelegate::agendaItemSizeHint(const QStyleOptionViewItem &option,
-                           bool editing, bool current, AgendaItem* agendaItem)const{
+                           bool editing, bool current, AgendaItem* /*agendaItem*/)const{
     if ((editing == true) && (current == true)){
         return QSize(option.rect.width(), 100);
     }

@@ -47,3 +47,5 @@ bool Person::setData(const QModelIndex &index, const QVariant &value){
         return false;
     }
 }
+
+

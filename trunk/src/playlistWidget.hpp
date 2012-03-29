@@ -69,7 +69,6 @@ class PlaylistWidget : public QWidget
     public slots:
         void addItemToPlaylist();
         void addToPlaylistDialog();
-        void play(int logicalIndex);
         void itemClicked(const QModelIndex&);
         void prev();
         void next();

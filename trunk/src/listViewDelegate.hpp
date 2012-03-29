@@ -30,16 +30,17 @@
 #define _LIST_VIEW_DELEGATE_
 
 #include <QAbstractItemDelegate>
+#include "transcriptionItemEditor.hpp"
+#include "model/speech.hpp"
+#include "model/agendaItem.hpp"
+#include "model/personsModel.hpp"
 
 class QAbstractItemModel;
 class QObject;
 class QPainter;
 class QModelIndex;
 class QStandardItemModel;
-#include "transcriptionItemEditor.hpp"
-#include "model/speech.hpp"
-#include "model/agendaItem.hpp"
-#include "model/personsModel.hpp"
+
 class ListViewDelegate : public QAbstractItemDelegate {
 	Q_OBJECT
 private:

@@ -81,20 +81,6 @@ PlaylistModel * PlaylistWidget :: getModel()
     return model;
 }
 
-void PlaylistWidget :: play(int logicalIndex)
-{   /*
-    qDebug() << "doubleclick" << logicalIndex;
-    emit loadTranscriptFile(current, model->data(model->index(logicalIndex, 2)).toString());
-    
-    current = logicalIndex;
-    QString mediaFilePath = model->data(model->index(logicalIndex, 1)).toString();
-    
-    //if (model->data(model->index(logicalIndex, 2)).toString() != "")
-    
-    emit playMediaFile(mediaFilePath);
-    */
-}
-
 void PlaylistWidget :: itemClicked(const QModelIndex & index)
 {
     PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());

@@ -33,7 +33,7 @@
 
 class Speech : public TranscriptionItem{
 public:
-    explicit Speech(QTime, QTime, QString, Person*, int, bool);
+    explicit Speech(QTime, QTime, QString, Person*, bool);
     void setPerson(Person*);
     void setSpeech(QString);
     void setId(int id);

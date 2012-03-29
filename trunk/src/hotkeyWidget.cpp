@@ -30,9 +30,7 @@
 #include <QPushButton>
  
 HotkeyWidget :: HotkeyWidget()
-{ 
-        int line = 0;
-
+{
         QGridLayout *gLayout = new QGridLayout;
         setObjectName(QString::fromUtf8("preferenceDialog"));
     	resize(400, 300);
