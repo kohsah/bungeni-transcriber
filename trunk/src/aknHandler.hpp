@@ -28,7 +28,9 @@
 #include <QObject>
 #include <QString>
 #include <QXmlStreamWriter>
+#include <QSet>
 #include "model/sitting.hpp"
+#include "model/person.hpp"
 class AknHandler : QObject{
     Q_OBJECT
 public:
@@ -40,6 +42,7 @@ private:
     void writeFRBRWork(QXmlStreamWriter*, Sitting*);
     void writeFRBRExpression(QXmlStreamWriter*, Sitting*);
     void writeFRBRManifestation(QXmlStreamWriter*, Sitting*);
+    void writeReferences(QXmlStreamWriter*, Sitting*);
 };
 
 #endif // AKNPARSER_HPP

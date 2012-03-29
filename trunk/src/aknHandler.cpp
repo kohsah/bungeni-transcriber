@@ -57,7 +57,7 @@ bool AknHandler::saveSittingToFile(Sitting *sitting, QString filePath){
     this->writeFRBRManifestation(writer, sitting);
     writer->writeEndElement();  //end identification
     //this->writePublication();
-    //this->writeReferences();
+    this->writeReferences(writer, sitting);
     //this->writeNotes();
     writer->writeEndElement();  //end meta
 
@@ -76,23 +76,53 @@ bool AknHandler::saveSittingToFile(Sitting *sitting, QString filePath){
     return true;
 }
 
-void AknHandler::writeSpeeches(QXmlStreamWriter* writer, Sitting* sitting){
+void AknHandler::writeReferences(QXmlStreamWriter* writer, Sitting* sitting){
     const QList<PlaylistItem*>* takesList = sitting->getTakes();
     Take* take;
     QList<TranscriptionItem*>* transcriptionItemsList;
     TranscriptionItem* transcriptionItem;
+    Speech* speech;
+    QSet<Person*> listOfPersons;
     for (int i=0; i < takesList->size(); i++){
         take = static_cast<Take*>(takesList->at(i));
         transcriptionItemsList = take->getItems();
         for (int j=0; j<transcriptionItemsList->size(); j++){
             transcriptionItem = transcriptionItemsList->at(j);
             if(transcriptionItem->getType()==TranscriptionItem::TypeSpeech){
-                Speech* speech = static_cast<Speech*>(transcriptionItem);
-                writer->writeStartElement("speech");
-                //writer->writeAttribute("by", speech->getName());
-                writer->writeStartElement("from");
-                writer->writeCharacters("test");
+                speech = static_cast<Speech*>(transcriptionItem);
+                listOfPersons << speech->getPerson();
+            }
+        }
+    }
+    writer->writeStartElement("references");
+    foreach (Person* person, listOfPersons){
+        writer->writeStartElement("TLCPerson");
+        writer->writeAttribute("id", person->getId());
+        writer->writeAttribute("href", person->getUri());
+        writer->writeAttribute("showAs", person->getUri());
+        writer->writeEndElement();
+    }
+    writer->writeEndElement();
+}
 
+void AknHandler::writeSpeeches(QXmlStreamWriter* writer, Sitting* sitting){
+    const QList<PlaylistItem*>* takesList = sitting->getTakes();
+    Take* take;
+    QList<TranscriptionItem*>* transcriptionItemsList;
+    TranscriptionItem* transcriptionItem;
+    Speech* speech;
+    for (int i=0; i < takesList->size(); i++){
+        take = static_cast<Take*>(takesList->at(i));
+        transcriptionItemsList = take->getItems();
+        for (int j=0; j<transcriptionItemsList->size(); j++){
+            transcriptionItem = transcriptionItemsList->at(j);
+            if(transcriptionItem->getType()==TranscriptionItem::TypeSpeech){
+                speech = static_cast<Speech*>(transcriptionItem);
+                writer->writeStartElement("speech");
+                writer->writeAttribute("by", speech->getPerson()->getId());
+                writer->writeStartElement("from");
+                writer->writeCharacters(speech->getPerson()->getName());
+                writer->writeEndElement();
                 writer->writeStartElement("p");
                 writer->writeCharacters(speech->getSpeech());
                 writer->writeEndElement();
