@@ -89,6 +89,7 @@ class TranscribeWidget : public QMainWindow
         void removeTranscriptionItem();
         // Persons widget slot
         void persons();
+        void setCurrentTakeIndex(const QModelIndex& current);
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -103,7 +104,7 @@ class TranscribeWidget : public QMainWindow
         libvlc_media_t *_m;
         // Models
         TranscriptionModel *model;
-        TranscriptionSortModel *filterModel;
+        QSortFilterProxyModel *filterModel;
         QItemSelectionModel *selectionModel;
         PersonsModel *personsModel;
         // Delegates

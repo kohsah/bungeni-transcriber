@@ -72,13 +72,6 @@ bool TranscriptionModel::insertItem (int /*row*/, TranscriptionItem * item){
     return true;
 }
 
-bool TranscriptionModel::setData(const QModelIndex & index,
-                                 TranscriptionItem *item, int role = Qt::EditRole){
-    items->replace(index.row(), item);
-    emit dataChanged(index, index);
-    return true;
-}
-
 int TranscriptionModel::rowCount(const QModelIndex &/*parent*/) const
 {
     return items->size();
@@ -91,18 +84,6 @@ void TranscriptionModel::loadTranscriptionItems(QList<TranscriptionItem *>* item
 }
 
 void TranscriptionModel::transcriptionItemDataChanged(const QModelIndex &index){
-    emit dataChanged(index, index);
-}
-
-TranscriptionSortModel::TranscriptionSortModel(QObject *parent)
-    : QSortFilterProxyModel(parent) {
-}
-
-bool TranscriptionSortModel::lessThan(const QModelIndex &left,
-                                       const QModelIndex &right) const {
-    TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(sourceModel()->data(left));
-    TranscriptionItem *leftItem = wrapper->ptr;
-    wrapper = qvariant_cast<TranscriptionItemWrapper*>(sourceModel()->data(right));
-    TranscriptionItem *rightItem = wrapper->ptr;
-    return leftItem->getStartTime() < rightItem->getStartTime();
+    this->beginResetModel();
+    this->endResetModel();
 }

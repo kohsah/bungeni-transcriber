@@ -41,7 +41,6 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
     bool removeRows(int row, int count, const QModelIndex &parent);
     bool insertItem (int row, TranscriptionItem *item);
-    bool setData(const QModelIndex & index, TranscriptionItem *item, int role);
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     void transcriptionItemDataChanged(const QModelIndex &index);
 public slots:
@@ -51,12 +50,4 @@ signals:
 private:
     QList<TranscriptionItem *> *items;
 };
-
-class TranscriptionSortModel : public QSortFilterProxyModel {
-public:
-    TranscriptionSortModel(QObject *parent=0);
-protected:
-    bool lessThan(const QModelIndex &, const QModelIndex &) const;
-};
-
 #endif // TRANSCRIPIONMODEL_HPP

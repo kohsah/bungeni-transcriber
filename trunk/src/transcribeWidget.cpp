@@ -57,7 +57,7 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     currentMediaFile = "";
     fileName="";
     _isPlaying=false;
-
+    currentIndex = QModelIndex();
     //Setup UI
     ui.setupUi(this);
     delegate = new ListViewDelegate(this);
@@ -108,6 +108,8 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
                       this, SLOT(playFile(QString)));
     QObject::connect( playlist, SIGNAL(loadTranscriptionItems(QList<TranscriptionItem*>*)),
                   model, SLOT(loadTranscriptionItems(QList<TranscriptionItem*>*)));
+    QObject::connect( playlist, SIGNAL(currentTakeIndex(const QModelIndex&)),
+                      this, SLOT(setCurrentTakeIndex(const QModelIndex&)));
     this->createActions();
     this->createMenus();
     unsetenv ("DESKTOP_STARTUP_ID");
@@ -129,6 +131,10 @@ TranscribeWidget::~TranscribeWidget()
     libvlc_media_player_release (_mp);
     libvlc_release (_vlcinstance);
     qDebug() << "Bungeni Transcribe : Exiting";
+}
+
+void TranscribeWidget::setCurrentTakeIndex(const QModelIndex& current){
+    currentIndex = current;
 }
 
 void TranscribeWidget :: stop()
@@ -317,7 +323,7 @@ void TranscribeWidget::removeTranscriptionItem()
 void TranscribeWidget::addSpeech()
 {
     Speech *newSpeech;
-    if (playlist->getSelected()>=0)
+    if (currentIndex.isValid())
     {
         if (model->rowCount() > 0){
             TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(
@@ -369,11 +375,13 @@ void TranscribeWidget::setupModelView(){
     model = new TranscriptionModel();
     ui.table->setItemDelegate(delegate);
     ui.table->setAlternatingRowColors(true);
-    filterModel = new TranscriptionSortModel();
+    //filterModel = new TranscriptionSortModel();
+    filterModel = new QSortFilterProxyModel();
     filterModel->setSourceModel(model);
+    filterModel->sort(0, Qt::AscendingOrder);
     filterModel->setDynamicSortFilter(true);
     filterModel->setSortRole(Qt::UserRole);
-    filterModel->sort(0, Qt::AscendingOrder);
+
     ui.table->setModel(filterModel);
 
     selectionModel = new QItemSelectionModel(filterModel);
