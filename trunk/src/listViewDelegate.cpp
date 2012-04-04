@@ -162,6 +162,9 @@ void ListViewDelegate::display(QModelIndex index)
 
 
 void ListViewDelegate::speechDraw(QPainter *&painter, const QStyleOptionViewItem &option, Speech* speech)const{
+    if(option.state & QStyle::State_Selected){
+        painter->fillRect(option.rect, option.palette.highlight());
+    }
     QTextDocument *qtext = new QTextDocument();
     qtext->setHtml(speech->getSpeech());
     QString speechText = qtext->toPlainText();
@@ -185,6 +188,7 @@ void ListViewDelegate::speechDraw(QPainter *&painter, const QStyleOptionViewItem
     painter->drawText(rSpeech.left(), rSpeech.top(),
                       rSpeech.width(), rSpeech.height(),
                       Qt::AlignTop|Qt::AlignLeft|Qt::TextWordWrap, speechText, &rSpeech);
+
 }
 
 QSize ListViewDelegate::speechSizeHint(const QStyleOptionViewItem &option,
