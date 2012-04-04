@@ -312,10 +312,10 @@ void TranscribeWidget::removeTranscriptionItem()
         if (ret == QMessageBox::Yes)
         {
             QModelIndexList indexes = selectionModel->selectedIndexes();
-            QModelIndex index;
-            foreach(index, indexes) {
-                model->removeRow(index.row(),QModelIndex());
-            }
+            QModelIndex index, mappedIndex;
+            index = indexes[0];
+            mappedIndex = filterModel->mapToSource(index);
+            model->removeRow(mappedIndex.row(),QModelIndex());
         }
     }
 }
@@ -386,7 +386,7 @@ void TranscribeWidget::setupModelView(){
 
     selectionModel = new QItemSelectionModel(filterModel);
     ui.table->setSelectionModel(selectionModel);
-    ui.table->setSelectionMode(QAbstractItemView::ContiguousSelection);
+    ui.table->setSelectionMode(QAbstractItemView::SingleSelection);
     ui.table->setSelectionRectVisible(true);
 
 }
