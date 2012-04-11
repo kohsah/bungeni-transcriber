@@ -26,7 +26,6 @@
 #include <QFile>
 #include <QMessageBox>
 #include "aknHandler.hpp"
-#include "model/speech.hpp"
 
 AknHandler::AknHandler():QObject(){
 
@@ -65,7 +64,7 @@ bool AknHandler::saveSittingToFile(Sitting *sitting, QString filePath){
     writer->writeStartElement("debateSection");
     writer->writeAttribute("name", "#default");
     writer->writeAttribute("id", "#id");
-    this->writeSpeeches(writer, sitting);
+    this->writeSpeeches(writer);
     writer->writeEndElement();  //end debateSection
     writer->writeEndElement();  //end debateContent
 
@@ -83,6 +82,8 @@ void AknHandler::writeReferences(QXmlStreamWriter* writer, Sitting* sitting){
     TranscriptionItem* transcriptionItem;
     Speech* speech;
     QSet<Person*> listOfPersons;
+    SpeechID *speechId;
+    int counter =  0;
     for (int i=0; i < takesList->size(); i++){
         take = static_cast<Take*>(takesList->at(i));
         transcriptionItemsList = take->getItems();
@@ -91,6 +92,11 @@ void AknHandler::writeReferences(QXmlStreamWriter* writer, Sitting* sitting){
             if(transcriptionItem->getType()==TranscriptionItem::TypeSpeech){
                 speech = static_cast<Speech*>(transcriptionItem);
                 listOfPersons << speech->getPerson();
+                speechId = new SpeechID;
+                speechId->speech = speech;
+                speechId->id = QString("sit")+QString::number(counter++);
+                speechId->take = take;
+                speechIdList.append(speechId);
             }
         }
     }
@@ -99,36 +105,37 @@ void AknHandler::writeReferences(QXmlStreamWriter* writer, Sitting* sitting){
         writer->writeStartElement("TLCPerson");
         writer->writeAttribute("id", person->getId());
         writer->writeAttribute("href", person->getUri());
-        writer->writeAttribute("showAs", person->getUri());
+        writer->writeAttribute("showAs", person->getName());
+        writer->writeEndElement();
+    }
+    writer->writeStartElement("proprietary");
+    foreach(SpeechID* s_id, speechIdList){
+
+        writer->writeStartElement("period");
+        QTime time = s_id->speech->getStartTime();
+        int i_time = time.hour()*3600+time.minute()*60+time.second();
+        QDateTime dateTime = s_id->take->getStartDateTime().addSecs(i_time);
+        writer->writeAttribute("start", dateTime.toString(QString("yyyy-MM-ddThh:mm:ss")));
+        time = s_id->speech->getEndTime();
+        i_time = time.hour()*3600+time.minute()*60+time.second();
+        dateTime = s_id->take->getStartDateTime().addSecs(i_time);
+        writer->writeAttribute("end", dateTime.toString(QString("yyyy-MM-ddThh:mm:ss")));
+        writer->writeAttribute("id", s_id->id);
         writer->writeEndElement();
     }
     writer->writeEndElement();
+    writer->writeEndElement();
 }
 
-void AknHandler::writeSpeeches(QXmlStreamWriter* writer, Sitting* sitting){
-    const QList<PlaylistItem*>* takesList = sitting->getTakes();
-    Take* take;
-    QList<TranscriptionItem*>* transcriptionItemsList;
-    TranscriptionItem* transcriptionItem;
-    Speech* speech;
-    for (int i=0; i < takesList->size(); i++){
-        take = static_cast<Take*>(takesList->at(i));
-        transcriptionItemsList = take->getItems();
-        for (int j=0; j<transcriptionItemsList->size(); j++){
-            transcriptionItem = transcriptionItemsList->at(j);
-            if(transcriptionItem->getType()==TranscriptionItem::TypeSpeech){
-                speech = static_cast<Speech*>(transcriptionItem);
-                writer->writeStartElement("speech");
-                writer->writeAttribute("by", speech->getPerson()->getId());
-                writer->writeStartElement("from");
-                writer->writeCharacters(speech->getPerson()->getName());
-                writer->writeEndElement();
-                writer->writeStartElement("p");
-                writer->writeCharacters(speech->getSpeech());
-                writer->writeEndElement();
-                writer->writeEndElement();
-            }
-        }
+void AknHandler::writeSpeeches(QXmlStreamWriter* writer){
+    foreach(SpeechID* s_id, speechIdList){
+        writer->writeStartElement("speech");
+        writer->writeAttribute("by", s_id->speech->getPerson()->getId());
+        writer->writeAttribute("period", s_id->id);
+        writer->writeStartElement("p");
+        writer->writeCharacters(s_id->speech->getSpeech());
+        writer->writeEndElement();
+        writer->writeEndElement();
     }
 }
 
@@ -203,3 +210,4 @@ void AknHandler::writeFRBRManifestation(QXmlStreamWriter* writer, Sitting* sitti
 Sitting* AknHandler::loadSittingFromFile(QString filePath){
 
 }
+

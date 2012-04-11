@@ -29,8 +29,17 @@
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QSet>
+#include <QList>
 #include "model/sitting.hpp"
 #include "model/person.hpp"
+#include "model/speech.hpp"
+
+struct SpeechID {
+    Speech *speech;
+    QString id;
+    Take *take;
+};
+
 class AknHandler : QObject{
     Q_OBJECT
 public:
@@ -38,11 +47,12 @@ public:
     bool saveSittingToFile(Sitting*, QString);
     Sitting* loadSittingFromFile(QString);
 private:
-    void writeSpeeches(QXmlStreamWriter*, Sitting*);
+    void writeSpeeches(QXmlStreamWriter*);
     void writeFRBRWork(QXmlStreamWriter*, Sitting*);
     void writeFRBRExpression(QXmlStreamWriter*, Sitting*);
     void writeFRBRManifestation(QXmlStreamWriter*, Sitting*);
     void writeReferences(QXmlStreamWriter*, Sitting*);
+    QList<SpeechID*> speechIdList;
 };
 
 #endif // AKNPARSER_HPP

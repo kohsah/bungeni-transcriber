@@ -36,12 +36,10 @@ public:
     explicit Speech(QTime, QTime, QString, Person*, bool);
     void setPerson(Person*);
     void setSpeech(QString);
-    void setId(int id);
     void setStartTime(QTime);
     void setEndTime(QTime);
     Person* getPerson();
     QString getSpeech();
-    int getId();
     QTime getStartTime();
     QTime getEndTime();
     void setComplete(bool);
@@ -50,7 +48,6 @@ public:
 protected:
     Person* person;
     QString speech;
-    int id;
     bool complete;
 };
 
