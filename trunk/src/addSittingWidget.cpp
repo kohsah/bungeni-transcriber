@@ -31,8 +31,11 @@ AddSittingWidget :: AddSittingWidget() : QDialog()
 {
     ui.setupUi(this);
     this->setModal(true);
+    ui.startDateTime->setDisplayFormat(QString("dd-MM-yyyy hh:mm:ss"));
+    ui.endDateTime->setDisplayFormat(QString("dd-MM-yyyy hh:mm:ss"));
+    QObject::connect(ui.startDateTime, SIGNAL(dateTimeChanged(QDateTime)), ui.endDateTime, SLOT(setDateTime(QDateTime)));
+    QObject::connect(ui.startDateTime, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(startDateTimeChanged(QDateTime)));
     ui.startDateTime->setDateTime(QDateTime::currentDateTime());
-    ui.endDateTime->setDateTime(QDateTime::currentDateTime());
 }
 
 AddSittingWidget :: ~AddSittingWidget()
@@ -98,4 +101,8 @@ void AddSittingWidget :: addNewGroupBoxProceessChecked(bool checked)
     {
         ui.addExistingGroupBox->setChecked(true);
     }
+}
+
+void AddSittingWidget::startDateTimeChanged(const QDateTime &dateTime){
+    ui.endDateTime->setMinimumDateTime(dateTime);
 }

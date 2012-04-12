@@ -31,8 +31,11 @@ SittingEditorWidget::SittingEditorWidget() : QDialog()
 {
     ui.setupUi(this);
     this->setModal(true);
-
-    ui.endDateTime->setDateTime(QDateTime::currentDateTime());
+    ui.startDateTime->setDisplayFormat(QString("dd-MM-yyyy hh:mm:ss"));
+    ui.endDateTime->setDisplayFormat(QString("dd-MM-yyyy hh:mm:ss"));
+    QObject::connect(ui.startDateTime, SIGNAL(dateTimeChanged(QDateTime)), ui.endDateTime, SLOT(setDateTime(QDateTime)));
+    QObject::connect(ui.startDateTime, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(startDateTimeChanged(QDateTime)));
+    ui.startDateTime->setDateTime(QDateTime::currentDateTime());
 }
 
 SittingEditorWidget::~SittingEditorWidget()
@@ -64,4 +67,8 @@ void SittingEditorWidget::setEndDateTime(QDateTime endDateTime){
 
 void SittingEditorWidget::setSittingName(QString sittingName){
     ui.sittingNameLineEdit->setText(sittingName);
+}
+
+void SittingEditorWidget::startDateTimeChanged(const QDateTime &dateTime){
+    ui.endDateTime->setMinimumDateTime(dateTime);
 }

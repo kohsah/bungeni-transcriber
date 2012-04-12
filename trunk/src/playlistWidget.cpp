@@ -196,7 +196,9 @@ void PlaylistWidget::takeMenu(){
 void PlaylistWidget::editTake(){
     QModelIndex index = treeView->selectionModel()->currentIndex();
     Take *item = static_cast<Take*>(index.internalPointer());
+    Sitting *sitting = static_cast<Sitting*>(item->parent());
     TakeEditorWidget *takeEditor = new TakeEditorWidget();
+    takeEditor->setParentTimes(sitting->getStartDateTime(), sitting->getEndDateTime());
     takeEditor->setStartTime(item->getStartDateTime());
     takeEditor->setEndTime(item->getEndDateTime());
     takeEditor->setTakeName(item->getName());
@@ -296,7 +298,10 @@ void PlaylistWidget::editSitting(){
 
 void PlaylistWidget::addTake(){
     QModelIndex index = treeView->selectionModel()->currentIndex();
+    Take *item = static_cast<Take*>(index.internalPointer());
+    Sitting *sitting = static_cast<Sitting*>(item->parent());
     TakeEditorWidget *addTakeWidget = new TakeEditorWidget();
+    addTakeWidget->setParentTimes(sitting->getStartDateTime(), sitting->getEndDateTime());
     addTakeWidget->setStartTime(QDateTime::currentDateTime());
     addTakeWidget->setEndTime(QDateTime::currentDateTime());
     int result = addTakeWidget->exec();

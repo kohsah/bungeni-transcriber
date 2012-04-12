@@ -47,5 +47,6 @@ class AddSittingWidget : public QDialog
         void addExistingGroupBoxProceessChecked(bool checked);
         void addNewGroupBoxProceessChecked(bool checked);
         void locateExistingPathSlot();
+        void startDateTimeChanged(const QDateTime &);
 };
 #endif // ADDSITTINGWIDGET_HPP

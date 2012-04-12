@@ -28,8 +28,10 @@
 TakeEditorWidget::TakeEditorWidget() : QDialog(){
     ui.setupUi(this);
     this->setModal(true);
-
-
+    ui.startDateTime->setDisplayFormat(QString("dd-MM-yyyy hh:mm:ss"));
+    ui.endDateTime->setDisplayFormat(QString("dd-MM-yyyy hh:mm:ss"));
+    QObject::connect(ui.startDateTime, SIGNAL(dateTimeChanged(QDateTime)), ui.endDateTime, SLOT(setDateTime(QDateTime)));
+    QObject::connect(ui.startDateTime, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(startDateTimeChanged(QDateTime)));
     QObject::connect( ui.locateMediaLocation, SIGNAL(clicked()), this, SLOT(locateMediaLocation()));
 }
 QString TakeEditorWidget::getTakeName(){
@@ -67,4 +69,15 @@ void TakeEditorWidget::setEndTime(QDateTime endTime){
 
 void TakeEditorWidget::setMediaLocation(QString mediaLocation){
     ui.mediaLocation->setText(mediaLocation);
+}
+
+void TakeEditorWidget::startDateTimeChanged(const QDateTime &dateTime){
+    ui.endDateTime->setMinimumDateTime(dateTime);
+}
+
+void TakeEditorWidget::setParentTimes(const QDateTime & startDateTime, const QDateTime &endDateTime){
+    ui.startDateTime->setMinimumDateTime(startDateTime);
+    ui.startDateTime->setMaximumDateTime(endDateTime);
+    ui.endDateTime->setMinimumDateTime(startDateTime);
+    ui.endDateTime->setMaximumDateTime(endDateTime);
 }

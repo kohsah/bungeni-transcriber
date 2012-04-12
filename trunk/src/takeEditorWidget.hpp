@@ -30,6 +30,7 @@
 #include <QString>
 #include <QDateTime>
 #include "ui/ui_takeEditor.h"
+#include "model/sitting.hpp"
 class TakeEditorWidget : public QDialog
 {
     Q_OBJECT
@@ -43,9 +44,12 @@ public:
     void setStartTime(QDateTime);
     void setEndTime(QDateTime);
     void setMediaLocation(QString);
+    void setParentTimes(const QDateTime &, const QDateTime &);
 private:
     Ui::addTakeDialog ui;
+    Sitting *sitting;
 public slots:
     void locateMediaLocation();
+    void startDateTimeChanged(const QDateTime &);
 };
 #endif // TakeEditorWidget_HPP

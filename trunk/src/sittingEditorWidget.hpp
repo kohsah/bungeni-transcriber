@@ -44,5 +44,7 @@ class SittingEditorWidget : public QDialog
         void setSittingName(QString);
     private:
         Ui::sittingEditor ui;
+    public slots:
+        void startDateTimeChanged(const QDateTime &);
 };
 #endif
