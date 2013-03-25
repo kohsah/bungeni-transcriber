@@ -1,8 +1,10 @@
 #Change INCLUDEPATH and LIBPATH below to where you have installed VLC
 #this will go away soon
-INCLUDEPATH = /home/undesa/libraries/vlc/include
-LIBPATH = /home/undesa/libraries/vlc/lib
+INCLUDEPATH = /home/undesa/vlc/lib/include
+LIBPATH = /home/undesa/vlc/lib/lib
 LIBS += -lvlc
+
+include(src/o2/o2.pri)
 
 HEADERS += src/transcribeWidget.hpp \
     src/controlsWidget.hpp \
@@ -34,7 +36,9 @@ HEADERS += src/transcribeWidget.hpp \
     src/personsWidget.hpp \
     src/model/person.hpp \
     src/model/personsModel.hpp \
-    src/personLineEdit.hpp
+    src/personLineEdit.hpp \
+    src/webViewWidget.hpp \
+    src/o2/o2.h
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
@@ -77,12 +81,21 @@ SOURCES += src/transcribeWidget.cpp \
     src/personsWidget.cpp \
     src/model/person.cpp \
     src/model/personsModel.cpp \
-    src/personLineEdit.cpp
+    src/personLineEdit.cpp \
+    src/webViewWidget.cpp \
+    src/o2/o2.cpp
+
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           
 CONFIG  +=  qt debug qxt
-QT += network xml
+QT += network xml webkit
 QXT += core gui
+
+
+
+
+
+
 
 
 

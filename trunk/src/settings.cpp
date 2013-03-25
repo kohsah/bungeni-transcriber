@@ -25,19 +25,15 @@ SettingsDialog::SettingsDialog(QWidget * parent ) : QDialog(parent)
 void SettingsDialog::saveData()
 {
     
-        QString hostname = ui.hostname->text();
-        QString port = ui.portnumber->text();
-        QString username = ui.username->text();
-        QString password = ui.password->text();
-        QSettings settings("transcribe.conf", QSettings::IniFormat);
-        settings.beginGroup("Network");
-        //QStringList keys = settings.childKeys();
-        settings.setValue("hostname", hostname);
-        settings.setValue("port", port);
-        settings.setValue("username", username);
-        settings.setValue("password", password);
-     settings.endGroup();
-        this->hide();
+    QString hostname = ui.hostname->text();
+    QString port = ui.portnumber->text();
+    QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.beginGroup("Network");
+    //QStringList keys = settings.childKeys();
+    settings.setValue("hostname", hostname);
+    settings.setValue("port", port);
+    settings.endGroup();
+    this->hide();
 }
 
 SettingsDialog::~SettingsDialog()

@@ -462,10 +462,12 @@ void TranscribeWidget::createMenus()
     fileMenu->addAction(getTakesAct);
     fileMenu->addAction(postTakesAct); */
     fileMenu->addSeparator();
+    fileMenu->addAction(loginAct);
+    fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu("&Edit");
-    editMenu->addAction(preferencesAct);
+    //editMenu->addAction(preferencesAct);
     editMenu->addAction(hotkeyAct);
     editMenu->addAction(personsAct);
 
@@ -506,6 +508,10 @@ void TranscribeWidget::createActions()
     hotkeyAct = new QAction("Hotkey Settings", this);
     hotkeyAct->setStatusTip("Hotkey Settings");
     connect(hotkeyAct, SIGNAL(triggered()), this, SLOT(hotkeySettings()));
+
+    loginAct = new QAction("Login", this);
+    loginAct->setStatusTip("Log in to Bungeni");
+    connect(loginAct, SIGNAL(triggered()), this, SLOT(login()));
     /*
     getTakesAct = new QAction("Get Takes", this);
     getTakesAct->setStatusTip("Get Assigned Takes from Bungeni Portal Server");
@@ -543,6 +549,44 @@ void TranscribeWidget::persons(){
     PersonsWidget * personsWidget = new PersonsWidget(this);
     personsWidget->setModel(personsModel);
     personsWidget->show();
+}
+
+void TranscribeWidget::login(){
+    oauth = new O2(this);
+    oauth->setClientId("test");
+    oauth->setClientSecret("a45434b9c80e68025b2c5578637d4355208af05a");
+    oauth->setRequestUrl("http://localhost:8081/oauth/authorize");
+    oauth->setRefreshTokenUrl("http://localhost:8081/oauth/access-token");
+    oauth->setTokenUrl("http://localhost:8081/oauth/access-token");
+    oauth->setLocalPort(80);
+    connect(oauth, SIGNAL(linkedChanged()), this, SLOT(onLinkedChanged()));
+    connect(oauth, SIGNAL(linkingFailed()), this, SLOT(onLinkingFailed()));
+    connect(oauth, SIGNAL(linkingSucceeded()), this, SLOT(onLinkingSucceeded()));
+    connect(oauth, SIGNAL(openBrowser(QUrl)), this, SLOT(onOpenBrowser(QUrl)));
+    connect(oauth, SIGNAL(closeBrowser()), this, SLOT(onCloseBrowser()));
+    oauth->link();
+}
+
+void TranscribeWidget::onLinkedChanged(){
+    qDebug() << "LINK CHANGED";
+}
+
+void TranscribeWidget::onLinkingFailed(){
+    qDebug() << "FAILURE";
+}
+
+void TranscribeWidget::onLinkingSucceeded(){
+    qDebug() << "SUCCESS";
+}
+
+void TranscribeWidget::onOpenBrowser(const QUrl &url){
+    qDebug() << "Open Browser";
+    webView = new WebViewWidget();
+    webView->show();
+}
+
+void TranscribeWidget::onCloseBrowser(){
+
 }
 
 void TranscribeWidget::jumpPosition(int change)

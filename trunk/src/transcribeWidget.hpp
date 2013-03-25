@@ -50,10 +50,11 @@
 #include "network/formpost/formpost.hpp"
 #include "controlsWidget.hpp"
 #include "playlistWidget.hpp"
+#include "webViewWidget.hpp"
 #include "model/transcriptionModel.hpp"
 #include "model/personsModel.hpp"
 #include "util/util.hpp"
-
+#include "o2/o2.h"
 class TranscribeWidget : public QMainWindow
 {
     Q_OBJECT
@@ -89,7 +90,14 @@ class TranscribeWidget : public QMainWindow
         void removeTranscriptionItem();
         // Persons widget slot
         void persons();
+        void login();
         void setCurrentTakeIndex(const QModelIndex& current);
+    protected slots:
+        void onLinkedChanged();
+        void onLinkingFailed();
+        void onLinkingSucceeded();
+        void onOpenBrowser(const QUrl& url);
+        void onCloseBrowser();
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -130,6 +138,7 @@ class TranscribeWidget : public QMainWindow
         QAction *aboutAct;
         QAction *hotkeyAct;
         QAction *personsAct;
+        QAction *loginAct;
         ControlsWidget *controls;
         PlaylistWidget *playlist;
 
@@ -153,6 +162,10 @@ class TranscribeWidget : public QMainWindow
         QString mediaLocation;
         QString currentMediaFile;
         bool _isPlaying;
+
+        //OAUTH
+        O2 *oauth;
+        WebViewWidget *webView;
 };
 
 #endif
