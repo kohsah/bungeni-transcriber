@@ -552,41 +552,13 @@ void TranscribeWidget::persons(){
 }
 
 void TranscribeWidget::login(){
-    oauth = new O2(this);
-    oauth->setClientId("test");
-    oauth->setClientSecret("a45434b9c80e68025b2c5578637d4355208af05a");
-    oauth->setRequestUrl("http://localhost:8081/oauth/authorize");
-    oauth->setRefreshTokenUrl("http://localhost:8081/oauth/access-token");
-    oauth->setTokenUrl("http://localhost:8081/oauth/access-token");
-    oauth->setLocalPort(80);
-    connect(oauth, SIGNAL(linkedChanged()), this, SLOT(onLinkedChanged()));
-    connect(oauth, SIGNAL(linkingFailed()), this, SLOT(onLinkingFailed()));
-    connect(oauth, SIGNAL(linkingSucceeded()), this, SLOT(onLinkingSucceeded()));
-    connect(oauth, SIGNAL(openBrowser(QUrl)), this, SLOT(onOpenBrowser(QUrl)));
-    connect(oauth, SIGNAL(closeBrowser()), this, SLOT(onCloseBrowser()));
+    oauth = new OAuth2(this);
+    oauth->setClientID(QString("test"));
+    oauth->setClientSecret(QString("c524386990c05cb152012de12fa49355e8a84898"));
+    oauth->setAuthorizationCodeURL(QUrl("http://localhost:8081/oauth/authorize"));
+    oauth->setRedirectURI(QUrl("http://localhost/"));
+    oauth->setAccessTokenURL(QUrl("http://localhost:8081/oauth/access-token"));
     oauth->link();
-}
-
-void TranscribeWidget::onLinkedChanged(){
-    qDebug() << "LINK CHANGED";
-}
-
-void TranscribeWidget::onLinkingFailed(){
-    qDebug() << "FAILURE";
-}
-
-void TranscribeWidget::onLinkingSucceeded(){
-    qDebug() << "SUCCESS";
-}
-
-void TranscribeWidget::onOpenBrowser(const QUrl &url){
-    qDebug() << "Open Browser";
-    webView = new WebViewWidget();
-    webView->show();
-}
-
-void TranscribeWidget::onCloseBrowser(){
-
 }
 
 void TranscribeWidget::jumpPosition(int change)

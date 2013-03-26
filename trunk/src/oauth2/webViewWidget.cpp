@@ -27,18 +27,21 @@
 #include <QDebug>
 #include "webViewWidget.hpp"
 
-WebViewWidget :: WebViewWidget()
+WebViewWidget :: WebViewWidget(QUrl authorizationURL, QUrl redirectURI_)
 {
-    QGridLayout *gLayout = new QGridLayout;
+    QGridLayout *gLayout = new QGridLayout();
+    redirectURI = redirectURI_;
     resize(400, 300);
     view = new QWebView(this);
-    connect(view, SIGNAL(urlChanged(QUrl&)), this, SLOT(onLinkChanged(QUrl&)));
+    connect(view, SIGNAL(urlChanged(const QUrl&)), this, SLOT(onLinkChanged(const QUrl&)));
     gLayout->addWidget(view, 0, 0, 1, 1);
     setLayout(gLayout);
-    view->load(QUrl("http://localhost:8081/oauth/authorise?client_secret=b055cafa5b528ed3ada2b9e91c9015344d841bc2&client_id=test&response_type=authorization_code"));
+    view->load(authorizationURL);
 }
 
-void WebViewWidget :: onLinkChanged(const QUrl & url)
+void WebViewWidget :: onLinkChanged(const QUrl& url)
 {
-    qDebug() << "LINK CHANGED";
+    if (url.toString(QUrl::RemoveQuery) == this->redirectURI.toString()){
+        emit authorized(url.queryItemValue(QString("code")));
+    }
 }

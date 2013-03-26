@@ -50,11 +50,11 @@
 #include "network/formpost/formpost.hpp"
 #include "controlsWidget.hpp"
 #include "playlistWidget.hpp"
-#include "webViewWidget.hpp"
 #include "model/transcriptionModel.hpp"
 #include "model/personsModel.hpp"
 #include "util/util.hpp"
-#include "o2/o2.h"
+#include "oauth2/oauth2.hpp"
+
 class TranscribeWidget : public QMainWindow
 {
     Q_OBJECT
@@ -92,12 +92,6 @@ class TranscribeWidget : public QMainWindow
         void persons();
         void login();
         void setCurrentTakeIndex(const QModelIndex& current);
-    protected slots:
-        void onLinkedChanged();
-        void onLinkingFailed();
-        void onLinkingSucceeded();
-        void onOpenBrowser(const QUrl& url);
-        void onCloseBrowser();
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -164,8 +158,7 @@ class TranscribeWidget : public QMainWindow
         bool _isPlaying;
 
         //OAUTH
-        O2 *oauth;
-        WebViewWidget *webView;
+        OAuth2 *oauth;
 };
 
 #endif
