@@ -1,13 +1,14 @@
- <!DOCTYPE RCC><RCC version="1.0">
- <qresource>
-     <file>pixmaps/stop.png</file>
-     <file>pixmaps/faster.png</file>
-     <file>pixmaps/slower.png</file>
-     <file>pixmaps/play.png</file>
-     <file>pixmaps/previous.png</file>
-     <file>pixmaps/next.png</file>
-     <file>pixmaps/add.png</file>
-     <file>pixmaps/remove.png</file>
-     <file>pixmaps/pause.png</file>
- </qresource>
- </RCC>
+<RCC>
+    <qresource prefix="/">
+        <file>pixmaps/stop.png</file>
+        <file>pixmaps/faster.png</file>
+        <file>pixmaps/slower.png</file>
+        <file>pixmaps/play.png</file>
+        <file>pixmaps/previous.png</file>
+        <file>pixmaps/next.png</file>
+        <file>pixmaps/add.png</file>
+        <file>pixmaps/remove.png</file>
+        <file>pixmaps/pause.png</file>
+        <file>pixmaps/refresh.png</file>
+    </qresource>
+</RCC>

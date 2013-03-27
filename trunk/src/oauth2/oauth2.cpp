@@ -86,19 +86,24 @@ void OAuth2 :: link(){
 void OAuth2 :: onAuthCode(QString authCode) {
     authorizationCode = authCode;
     webView->close();
-    initAccessToken();
+    initAccessToken(false);
 }
 
-void OAuth2 :: initAccessToken(){
+void OAuth2 :: initAccessToken(bool refresh){
     QNetworkRequest request;
     QUrl accessUrl = QUrl(this->accessTokenURL);
-    accessUrl.addQueryItem("grant_type", "authorization_code");
-    accessUrl.addQueryItem("client_id", this->clientID);
-    accessUrl.addQueryItem("code", this->authorizationCode);
-    request.setUrl(accessUrl);
-
+    if (!refresh){
+        accessUrl.addQueryItem("grant_type", "authorization_code");
+        accessUrl.addQueryItem("client_id", this->clientID);
+        accessUrl.addQueryItem("code", this->authorizationCode);
+        request.setUrl(accessUrl);
+    }
+    else {
+        accessUrl.addQueryItem("grant_type", "refresh_token");
+        accessUrl.addQueryItem("refresh_token", this->refreshToken);
+        request.setUrl(accessUrl);
+    }
     reply = manager->get(request);
-    qDebug() << "INITIALISING ACCESS TOKEN" << accessUrl;
     networkData.clear();
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(networkError(QNetworkReply::NetworkError)));
@@ -122,6 +127,25 @@ void OAuth2 :: onAccessTokenReadFinished(){
     this->accessToken = result["access_token"].toString();
     this->accessTokenExpiryInSeconds = result["expiry"].toInt();
     this->refreshToken = result["refresh_token"].toString();
+    this->lastAccessTokenRefresh = QDateTime::currentDateTime();
+}
+
+QString OAuth2 :: getAccessToken(){
+    if (this->accessToken.isEmpty()){
+        qDebug() << "Access token not initialised";
+        return QString();
+    }
+    else {
+        if (this->lastAccessTokenRefresh.addSecs(
+            this->accessTokenExpiryInSeconds) <
+            QDateTime::currentDateTime()){
+                this->initAccessToken(true);
+                return this->accessToken;
+            }
+        else {
+            return this->accessToken;
+        }
+    }
 }
 
 void OAuth2 :: networkError(QNetworkReply::NetworkError){

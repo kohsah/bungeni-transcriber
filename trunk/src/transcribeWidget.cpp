@@ -512,6 +512,11 @@ void TranscribeWidget::createActions()
     loginAct = new QAction("Login", this);
     loginAct->setStatusTip("Log in to Bungeni");
     connect(loginAct, SIGNAL(triggered()), this, SLOT(login()));
+
+    logoutAct = new QAction("Logout", this);
+    logoutAct->setStatusTip("Log out of Bungeni");
+    connect(logoutAct, SIGNAL(triggered()), this, SLOT(logout()));
+
     /*
     getTakesAct = new QAction("Get Takes", this);
     getTakesAct->setStatusTip("Get Assigned Takes from Bungeni Portal Server");
@@ -559,6 +564,14 @@ void TranscribeWidget::login(){
     oauth->setRedirectURI(QUrl("http://localhost/"));
     oauth->setAccessTokenURL(QUrl("http://localhost:8081/oauth/access-token"));
     oauth->link();
+    this->fileMenu->removeAction(loginAct);
+    this->fileMenu->insertAction(exitAct, logoutAct);
+}
+
+void TranscribeWidget::logout(){
+    delete oauth;
+    this->fileMenu->removeAction(logoutAct);
+    this->fileMenu->insertAction(exitAct, loginAct);
 }
 
 void TranscribeWidget::jumpPosition(int change)

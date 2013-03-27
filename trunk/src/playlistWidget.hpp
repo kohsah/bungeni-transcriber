@@ -59,16 +59,18 @@ class PlaylistWidget : public QWidget
         void setupModelView();
         QTreeView *treeView;
         QGridLayout *layout;
-        QPushButton *addToPlaylistButton;
-        QPushButton *removeFromPlaylistButton;
+        //QPushButton *addToPlaylistButton;
+        //QPushButton *removeFromPlaylistButton;
+        QPushButton *refreshPlaylistButton;
         QSpacerItem *horizontalSpacer;
         AddSittingWidget *addToPlaylist;
         int current;
         void takeMenu();
         void sittingMenu();
     public slots:
-        void addItemToPlaylist();
-        void addToPlaylistDialog();
+        //void addItemToPlaylist();
+        //void addToPlaylistDialog();
+        void refreshPlaylistClicked();
         void itemClicked(const QModelIndex&);
         void prev();
         void next();
@@ -81,6 +83,7 @@ class PlaylistWidget : public QWidget
         void saveSitting();
         void saveAsSitting();
     signals:
+        void refreshPlaylist();
         void playMediaFile(QString);
         void loadTranscriptionItems(QList<TranscriptionItem*>*);
         void currentTakeIndex(const QModelIndex&);

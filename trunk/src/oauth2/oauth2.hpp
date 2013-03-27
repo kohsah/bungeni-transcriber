@@ -67,7 +67,8 @@ private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QByteArray networkData;
-    void initAccessToken();
+    void initAccessToken(bool);
+    QDateTime lastAccessTokenRefresh;
 public slots:
     void onAuthCode(QString);
     void onAccessTokenReadyRead();

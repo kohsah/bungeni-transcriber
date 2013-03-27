@@ -42,7 +42,8 @@
 PlaylistWidget :: PlaylistWidget() : QWidget()
 {
     this->setupModelView();
-    QObject::connect( addToPlaylistButton, SIGNAL(clicked()), this, SLOT(addToPlaylistDialog()));
+    //QObject::connect( addToPlaylistButton, SIGNAL(clicked()), this, SLOT(addToPlaylistDialog()));
+    QObject::connect( refreshPlaylistButton, SIGNAL(clicked()), this, SLOT(refreshPlaylist()));
     QObject::connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
     QObject::connect( this, SIGNAL( currentTakeIndex(const QModelIndex&) ), model, SLOT( setCurrentTakeIndex( const QModelIndex & ) ) );
 }
@@ -51,15 +52,19 @@ PlaylistWidget :: ~PlaylistWidget()
 {
 }
 
-void PlaylistWidget :: addToPlaylistDialog()
+void PlaylistWidget :: refreshPlaylistClicked(){
+    emit refreshPlaylist();
+}
+
+/*void PlaylistWidget :: addToPlaylistDialog()
 {
     addToPlaylist = new AddSittingWidget();
     addToPlaylist->show();
     QObject::connect( addToPlaylist, SIGNAL(accepted()), this, SLOT(addItemToPlaylist()));
     
-}
+}*/
 
-void PlaylistWidget :: addItemToPlaylist()
+/*void PlaylistWidget :: addItemToPlaylist()
 {
     if (addToPlaylist->addExisting())
     {
@@ -74,7 +79,7 @@ void PlaylistWidget :: addItemToPlaylist()
         QModelIndex temp = QModelIndex();
         model->insertItem(temp, newSitting);
     }
-}
+}*/
 
 PlaylistModel * PlaylistWidget :: getModel()
 {
@@ -145,7 +150,7 @@ void PlaylistWidget :: setupModelView()
             SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(contextualMenu(const QPoint &)));
 
-    addToPlaylistButton = new QPushButton("");
+    /*addToPlaylistButton = new QPushButton("");
     addToPlaylistButton->setSizePolicy( sizePolicy );
     setupSmallButton( addToPlaylistButton );
     addToPlaylistButton->setIcon(QIcon(":/pixmaps/add.png"));
@@ -153,14 +158,20 @@ void PlaylistWidget :: setupModelView()
     removeFromPlaylistButton = new QPushButton("");
     removeFromPlaylistButton->setSizePolicy( sizePolicy );
     setupSmallButton( removeFromPlaylistButton );
-    removeFromPlaylistButton->setIcon(QIcon(":/pixmaps/remove.png"));
+    removeFromPlaylistButton->setIcon(QIcon(":/pixmaps/remove.png")); */
+
+    refreshPlaylistButton = new QPushButton("");
+    refreshPlaylistButton->setSizePolicy( sizePolicy );
+    setupSmallButton( refreshPlaylistButton );
+    refreshPlaylistButton->setIcon(QIcon(":/pixmaps/refresh.png"));
     
     horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     
     layout = new QGridLayout();
     layout->addWidget(treeView, 0, 0, 1, 3);
-    layout->addWidget(addToPlaylistButton, 1, 0);
-    layout->addWidget(removeFromPlaylistButton, 1, 1);
+    layout->addWidget(refreshPlaylistButton, 1, 0);
+    //layout->addWidget(addToPlaylistButton, 1, 0);
+    //layout->addWidget(removeFromPlaylistButton, 1, 1);
     layout->addItem(horizontalSpacer, 1, 2);
     
     setLayout(layout);

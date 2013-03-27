@@ -91,6 +91,7 @@ class TranscribeWidget : public QMainWindow
         // Persons widget slot
         void persons();
         void login();
+        void logout();
         void setCurrentTakeIndex(const QModelIndex& current);
     private:
         TranscribeWidget();
@@ -133,6 +134,7 @@ class TranscribeWidget : public QMainWindow
         QAction *hotkeyAct;
         QAction *personsAct;
         QAction *loginAct;
+        QAction *logoutAct;
         ControlsWidget *controls;
         PlaylistWidget *playlist;
 
