@@ -121,6 +121,7 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     poller=new QTimer(this);
     QObject::connect(poller, SIGNAL(timeout()), this, SLOT(updateInterface()));
     poller->start(100);
+    setupOAuth();
 }
 
 TranscribeWidget::~TranscribeWidget()
@@ -462,12 +463,17 @@ void TranscribeWidget::createMenus()
     fileMenu->addAction(getTakesAct);
     fileMenu->addAction(postTakesAct); */
     fileMenu->addSeparator();
-    fileMenu->addAction(loginAct);
+    if (!isLoggedIn()){
+        fileMenu->addAction(loginAct);
+    }
+    else {
+        fileMenu->addAction(logoutAct);
+    }
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu("&Edit");
-    //editMenu->addAction(preferencesAct);
+    editMenu->addAction(bungeniSettingsAct);
     editMenu->addAction(hotkeyAct);
     editMenu->addAction(personsAct);
 
@@ -475,7 +481,7 @@ void TranscribeWidget::createMenus()
     helpMenu->addAction(aboutAct);
 }
 
-void TranscribeWidget::preferences()
+void TranscribeWidget::bungeniSettings()
 {
     SettingsDialog *settings = new SettingsDialog(this);
     settings->show();
@@ -497,9 +503,9 @@ void TranscribeWidget::createActions()
     saveAsAct->setStatusTip("Save the document to disk");
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
     */
-    preferencesAct = new QAction("Preferences", this);
-    preferencesAct->setStatusTip("Bungeni Transcribe Preferences");
-    connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
+    bungeniSettingsAct = new QAction("Bungeni Settings", this);
+    bungeniSettingsAct->setStatusTip("Bungeni Settings");
+    connect(bungeniSettingsAct, SIGNAL(triggered()), this, SLOT(bungeniSettings()));
 
     personsAct = new QAction("Persons", this);
     personsAct->setStatusTip("Persons");
@@ -556,20 +562,54 @@ void TranscribeWidget::persons(){
     personsWidget->show();
 }
 
-void TranscribeWidget::login(){
-    oauth = new OAuth2(this);
-    oauth->setClientID(QString("test"));
-    oauth->setClientSecret(QString("c524386990c05cb152012de12fa49355e8a84898"));
-    oauth->setAuthorizationCodeURL(QUrl("http://localhost:8081/oauth/authorize"));
+void TranscribeWidget::setupOAuth(){
+    QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.beginGroup("Network");
+    QString hostName = settings.value("hostname").toString();
+    QString clientSecret = settings.value("clientSecret").toString();
+    settings.endGroup();
+    settings.beginGroup("Security");
+    QString refreshToken = settings.value("refreshtoken").toString();
+    settings.endGroup();
+    oauth = new OAuth2(refreshToken);
+    oauth->setClientID(QString("bungeni_transcribe"));
+    oauth->setClientSecret(clientSecret);
+    oauth->setAuthorizationCodeURL(QUrl(hostName + QString("/oauth/authorize")));
     oauth->setRedirectURI(QUrl("http://localhost/"));
-    oauth->setAccessTokenURL(QUrl("http://localhost:8081/oauth/access-token"));
-    oauth->link();
+    oauth->setAccessTokenURL(QUrl(hostName + QString("/oauth/access-token")));
+    connect(oauth, SIGNAL(linkSucceeded()), this, SLOT(OAuthLinked()));
+}
+
+void TranscribeWidget::OAuthLinked(){
+    QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.beginGroup("Security");
+    settings.setValue("refreshtoken", oauth->getRefreshToken());
+    settings.endGroup();
     this->fileMenu->removeAction(loginAct);
     this->fileMenu->insertAction(exitAct, logoutAct);
 }
 
+bool TranscribeWidget::isLoggedIn(){
+    QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.beginGroup("Security");
+    QString rToken = settings.value("refreshtoken").toString();
+    settings.endGroup();
+    if (rToken.isEmpty()){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+void TranscribeWidget::login(){
+    oauth->link();
+}
+
 void TranscribeWidget::logout(){
-    delete oauth;
+    QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.remove("refreshtoken");
+    oauth->unlink();
     this->fileMenu->removeAction(logoutAct);
     this->fileMenu->insertAction(exitAct, loginAct);
 }

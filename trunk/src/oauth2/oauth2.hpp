@@ -40,7 +40,7 @@ struct OAuth2Error {
 class OAuth2 : public QObject {
     Q_OBJECT
 public:
-    OAuth2(QObject *parent = 0);
+    OAuth2(QString accessToken = QString(), QString refreshToken = QString());
     void setClientSecret(QString);
     void setClientID(QString);
     void setAuthorizationCodeURL(QUrl);
@@ -50,6 +50,7 @@ public:
     void unlink();
     bool getLinkStatus();
     QString getAccessToken();
+    QString getRefreshToken();
 protected:
     WebViewWidget *webView;
     QUrl createAuthorizationCodeURL();
@@ -63,7 +64,7 @@ private:
     QUrl authorizationCodeURL;
     QUrl accessTokenURL;
     QUrl redirectURI;
-    bool linkStatus;
+    bool authorizationStatus;
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QByteArray networkData;
@@ -76,7 +77,7 @@ public slots:
     void networkError(QNetworkReply::NetworkError);
     void networkSslErrors(QList<QSslError>);
 signals:
-    void linkSuccceded();
+    void linkSucceeded();
     void linkFailed(OAuth2Error&);
 };
 

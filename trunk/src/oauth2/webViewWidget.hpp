@@ -26,6 +26,7 @@
 #ifndef WEBVIEWWIDGET_HPP
 #define WEBVIEWWIDGET_HPP
 
+#include "ui_webViewWidget.h"
 #include <QDialog>
 #include <QtGui>
 #include <QtWebKit>
@@ -38,8 +39,8 @@ class WebViewWidget : public QDialog
     public:
         WebViewWidget(QUrl, QUrl);
     private:
-        QWebView* view;
         QUrl redirectURI;
+        Ui::webViewWidget ui;
     signals:
         void authorized(QString);
     public slots:

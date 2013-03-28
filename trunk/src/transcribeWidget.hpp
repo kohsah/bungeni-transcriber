@@ -77,7 +77,7 @@ class TranscribeWidget : public QMainWindow
         void play();
         void stop();
         void about();
-        void preferences();
+        void bungeniSettings();
         void hotkeySettings();
         void skipForward(int sec);
         void skipBackward(int sec);
@@ -93,6 +93,7 @@ class TranscribeWidget : public QMainWindow
         void login();
         void logout();
         void setCurrentTakeIndex(const QModelIndex& current);
+        void OAuthLinked();
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -128,7 +129,7 @@ class TranscribeWidget : public QMainWindow
         QAction *saveAsAct;
         QAction *getTakesAct;
         QAction *postTakesAct;
-        QAction *preferencesAct;
+        QAction *bungeniSettingsAct;
         QAction *exitAct;
         QAction *aboutAct;
         QAction *hotkeyAct;
@@ -161,6 +162,8 @@ class TranscribeWidget : public QMainWindow
 
         //OAUTH
         OAuth2 *oauth;
+        void setupOAuth();
+        bool isLoggedIn();
 };
 
 #endif

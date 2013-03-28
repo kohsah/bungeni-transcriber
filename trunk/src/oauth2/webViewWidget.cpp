@@ -29,14 +29,11 @@
 
 WebViewWidget :: WebViewWidget(QUrl authorizationURL, QUrl redirectURI_)
 {
-    QGridLayout *gLayout = new QGridLayout();
+    ui.setupUi(this);
     redirectURI = redirectURI_;
-    resize(400, 300);
-    view = new QWebView(this);
-    connect(view, SIGNAL(urlChanged(const QUrl&)), this, SLOT(onLinkChanged(const QUrl&)));
-    gLayout->addWidget(view, 0, 0, 1, 1);
-    setLayout(gLayout);
-    view->load(authorizationURL);
+    connect(ui.view, SIGNAL(urlChanged(const QUrl&)), this, SLOT(onLinkChanged(const QUrl&)));
+    ui.view->load(authorizationURL);
+    ui.webViewCurrentURL->setEnabled(false);
 }
 
 void WebViewWidget :: onLinkChanged(const QUrl& url)
@@ -44,4 +41,6 @@ void WebViewWidget :: onLinkChanged(const QUrl& url)
     if (url.toString(QUrl::RemoveQuery) == this->redirectURI.toString()){
         emit authorized(url.queryItemValue(QString("code")));
     }
+    ui.webViewCurrentURL->setText(url.toString());
+    ui.webViewCurrentURL->setCursorPosition(0);
 }

@@ -26,8 +26,9 @@
 #include "oauth2.hpp"
 #include "qjson/parser.h"
 
-OAuth2 :: OAuth2(QObject *parent){
-    linkStatus = false;
+OAuth2 :: OAuth2(QString accessToken_, QString refreshToken_){
+    accessToken = accessToken_;
+    refreshToken = refreshToken_;
     authorizationCodeURL = QUrl();
     accessTokenURL = QUrl();
     clientSecret = QString();
@@ -71,16 +72,21 @@ QUrl OAuth2 :: createAuthorizationCodeURL(){
 }
 
 void OAuth2 :: link(){
-    if (linkStatus == true){
-        // Already linked. Do nothing
+    if (!refreshToken.isEmpty()){
+        initAccessToken(true);
     }
     else {
         QUrl aURL = this->createAuthorizationCodeURL();
         webView = new WebViewWidget(aURL, this->redirectURI);
         connect(webView, SIGNAL(authorized(QString)), this, SLOT(onAuthCode(QString)));
         webView->show();
-        linkStatus = true;
     }
+    emit linkSucceeded();
+}
+
+void OAuth2::unlink(){
+    refreshToken = QString();
+    accessToken = QString();
 }
 
 void OAuth2 :: onAuthCode(QString authCode) {
@@ -145,6 +151,16 @@ QString OAuth2 :: getAccessToken(){
         else {
             return this->accessToken;
         }
+    }
+}
+
+QString OAuth2 :: getRefreshToken(){
+    if (this->refreshToken.isEmpty()){
+        qDebug() << "Refresh token is not initialised";
+        return QString();
+    }
+    else {
+        return this->refreshToken;
     }
 }
 

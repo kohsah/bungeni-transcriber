@@ -10,34 +10,24 @@ SettingsDialog::SettingsDialog(QWidget * parent ) : QDialog(parent)
     settings.beginGroup("Network");
     QObject::connect(ui.buttonBox, SIGNAL( accepted() ), this, SLOT( saveData() ) );
     QObject::connect(ui.buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-    ui.hostname->setText(settings.value("hostname").toString());
-    ui.portnumber->setText(settings.value("port").toString());
-    ui.username->setText(settings.value("username").toString());
-    
-    
-    //TO DO - Encrypt password.
-    
-    ui.password->setText(settings.value("password").toString());
+    ui.hostName->setText(settings.value("hostName").toString());
+    ui.clientSecret->setText(settings.value("clientSecret").toString());
     this->setModal(true);
     settings.endGroup();
 }
 
 void SettingsDialog::saveData()
 {
-    
-    QString hostname = ui.hostname->text();
-    QString port = ui.portnumber->text();
     QSettings settings("transcribe.conf", QSettings::IniFormat);
     settings.beginGroup("Network");
-    //QStringList keys = settings.childKeys();
-    settings.setValue("hostname", hostname);
-    settings.setValue("port", port);
+    QString hostName = ui.hostName->text();
+    if (hostName.endsWith("/")){
+        hostName.chop(1);
+    }
+    settings.setValue("hostName", hostName);
+    settings.setValue("clientSecret", ui.clientSecret->text());
     settings.endGroup();
     this->hide();
-}
-
-SettingsDialog::~SettingsDialog()
-{
 }
 
 void SettingsDialog::close()

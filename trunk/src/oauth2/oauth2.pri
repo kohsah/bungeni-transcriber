@@ -9,3 +9,7 @@ SOURCES += \
 HEADERS += \
     $$PWD/webViewWidget.hpp \
     $$PWD/oauth2.hpp \
+
+FORMS += \
+    src/oauth2/webViewWidget.ui
+
