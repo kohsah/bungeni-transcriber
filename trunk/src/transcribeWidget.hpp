@@ -94,6 +94,12 @@ class TranscribeWidget : public QMainWindow
         void logout();
         void setCurrentTakeIndex(const QModelIndex& current);
         void OAuthLinked();
+        void playlistRefresh();
+        //Bungeni
+        void onTakesReadyRead();
+        void onTakesReadFinished();
+        void networkError(QNetworkReply::NetworkError);
+        void networkSslErrors(QList<QSslError>);
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -164,6 +170,11 @@ class TranscribeWidget : public QMainWindow
         OAuth2 *oauth;
         void setupOAuth();
         bool isLoggedIn();
+
+        //Bungeni
+        QNetworkAccessManager *manager;
+        QNetworkReply *reply;
+        QByteArray networkData;
 };
 
 #endif

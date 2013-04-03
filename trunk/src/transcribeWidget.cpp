@@ -33,6 +33,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QMetaEnum>
+#include <QDialog>
 #include <QProgressDialog>
 #include <QFileDialog>
 #include <QSettings>
@@ -48,6 +49,8 @@
 #include "personsWidget.hpp"
 #include "model/speech.hpp"
 #include "model/agendaItem.hpp"
+
+#include "qjson/parser.h"
 
 TranscribeWidget * TranscribeWidget::instance = NULL;
 
@@ -110,6 +113,8 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
                   model, SLOT(loadTranscriptionItems(QList<TranscriptionItem*>*)));
     QObject::connect( playlist, SIGNAL(currentTakeIndex(const QModelIndex&)),
                       this, SLOT(setCurrentTakeIndex(const QModelIndex&)));
+    QObject::connect( playlist, SIGNAL(refreshPlaylist()),
+                      this, SLOT(playlistRefresh()));
     this->createActions();
     this->createMenus();
     unsetenv ("DESKTOP_STARTUP_ID");
@@ -122,6 +127,7 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     QObject::connect(poller, SIGNAL(timeout()), this, SLOT(updateInterface()));
     poller->start(100);
     setupOAuth();
+    manager = new QNetworkAccessManager(this);
 }
 
 TranscribeWidget::~TranscribeWidget()
@@ -568,10 +574,15 @@ void TranscribeWidget::setupOAuth(){
     QString hostName = settings.value("hostname").toString();
     QString clientSecret = settings.value("clientSecret").toString();
     settings.endGroup();
-    settings.beginGroup("Security");
-    QString refreshToken = settings.value("refreshtoken").toString();
-    settings.endGroup();
-    oauth = new OAuth2(refreshToken);
+    if (isLoggedIn()){
+        settings.beginGroup("Security");
+        QString refreshToken = settings.value("refreshtoken").toString();
+        settings.endGroup();
+        oauth = new OAuth2(refreshToken);
+    }
+    else {
+        oauth = new OAuth2();
+    }
     oauth->setClientID(QString("bungeni_transcribe"));
     oauth->setClientSecret(clientSecret);
     oauth->setAuthorizationCodeURL(QUrl(hostName + QString("/oauth/authorize")));
@@ -595,10 +606,10 @@ bool TranscribeWidget::isLoggedIn(){
     QString rToken = settings.value("refreshtoken").toString();
     settings.endGroup();
     if (rToken.isEmpty()){
-        return true;
+        return false;
     }
     else{
-        return false;
+        return true;
     }
 }
 
@@ -608,10 +619,60 @@ void TranscribeWidget::login(){
 
 void TranscribeWidget::logout(){
     QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.beginGroup("Security");
     settings.remove("refreshtoken");
+    settings.endGroup();
     oauth->unlink();
     this->fileMenu->removeAction(logoutAct);
     this->fileMenu->insertAction(exitAct, loginAct);
+}
+
+void TranscribeWidget::playlistRefresh(){
+    if (isLoggedIn()){
+        QSettings settings("transcribe.conf", QSettings::IniFormat);
+        settings.beginGroup("Network");
+        QString hostName = settings.value("hostname").toString();
+        settings.endGroup();
+        QNetworkRequest request;
+        QUrl accessUrl = QUrl(hostName+"/api/workspace/my-documents/inbox/");
+        accessUrl.addQueryItem("filter_type", "debate_record");
+        request.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+        request.setUrl(accessUrl);
+        reply = manager->get(request);
+        networkData.clear();
+        connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+                this, SLOT(networkError(QNetworkReply::NetworkError)));
+        connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
+                this, SLOT(networkSslErrors(QList<QSslError>)));
+        connect(reply, SIGNAL(finished()), this, SLOT(onTakesReadFinished()));
+        connect(reply, SIGNAL(readyRead()), this, SLOT(onTakesReadyRead()));
+    }
+    else {
+        QMessageBox::warning(this, tr("Not Logged In"),
+            tr("Please log in before refreshing the playlist"),
+            QMessageBox::Ok);
+    }
+}
+
+void TranscribeWidget::onTakesReadyRead(){
+    networkData.append(reply->readAll());
+}
+
+void TranscribeWidget::onTakesReadFinished(){
+    QJson::Parser parser;
+    bool ok;
+    QVariantMap result = parser.parse(this->networkData, &ok).toMap();
+    if (!ok) {
+        return;
+    }
+}
+
+void TranscribeWidget::networkError(QNetworkReply::NetworkError){
+
+}
+
+void TranscribeWidget::networkSslErrors(QList<QSslError>){
+
 }
 
 void TranscribeWidget::jumpPosition(int change)

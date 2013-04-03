@@ -43,7 +43,7 @@ PlaylistWidget :: PlaylistWidget() : QWidget()
 {
     this->setupModelView();
     //QObject::connect( addToPlaylistButton, SIGNAL(clicked()), this, SLOT(addToPlaylistDialog()));
-    QObject::connect( refreshPlaylistButton, SIGNAL(clicked()), this, SLOT(refreshPlaylist()));
+    QObject::connect( refreshPlaylistButton, SIGNAL(clicked()), this, SLOT(refreshPlaylistClicked()));
     QObject::connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
     QObject::connect( this, SIGNAL( currentTakeIndex(const QModelIndex&) ), model, SLOT( setCurrentTakeIndex( const QModelIndex & ) ) );
 }

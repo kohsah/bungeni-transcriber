@@ -26,8 +26,8 @@
 #include "oauth2.hpp"
 #include "qjson/parser.h"
 
-OAuth2 :: OAuth2(QString accessToken_, QString refreshToken_){
-    accessToken = accessToken_;
+OAuth2 :: OAuth2(QString refreshToken_){
+    accessToken = QString();
     refreshToken = refreshToken_;
     authorizationCodeURL = QUrl();
     accessTokenURL = QUrl();
@@ -131,15 +131,16 @@ void OAuth2 :: onAccessTokenReadFinished(){
         return;
     }
     this->accessToken = result["access_token"].toString();
-    this->accessTokenExpiryInSeconds = result["expiry"].toInt();
+    this->accessTokenExpiryInSeconds = result["expires_in"].toInt();
     this->refreshToken = result["refresh_token"].toString();
     this->lastAccessTokenRefresh = QDateTime::currentDateTime();
+    emit linkSucceeded();
 }
 
 QString OAuth2 :: getAccessToken(){
     if (this->accessToken.isEmpty()){
-        qDebug() << "Access token not initialised";
-        return QString();
+        this->initAccessToken(true);
+        return this->accessToken;
     }
     else {
         if (this->lastAccessTokenRefresh.addSecs(
@@ -156,7 +157,6 @@ QString OAuth2 :: getAccessToken(){
 
 QString OAuth2 :: getRefreshToken(){
     if (this->refreshToken.isEmpty()){
-        qDebug() << "Refresh token is not initialised";
         return QString();
     }
     else {
