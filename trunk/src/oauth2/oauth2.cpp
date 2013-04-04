@@ -26,9 +26,9 @@
 #include "oauth2.hpp"
 #include "qjson/parser.h"
 
-OAuth2 :: OAuth2(QString refreshToken_){
+OAuth2 :: OAuth2(){
     accessToken = QString();
-    refreshToken = refreshToken_;
+    refreshToken = QString();
     authorizationCodeURL = QUrl();
     accessTokenURL = QUrl();
     clientSecret = QString();
@@ -38,6 +38,10 @@ OAuth2 :: OAuth2(QString refreshToken_){
 
 void OAuth2 :: setClientID(QString clientID){
     this->clientID = clientID;
+}
+
+void OAuth2::setRefreshToken(QString refreshToken_){
+    this->refreshToken = refreshToken_;
 }
 
 void OAuth2 :: setAuthorizationCodeURL(QUrl authorizationCodeURL_){

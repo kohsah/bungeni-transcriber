@@ -574,20 +574,21 @@ void TranscribeWidget::setupOAuth(){
     QString hostName = settings.value("hostname").toString();
     QString clientSecret = settings.value("clientSecret").toString();
     settings.endGroup();
-    if (isLoggedIn()){
-        settings.beginGroup("Security");
-        QString refreshToken = settings.value("refreshtoken").toString();
-        settings.endGroup();
-        oauth = new OAuth2(refreshToken);
-    }
-    else {
-        oauth = new OAuth2();
-    }
+    oauth = new OAuth2();
     oauth->setClientID(QString("bungeni_transcribe"));
     oauth->setClientSecret(clientSecret);
     oauth->setAuthorizationCodeURL(QUrl(hostName + QString("/oauth/authorize")));
     oauth->setRedirectURI(QUrl("http://localhost/"));
     oauth->setAccessTokenURL(QUrl(hostName + QString("/oauth/access-token")));
+    if (isLoggedIn()){
+        settings.beginGroup("Security");
+        QString refreshToken = settings.value("refreshtoken").toString();
+        settings.endGroup();
+        oauth->setRefreshToken(refreshToken);
+        //initiliase access token
+        oauth->getAccessToken();
+    }
+    qDebug()<<"IS USER LOGGED IN"<<isLoggedIn();
     connect(oauth, SIGNAL(linkSucceeded()), this, SLOT(OAuthLinked()));
 }
 
@@ -658,13 +659,31 @@ void TranscribeWidget::onTakesReadyRead(){
     networkData.append(reply->readAll());
 }
 
+
+QModelIndex TranscribeWidget::addSitting(QString sittingName, QDateTime startTime, QDateTime endTime){
+    Sitting* newSitting = new Sitting(sittingName, startTime, endTime);
+    PlaylistModel *model = playlist->getModel();
+    QModelIndex parent_index = QModelIndex();
+    model->insertItem(parent_index, newSitting);
+    return model->index(model->rowCount()-1, 0);
+}
+
 void TranscribeWidget::onTakesReadFinished(){
     QJson::Parser parser;
     bool ok;
     QVariantMap result = parser.parse(this->networkData, &ok).toMap();
     if (!ok) {
+        QMessageBox::warning(this, tr("Playlist Refresh Error"),
+            tr("An error occured while refreshing the playlist"), QMessageBox::Ok);
         return;
     }
+    QList<QVariant> nodes = result["nodes"].toList();
+    for (int i = 0; i < nodes.size(); ++i) {
+        QMap<QString, QVariant> node = nodes.at(i).toMap();
+        //addSitting(node["title"], )
+     }
+    QMessageBox::information(this, tr("Playlist Refreshed"),
+        tr("The playlist has been refreshed"), QMessageBox::Ok);
 }
 
 void TranscribeWidget::networkError(QNetworkReply::NetworkError){

@@ -54,6 +54,7 @@ class PlaylistWidget : public QWidget
         PlaylistModel * getModel();
         void clearPlaylist();
         int getSelected();
+        void addSitting(QString, QDateTime, QDateTime);
     private:
         PlaylistModel *model;
         void setupModelView();

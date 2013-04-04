@@ -183,9 +183,9 @@ void PlaylistWidget::contextualMenu(const QPoint & point){
     if (item && item->getType() == PlaylistItem::TypeSitting){
         this->sittingMenu();
     }
-    else if (item && item->getType() == PlaylistItem::TypeTake){
+    /* else if (item && item->getType() == PlaylistItem::TypeTake){
         this->takeMenu();
-    }
+    } */
 }
 
 
@@ -241,12 +241,12 @@ void PlaylistWidget::sittingMenu(){
 
     QModelIndex index = treeView->selectionModel()->currentIndex();
     Sitting *sitting = static_cast<Sitting*>(index.internalPointer());
-
+    /*
     QAction *editAct = new QAction(tr("&Edit"), this);
     editAct->setStatusTip(tr("Edit selected sitting"));
     connect(editAct, SIGNAL(triggered()), this, SLOT(editSitting()));
     contextMenu.addAction(editAct);
-
+    */
     QAction *saveAct = new QAction(tr("&Save"), this);
     saveAct->setStatusTip(tr("Edit selected sitting"));
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveSitting()));
@@ -255,11 +255,11 @@ void PlaylistWidget::sittingMenu(){
     QString f = sitting->getAknFilePath();
     if(!f.isNull()){
         QAction *saveAsAct = new QAction(tr("&Save As"), this);
-        editAct->setStatusTip(tr("Save as"));
+        saveAsAct->setStatusTip(tr("Save as"));
         connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAsSitting()));
         contextMenu.addAction(saveAsAct);
     }
-
+    /*
     QAction *addTakeAct = new QAction(tr("&Add Take"), this);
     addTakeAct->setStatusTip(tr("Add a take to the selected sitting"));
     connect(addTakeAct, SIGNAL(triggered()), this, SLOT(addTake()));
@@ -269,7 +269,7 @@ void PlaylistWidget::sittingMenu(){
     removeAct->setStatusTip(tr("Remove selected sitting"));
     connect(removeAct, SIGNAL(triggered()), this, SLOT(removeSitting()));
     contextMenu.addAction(removeAct);
-
+    */
     contextMenu.exec(QCursor::pos());
 }
 

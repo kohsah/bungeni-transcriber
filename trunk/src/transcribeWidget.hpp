@@ -52,6 +52,7 @@
 #include "playlistWidget.hpp"
 #include "model/transcriptionModel.hpp"
 #include "model/personsModel.hpp"
+#include "model/sitting.hpp"
 #include "util/util.hpp"
 #include "oauth2/oauth2.hpp"
 
@@ -175,6 +176,7 @@ class TranscribeWidget : public QMainWindow
         QNetworkAccessManager *manager;
         QNetworkReply *reply;
         QByteArray networkData;
+        QModelIndex addSitting(QString, QDateTime, QDateTime);
 };
 
 #endif

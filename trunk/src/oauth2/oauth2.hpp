@@ -40,12 +40,13 @@ struct OAuth2Error {
 class OAuth2 : public QObject {
     Q_OBJECT
 public:
-    OAuth2(QString refreshToken = QString());
+    OAuth2();
     void setClientSecret(QString);
     void setClientID(QString);
     void setAuthorizationCodeURL(QUrl);
     void setAccessTokenURL(QUrl);
     void setRedirectURI(QUrl);
+    void setRefreshToken(QString);
     void link();
     void unlink();
     bool getLinkStatus();

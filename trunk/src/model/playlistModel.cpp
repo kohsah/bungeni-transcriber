@@ -95,8 +95,6 @@ void PlaylistModel::insertItem(QModelIndex &parent, PlaylistItem *item){
         parentItem = rootItem;
     this->beginInsertRows(parent, parentItem->childCount(), parentItem->childCount());
     parentItem->appendChild(item);
-    qDebug() << "Bungeni Transcribe : Item added to playlist";
-    qDebug() << "Number of sittings in playlist" << rootItem->childCount();
     this->endInsertRows();
 }
 
