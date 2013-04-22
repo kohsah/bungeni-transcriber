@@ -638,6 +638,7 @@ void TranscribeWidget::playlistRefresh(){
         QUrl accessUrl = QUrl(hostName+"/api/workspace/my-documents/inbox/");
         accessUrl.addQueryItem("filter_type", "debate_record");
         request.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+        qDebug() << oauth->getAccessToken().toAscii();
         request.setUrl(accessUrl);
         reply = manager->get(request);
         networkData.clear();
@@ -645,8 +646,7 @@ void TranscribeWidget::playlistRefresh(){
                 this, SLOT(networkError(QNetworkReply::NetworkError)));
         connect(reply, SIGNAL(sslErrors(QList<QSslError>)),
                 this, SLOT(networkSslErrors(QList<QSslError>)));
-        connect(reply, SIGNAL(finished()), this, SLOT(onTakesReadFinished()));
-        connect(reply, SIGNAL(readyRead()), this, SLOT(onTakesReadyRead()));
+        connect(reply, SIGNAL(finished()), this, SLOT(onWorkspaceReadFinished()));
     }
     else {
         QMessageBox::warning(this, tr("Not Logged In"),
@@ -655,35 +655,58 @@ void TranscribeWidget::playlistRefresh(){
     }
 }
 
-void TranscribeWidget::onTakesReadyRead(){
-    networkData.append(reply->readAll());
-}
 
-
-QModelIndex TranscribeWidget::addSitting(QString sittingName, QDateTime startTime, QDateTime endTime){
+void TranscribeWidget::addSitting(QString sittingName, QDateTime startTime, QDateTime endTime){
     Sitting* newSitting = new Sitting(sittingName, startTime, endTime);
     PlaylistModel *model = playlist->getModel();
     QModelIndex parent_index = QModelIndex();
     model->insertItem(parent_index, newSitting);
-    return model->index(model->rowCount()-1, 0);
 }
 
-void TranscribeWidget::onTakesReadFinished(){
+void TranscribeWidget::onDebateReadFinished(QNetworkReply *reply){
     QJson::Parser parser;
     bool ok;
-    QVariantMap result = parser.parse(this->networkData, &ok).toMap();
+    QByteArray data;
+    data.append(reply->readAll());
+    QVariantMap result = parser.parse(data, &ok).toMap();
     if (!ok) {
         QMessageBox::warning(this, tr("Playlist Refresh Error"),
             tr("An error occured while refreshing the playlist"), QMessageBox::Ok);
         return;
     }
+    qDebug() << result;
+    addSitting(result["title"].toString(), QDateTime::fromString(result["start_date"].toString(), Qt::ISODate), QDateTime::fromString(result["end_date"].toString(), Qt::ISODate));
+}
+
+
+void TranscribeWidget::onWorkspaceReadFinished(){
+    QJson::Parser parser;
+    bool ok;
+    networkData.append(reply->readAll());
+    QVariantMap result = parser.parse(networkData, &ok).toMap();
+    if (!ok) {
+        QMessageBox::warning(this, tr("Playlist Refresh Error"),
+            tr("An error occured while refreshing the playlist"), QMessageBox::Ok);
+        return;
+    }
+    QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.beginGroup("Network");
+    QString hostName = settings.value("hostname").toString();
+    settings.endGroup();
     QList<QVariant> nodes = result["nodes"].toList();
     for (int i = 0; i < nodes.size(); ++i) {
         QMap<QString, QVariant> node = nodes.at(i).toMap();
-        //addSitting(node["title"], )
+        QNetworkAccessManager *m = new QNetworkAccessManager(this);
+        qDebug() << hostName+"/api/workspace/my-documents/inbox/"+node["object_id"].toString();
+        QNetworkRequest req(QUrl(hostName+"/api/workspace/my-documents/inbox/"+node["object_id"].toString()));
+        req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+        QNetworkReply *r = m->get(req);
+        connect(r, SIGNAL(error(QNetworkReply::NetworkError)),
+                this, SLOT(networkError(QNetworkReply::NetworkError)));
+        connect(r, SIGNAL(sslErrors(QList<QSslError>)),
+                this, SLOT(networkSslErrors(QList<QSslError>)));
+        connect(m, SIGNAL(finished(QNetworkReply*)), this, SLOT(onDebateReadFinished(QNetworkReply*)));
      }
-    QMessageBox::information(this, tr("Playlist Refreshed"),
-        tr("The playlist has been refreshed"), QMessageBox::Ok);
 }
 
 void TranscribeWidget::networkError(QNetworkReply::NetworkError){

@@ -97,10 +97,10 @@ class TranscribeWidget : public QMainWindow
         void OAuthLinked();
         void playlistRefresh();
         //Bungeni
-        void onTakesReadyRead();
-        void onTakesReadFinished();
+        void onWorkspaceReadFinished();
         void networkError(QNetworkReply::NetworkError);
         void networkSslErrors(QList<QSslError>);
+        void onDebateReadFinished(QNetworkReply *);
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -176,7 +176,7 @@ class TranscribeWidget : public QMainWindow
         QNetworkAccessManager *manager;
         QNetworkReply *reply;
         QByteArray networkData;
-        QModelIndex addSitting(QString, QDateTime, QDateTime);
+        void addSitting(QString, QDateTime, QDateTime);
 };
 
 #endif

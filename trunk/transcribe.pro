@@ -36,7 +36,8 @@ HEADERS += src/transcribeWidget.hpp \
     src/personsWidget.hpp \
     src/model/person.hpp \
     src/model/personsModel.hpp \
-    src/personLineEdit.hpp
+    src/personLineEdit.hpp \
+    #src/takesDownloadManager.hpp
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
@@ -79,13 +80,16 @@ SOURCES += src/transcribeWidget.cpp \
     src/personsWidget.cpp \
     src/model/person.cpp \
     src/model/personsModel.cpp \
-    src/personLineEdit.cpp
+    src/personLineEdit.cpp \
+    #src/takesDownloadManager.cpp
 
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           
 CONFIG  +=  qt debug qxt
 QT += network xml webkit
 QXT += core gui
+
+
 
 
 
