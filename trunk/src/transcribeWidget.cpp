@@ -49,8 +49,7 @@
 #include "personsWidget.hpp"
 #include "model/speech.hpp"
 #include "model/agendaItem.hpp"
-
-#include "qjson/parser.h"
+#include "util/util.hpp"
 
 TranscribeWidget * TranscribeWidget::instance = NULL;
 
@@ -128,6 +127,7 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     poller->start(100);
     setupOAuth();
     manager = new QNetworkAccessManager(this);
+    currentUserDetails = new UserDetails();
 }
 
 TranscribeWidget::~TranscribeWidget()
@@ -568,44 +568,89 @@ void TranscribeWidget::persons(){
     personsWidget->show();
 }
 
+UserDetails::UserDetails(){
+    login = QString();
+}
+
+void UserDetails::setLogin(QString login_){
+    login = login_;
+}
+
+QString UserDetails::getLogin(){
+    return login;
+}
+
 void TranscribeWidget::setupOAuth(){
-    QSettings settings("transcribe.conf", QSettings::IniFormat);
-    settings.beginGroup("Network");
-    QString hostName = settings.value("hostname").toString();
-    QString clientSecret = settings.value("clientSecret").toString();
-    settings.endGroup();
+    QString hostName = this->getHostName();
     oauth = new OAuth2();
     oauth->setClientID(QString("bungeni_transcribe"));
-    oauth->setClientSecret(clientSecret);
+    oauth->setClientSecret(this->getClientSecret());
     oauth->setAuthorizationCodeURL(QUrl(hostName + QString("/oauth/authorize")));
     oauth->setRedirectURI(QUrl("http://localhost/"));
     oauth->setAccessTokenURL(QUrl(hostName + QString("/oauth/access-token")));
     if (isLoggedIn()){
-        settings.beginGroup("Security");
-        QString refreshToken = settings.value("refreshtoken").toString();
-        settings.endGroup();
-        oauth->setRefreshToken(refreshToken);
+        oauth->setRefreshToken(this->readRefreshToken());
         //initiliase access token
         oauth->getAccessToken();
     }
-    qDebug()<<"IS USER LOGGED IN"<<isLoggedIn();
     connect(oauth, SIGNAL(linkSucceeded()), this, SLOT(OAuthLinked()));
 }
 
-void TranscribeWidget::OAuthLinked(){
+
+QString TranscribeWidget::getHostName(){
+    QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.beginGroup("Network");
+    QString hostName = settings.value("hostname").toString();
+    settings.endGroup();
+    return hostName;
+}
+
+QString TranscribeWidget::getClientSecret(){
+    QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.beginGroup("Network");
+    QString clientSecret = settings.value("clientsecret").toString();
+    settings.endGroup();
+    return clientSecret;
+}
+
+void TranscribeWidget::saveRefreshToken(QString refreshToken){
     QSettings settings("transcribe.conf", QSettings::IniFormat);
     settings.beginGroup("Security");
-    settings.setValue("refreshtoken", oauth->getRefreshToken());
+    settings.setValue("refreshtoken", refreshToken);
     settings.endGroup();
+}
+
+QString TranscribeWidget::readRefreshToken(){
+    QSettings settings("transcribe.conf", QSettings::IniFormat);
+    settings.beginGroup("Security");
+    QString refreshToken = settings.value("refreshtoken").toString();
+    settings.endGroup();
+    return refreshToken;
+}
+
+void TranscribeWidget::OAuthLinked(){
+    this->saveRefreshToken(oauth->getRefreshToken());
     this->fileMenu->removeAction(loginAct);
     this->fileMenu->insertAction(exitAct, logoutAct);
+    QNetworkAccessManager *m = new QNetworkAccessManager(this);
+    QString hostName = this->getHostName();
+    QNetworkRequest req = QNetworkRequest(QUrl(hostName+"/api/users/current"));
+    req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+    QNetworkReply *r = m->get(req);
+    connect(r, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(networkError(QNetworkReply::NetworkError)));
+    connect(r, SIGNAL(sslErrors(QList<QSslError>)),
+            this, SLOT(networkSslErrors(QList<QSslError>)));
+    connect(m, SIGNAL(finished(QNetworkReply*)), this, SLOT(onUserReadFinished(QNetworkReply*)));
+}
+
+void TranscribeWidget::onUserReadFinished(QNetworkReply* reply){
+    QVariantMap result = parseReply(reply);
+    this->currentUserDetails->setLogin(result["login"].toString());
 }
 
 bool TranscribeWidget::isLoggedIn(){
-    QSettings settings("transcribe.conf", QSettings::IniFormat);
-    settings.beginGroup("Security");
-    QString rToken = settings.value("refreshtoken").toString();
-    settings.endGroup();
+    QString rToken = this->readRefreshToken();
     if (rToken.isEmpty()){
         return false;
     }
@@ -630,15 +675,11 @@ void TranscribeWidget::logout(){
 
 void TranscribeWidget::playlistRefresh(){
     if (isLoggedIn()){
-        QSettings settings("transcribe.conf", QSettings::IniFormat);
-        settings.beginGroup("Network");
-        QString hostName = settings.value("hostname").toString();
-        settings.endGroup();
+        QString hostName = this->getHostName();
         QNetworkRequest request;
         QUrl accessUrl = QUrl(hostName+"/api/workspace/my-documents/inbox/");
         accessUrl.addQueryItem("filter_type", "debate_record");
         request.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
-        qDebug() << oauth->getAccessToken().toAscii();
         request.setUrl(accessUrl);
         reply = manager->get(request);
         networkData.clear();
@@ -656,28 +697,31 @@ void TranscribeWidget::playlistRefresh(){
 }
 
 
-void TranscribeWidget::addSitting(QString sittingName, QDateTime startTime, QDateTime endTime){
+Sitting* TranscribeWidget::addSitting(QString sittingName, QDateTime startTime, QDateTime endTime){
     Sitting* newSitting = new Sitting(sittingName, startTime, endTime);
     PlaylistModel *model = playlist->getModel();
     QModelIndex parent_index = QModelIndex();
     model->insertItem(parent_index, newSitting);
+    return newSitting;
 }
 
 void TranscribeWidget::onDebateReadFinished(QNetworkReply *reply){
-    QJson::Parser parser;
-    bool ok;
-    QByteArray data;
-    data.append(reply->readAll());
-    QVariantMap result = parser.parse(data, &ok).toMap();
-    if (!ok) {
-        QMessageBox::warning(this, tr("Playlist Refresh Error"),
-            tr("An error occured while refreshing the playlist"), QMessageBox::Ok);
-        return;
+    QVariantMap result = parseReply(reply);
+    if (!result.isEmpty()){
+        Sitting *sitting = addSitting(result["title"].toString(), QDateTime::fromString(result["start_date"].toString(), Qt::ISODate), QDateTime::fromString(result["end_date"].toString(), Qt::ISODate));
+        QNetworkAccessManager *m = new QNetworkAccessManager(this);
+        QString hostName = this->getHostName();
+        qDebug() << hostName+"/api/workspace/my-documents/inbox/debate_record-"+result["debate_record_id"].toString()+"/takes?filter_transcriber_login="+this->currentUserDetails->getLogin();
+        QNetworkRequest req = QNetworkRequest(QUrl(hostName+"/api/workspace/my-documents/inbox/debate_record-"+result["debate_record_id"].toString()+"/takes?filter_transcriber_login="+this->currentUserDetails->getLogin()));
+        req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+        QNetworkReply *r = m->get(req);
+        connect(r, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(networkError(QNetworkReply::NetworkError)));
+        connect(r, SIGNAL(sslErrors(QList<QSslError>)),
+            this, SLOT(networkSslErrors(QList<QSslError>)));
+        connect(m, SIGNAL(finished(QNetworkReply*)), sitting, SLOT(onTakesReadFinished(QNetworkReply*)));
     }
-    qDebug() << result;
-    addSitting(result["title"].toString(), QDateTime::fromString(result["start_date"].toString(), Qt::ISODate), QDateTime::fromString(result["end_date"].toString(), Qt::ISODate));
 }
-
 
 void TranscribeWidget::onWorkspaceReadFinished(){
     QJson::Parser parser;
@@ -689,15 +733,11 @@ void TranscribeWidget::onWorkspaceReadFinished(){
             tr("An error occured while refreshing the playlist"), QMessageBox::Ok);
         return;
     }
-    QSettings settings("transcribe.conf", QSettings::IniFormat);
-    settings.beginGroup("Network");
-    QString hostName = settings.value("hostname").toString();
-    settings.endGroup();
+    QString hostName = this->getHostName();
     QList<QVariant> nodes = result["nodes"].toList();
     for (int i = 0; i < nodes.size(); ++i) {
         QMap<QString, QVariant> node = nodes.at(i).toMap();
         QNetworkAccessManager *m = new QNetworkAccessManager(this);
-        qDebug() << hostName+"/api/workspace/my-documents/inbox/"+node["object_id"].toString();
         QNetworkRequest req(QUrl(hostName+"/api/workspace/my-documents/inbox/"+node["object_id"].toString()));
         req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
         QNetworkReply *r = m->get(req);

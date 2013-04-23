@@ -28,6 +28,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QList>
+#include <QNetworkReply>
 #include "playlistItem.hpp"
 #include "take.hpp"
 
@@ -40,8 +41,11 @@ public:
     QString getAknFilePath();
     void setAknFilePath(QString);
     const QList<PlaylistItem*>* getTakes() const;
+public slots:
+    void onTakesReadFinished(QNetworkReply *);
 private:
     QString aknFilePath;
+    void addTake(QString name, QDateTime startTime, QDateTime endTime);
 };
 
 #endif // SITTING_HPP

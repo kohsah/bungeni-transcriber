@@ -56,6 +56,18 @@
 #include "util/util.hpp"
 #include "oauth2/oauth2.hpp"
 
+class UserDetails : public QObject
+{
+    Q_OBJECT
+public:
+    UserDetails();
+    QString getLogin();
+    void setLogin(QString);
+private:
+    QString login;
+};
+
+
 class TranscribeWidget : public QMainWindow
 {
     Q_OBJECT
@@ -101,6 +113,7 @@ class TranscribeWidget : public QMainWindow
         void networkError(QNetworkReply::NetworkError);
         void networkSslErrors(QList<QSslError>);
         void onDebateReadFinished(QNetworkReply *);
+        void onUserReadFinished(QNetworkReply *);
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -176,7 +189,12 @@ class TranscribeWidget : public QMainWindow
         QNetworkAccessManager *manager;
         QNetworkReply *reply;
         QByteArray networkData;
-        void addSitting(QString, QDateTime, QDateTime);
+        Sitting* addSitting(QString, QDateTime, QDateTime);
+        UserDetails *currentUserDetails;
+        QString getHostName();
+        QString getClientSecret();
+        void saveRefreshToken(QString);
+        QString readRefreshToken();
 };
 
 #endif

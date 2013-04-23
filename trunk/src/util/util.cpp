@@ -159,3 +159,15 @@ QString timeSecondstoString(int time)
     QString timeText = formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds);
     return timeText;
 }
+
+QVariantMap parseReply(QNetworkReply* reply){
+    QJson::Parser parser;
+    bool ok;
+    QByteArray data;
+    data.append(reply->readAll());
+    QVariantMap result = parser.parse(data, &ok).toMap();
+    if (!ok) {
+        return QVariantMap();
+    }
+    return result;
+}

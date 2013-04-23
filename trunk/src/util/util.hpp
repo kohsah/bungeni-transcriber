@@ -41,6 +41,8 @@
 #include  <QWheelEvent>
 #include  <QInputEvent>
 #include <QStandardItem>
+#include <QNetworkReply>
+#include "qjson/parser.h"
 class KeyShortcutEdit : public QLineEdit
 {
     Q_OBJECT
@@ -61,4 +63,5 @@ int qtEventToVLCKey( QKeyEvent *e );
 int qtWheelEventToVLCKey( QWheelEvent *e );
 QString VLCKeyToString( int val );
 QString timeSecondstoString(int time);
+QVariantMap parseReply(QNetworkReply*);
 #endif

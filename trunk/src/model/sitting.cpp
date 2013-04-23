@@ -23,14 +23,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA  02110-1301  USA
  ***********************************************************************/
-#include <QMenu>
 #include <QDebug>
-#include <QMessageBox>
 #include "sitting.hpp"
 #include "playlistModel.hpp"
-#include "../playlistWidget.hpp"
-#include "../takeEditorWidget.hpp"
-#include "../sittingEditorWidget.hpp"
+#include "../util/util.hpp"
 
 Sitting::Sitting(QString name_, QDateTime start_, QDateTime end_) :
     PlaylistItem(name_, start_, end_){
@@ -52,7 +48,24 @@ QString Sitting::getAknFilePath(){
 void Sitting::setAknFilePath(QString aknFilePath_){
     aknFilePath = aknFilePath_;
 }
+
 const QList<PlaylistItem*>* Sitting::getTakes() const{
     const QList<PlaylistItem*>* temp = &childItems;
     return temp;
+}
+
+void Sitting::addTake(QString name, QDateTime startTime, QDateTime endTime){
+    Take* newTake = new Take(name, startTime, endTime, QString("test"));
+    this->appendChild(newTake);
+}
+
+void Sitting::onTakesReadFinished(QNetworkReply *reply){
+    QVariantMap result = parseReply(reply);
+    if (!result.isEmpty()){
+        QList<QVariant> nodes = result["nodes"].toList();
+        for (int i = 0; i < nodes.size(); ++i) {
+            QMap<QString, QVariant> node = nodes.at(i).toMap();
+            this->addTake(node["debate_take_name"].toString(), QDateTime::fromString(node["start_date"].toString()), QDateTime::fromString(node["end_date"].toString()));
+        }
+    }
 }
