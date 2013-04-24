@@ -114,6 +114,7 @@ class TranscribeWidget : public QMainWindow
         void networkSslErrors(QList<QSslError>);
         void onDebateReadFinished(QNetworkReply *);
         void onUserReadFinished(QNetworkReply *);
+        void onTakesReadFinished(QNetworkReply *);
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -189,12 +190,13 @@ class TranscribeWidget : public QMainWindow
         QNetworkAccessManager *manager;
         QNetworkReply *reply;
         QByteArray networkData;
-        Sitting* addSitting(QString, QDateTime, QDateTime);
+        QModelIndex addSitting(QString, QDateTime, QDateTime);
         UserDetails *currentUserDetails;
         QString getHostName();
         QString getClientSecret();
         void saveRefreshToken(QString);
         QString readRefreshToken();
+        QMap<QString, QModelIndex> replySittingMap;
 };
 
 #endif

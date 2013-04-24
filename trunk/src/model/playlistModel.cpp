@@ -1,5 +1,6 @@
 #include <QDebug>
 #include "playlistModel.hpp"
+#include "take.hpp"
 
 PlaylistModel::PlaylistModel(QObject *parent)
     : QAbstractItemModel(parent){
@@ -28,6 +29,11 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const{
 Qt::ItemFlags PlaylistModel::flags(const QModelIndex &index) const{
     if (!index.isValid())
         return 0;
+    PlaylistItem *item = static_cast<PlaylistItem*>(index.internalPointer());
+    if ((item->getType() == PlaylistItem::TypeTake) &&
+            static_cast<Take*>(item)->getMediaLocation().isEmpty()){
+        return 0;
+    }
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
@@ -50,9 +56,8 @@ QModelIndex PlaylistModel::index(int row, int column,
     else
         parentItem = static_cast<PlaylistItem*>(parent.internalPointer());
     PlaylistItem *childItem = parentItem->child(row);
-    if (childItem){
+    if (childItem)
         return createIndex(row, column, childItem);
-    }
     else
         return QModelIndex();
 }
@@ -89,10 +94,12 @@ int PlaylistModel::columnCount(const QModelIndex &parent) const {
 
 void PlaylistModel::insertItem(QModelIndex &parent, PlaylistItem *item){
     PlaylistItem * parentItem;
-    if (parent.isValid())
+    if (parent.isValid()){
         parentItem = static_cast<PlaylistItem*>(parent.internalPointer());
-    else
+    }
+    else {
         parentItem = rootItem;
+    }
     this->beginInsertRows(parent, parentItem->childCount(), parentItem->childCount());
     parentItem->appendChild(item);
     this->endInsertRows();
@@ -108,3 +115,5 @@ void PlaylistModel::setCurrentTakeIndex(const QModelIndex& index){
     currentItemIndex = QPersistentModelIndex(index);
     emit dataChanged(index, index);
 }
+
+

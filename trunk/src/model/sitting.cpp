@@ -54,18 +54,3 @@ const QList<PlaylistItem*>* Sitting::getTakes() const{
     return temp;
 }
 
-void Sitting::addTake(QString name, QDateTime startTime, QDateTime endTime){
-    Take* newTake = new Take(name, startTime, endTime, QString("test"));
-    this->appendChild(newTake);
-}
-
-void Sitting::onTakesReadFinished(QNetworkReply *reply){
-    QVariantMap result = parseReply(reply);
-    if (!result.isEmpty()){
-        QList<QVariant> nodes = result["nodes"].toList();
-        for (int i = 0; i < nodes.size(); ++i) {
-            QMap<QString, QVariant> node = nodes.at(i).toMap();
-            this->addTake(node["debate_take_name"].toString(), QDateTime::fromString(node["start_date"].toString()), QDateTime::fromString(node["end_date"].toString()));
-        }
-    }
-}

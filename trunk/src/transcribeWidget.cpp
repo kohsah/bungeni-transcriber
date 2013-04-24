@@ -697,29 +697,49 @@ void TranscribeWidget::playlistRefresh(){
 }
 
 
-Sitting* TranscribeWidget::addSitting(QString sittingName, QDateTime startTime, QDateTime endTime){
+QModelIndex TranscribeWidget::addSitting(QString sittingName, QDateTime startTime, QDateTime endTime){
     Sitting* newSitting = new Sitting(sittingName, startTime, endTime);
     PlaylistModel *model = playlist->getModel();
     QModelIndex parent_index = QModelIndex();
     model->insertItem(parent_index, newSitting);
-    return newSitting;
+    QModelIndex sitting_index = model->index(model->rowCount(parent_index)-1, 0, parent_index);
+    return sitting_index;
 }
 
 void TranscribeWidget::onDebateReadFinished(QNetworkReply *reply){
     QVariantMap result = parseReply(reply);
     if (!result.isEmpty()){
-        Sitting *sitting = addSitting(result["title"].toString(), QDateTime::fromString(result["start_date"].toString(), Qt::ISODate), QDateTime::fromString(result["end_date"].toString(), Qt::ISODate));
+        QModelIndex sitting_index = addSitting(result["title"].toString(), QDateTime::fromString(result["start_date"].toString(), Qt::ISODate), QDateTime::fromString(result["end_date"].toString(), Qt::ISODate));
         QNetworkAccessManager *m = new QNetworkAccessManager(this);
         QString hostName = this->getHostName();
         qDebug() << hostName+"/api/workspace/my-documents/inbox/debate_record-"+result["debate_record_id"].toString()+"/takes?filter_transcriber_login="+this->currentUserDetails->getLogin();
         QNetworkRequest req = QNetworkRequest(QUrl(hostName+"/api/workspace/my-documents/inbox/debate_record-"+result["debate_record_id"].toString()+"/takes?filter_transcriber_login="+this->currentUserDetails->getLogin()));
         req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+        qDebug() << oauth->getAccessToken().toAscii();
         QNetworkReply *r = m->get(req);
         connect(r, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(networkError(QNetworkReply::NetworkError)));
         connect(r, SIGNAL(sslErrors(QList<QSslError>)),
             this, SLOT(networkSslErrors(QList<QSslError>)));
-        connect(m, SIGNAL(finished(QNetworkReply*)), sitting, SLOT(onTakesReadFinished(QNetworkReply*)));
+        connect(m, SIGNAL(finished(QNetworkReply*)), this, SLOT(onTakesReadFinished(QNetworkReply*)));
+        replySittingMap[r->request().url().toString()] = sitting_index;
+    }
+}
+
+void TranscribeWidget::onTakesReadFinished(QNetworkReply *reply){
+    QVariantMap result = parseReply(reply);
+    if (!result.isEmpty()){
+        QList<QVariant> nodes = result["nodes"].toList();
+        for (int i = 0; i < nodes.size(); ++i){
+            QMap<QString, QVariant> node = nodes.at(i).toMap();
+            QString takeName = node["debate_take_name"].toString();
+            QDateTime takeStartTime = QDateTime::fromString(node["start_date"].toString(), Qt::ISODate);
+            QDateTime takeEndTime = QDateTime::fromString(node["end_date"].toString(), Qt::ISODate);
+            Take* newTake = new Take(takeName, takeStartTime, takeEndTime, QString());
+            PlaylistModel *model = playlist->getModel();
+            QModelIndex sitting_index = replySittingMap.value(reply->request().url().toString());
+            model->insertItem(sitting_index, newTake);
+        }
     }
 }
 
