@@ -128,6 +128,9 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     setupOAuth();
     manager = new QNetworkAccessManager(this);
     currentUserDetails = new UserDetails();
+    takesDownloadManager = new TakesDownloadManager(this);
+    QObject::connect( takesDownloadManager, SIGNAL(takeFinished(QModelIndex)),
+                      this, SLOT(takeFinished(QModelIndex)));
 }
 
 TranscribeWidget::~TranscribeWidget()
@@ -591,7 +594,7 @@ void TranscribeWidget::setupOAuth(){
     if (isLoggedIn()){
         oauth->setRefreshToken(this->readRefreshToken());
         //initiliase access token
-        oauth->getAccessToken();
+        oauth->initAccessToken(true);
     }
     connect(oauth, SIGNAL(linkSucceeded()), this, SLOT(OAuthLinked()));
 }
@@ -739,6 +742,8 @@ void TranscribeWidget::onTakesReadFinished(QNetworkReply *reply){
             PlaylistModel *model = playlist->getModel();
             QModelIndex sitting_index = replySittingMap.value(reply->request().url().toString());
             model->insertItem(sitting_index, newTake);
+            QModelIndex take_index = model->index(model->rowCount(sitting_index)-1, 0, sitting_index);
+            takesDownloadManager->append(take_index, node["media_url"].toString());
         }
     }
 }
@@ -767,6 +772,12 @@ void TranscribeWidget::onWorkspaceReadFinished(){
                 this, SLOT(networkSslErrors(QList<QSslError>)));
         connect(m, SIGNAL(finished(QNetworkReply*)), this, SLOT(onDebateReadFinished(QNetworkReply*)));
      }
+}
+
+
+void TranscribeWidget::takeFinished(QModelIndex takeIndex){
+    PlaylistModel *model = playlist->getModel();
+    model->customDataChanged(takeIndex, takeIndex);
 }
 
 void TranscribeWidget::networkError(QNetworkReply::NetworkError){

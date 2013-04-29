@@ -52,6 +52,7 @@ public:
     bool getLinkStatus();
     QString getAccessToken();
     QString getRefreshToken();
+    void initAccessToken(bool);
 protected:
     WebViewWidget *webView;
     QUrl createAuthorizationCodeURL();
@@ -69,7 +70,6 @@ private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QByteArray networkData;
-    void initAccessToken(bool);
     QDateTime lastAccessTokenRefresh;
 public slots:
     void onAuthCode(QString);

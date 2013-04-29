@@ -55,6 +55,7 @@
 #include "model/sitting.hpp"
 #include "util/util.hpp"
 #include "oauth2/oauth2.hpp"
+#include "takesDownloadManager.hpp"
 
 class UserDetails : public QObject
 {
@@ -115,6 +116,7 @@ class TranscribeWidget : public QMainWindow
         void onDebateReadFinished(QNetworkReply *);
         void onUserReadFinished(QNetworkReply *);
         void onTakesReadFinished(QNetworkReply *);
+        void takeFinished(QModelIndex);
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -197,6 +199,7 @@ class TranscribeWidget : public QMainWindow
         void saveRefreshToken(QString);
         QString readRefreshToken();
         QMap<QString, QModelIndex> replySittingMap;
+        TakesDownloadManager *takesDownloadManager;
 };
 
 #endif

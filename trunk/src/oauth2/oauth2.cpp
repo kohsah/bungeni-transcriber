@@ -142,21 +142,7 @@ void OAuth2 :: onAccessTokenReadFinished(){
 }
 
 QString OAuth2 :: getAccessToken(){
-    if (this->accessToken.isEmpty()){
-        this->initAccessToken(true);
-        return this->accessToken;
-    }
-    else {
-        if (this->lastAccessTokenRefresh.addSecs(
-            this->accessTokenExpiryInSeconds) <
-            QDateTime::currentDateTime()){
-                this->initAccessToken(true);
-                return this->accessToken;
-            }
-        else {
-            return this->accessToken;
-        }
-    }
+    return this->accessToken;
 }
 
 QString OAuth2 :: getRefreshToken(){

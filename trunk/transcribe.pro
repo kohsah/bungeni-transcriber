@@ -37,7 +37,7 @@ HEADERS += src/transcribeWidget.hpp \
     src/model/person.hpp \
     src/model/personsModel.hpp \
     src/personLineEdit.hpp \
-    #src/takesDownloadManager.hpp
+    src/takesDownloadManager.hpp
 
 FORMS += src/ui/transcribe.ui \
     src/ui/speechEditor.ui \
@@ -81,7 +81,7 @@ SOURCES += src/transcribeWidget.cpp \
     src/model/person.cpp \
     src/model/personsModel.cpp \
     src/personLineEdit.cpp \
-    #src/takesDownloadManager.cpp
+    src/takesDownloadManager.cpp
 
 UI_DIR      =  src/ui/
 RESOURCES   =  src/resources.qrc           
