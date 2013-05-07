@@ -711,7 +711,17 @@ QModelIndex TranscribeWidget::addSitting(QString sittingName, QDateTime startTim
 
 void TranscribeWidget::onDebateReadFinished(QNetworkReply *reply){
     QVariantMap result = parseReply(reply);
-    if (!result.isEmpty()){
+    QString sitting_title = result["title"].toString();
+    PlaylistModel *model = playlist->getModel();
+    bool sitting_present = false;
+    for (int i=0; i < model->rowCount(); i++){
+        QModelIndex index = model->index(i, 0);
+        Sitting *sitting = static_cast<Sitting*>(index.internalPointer());
+        if (sitting->getName() == sitting_title){
+            sitting_present = true;
+        }
+    }
+    if (!result.isEmpty() && sitting_present == false){
         QModelIndex sitting_index = addSitting(result["title"].toString(), QDateTime::fromString(result["start_date"].toString(), Qt::ISODate), QDateTime::fromString(result["end_date"].toString(), Qt::ISODate));
         QNetworkAccessManager *m = new QNetworkAccessManager(this);
         QString hostName = this->getHostName();
