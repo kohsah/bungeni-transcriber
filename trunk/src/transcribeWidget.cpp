@@ -64,10 +64,10 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     ui.setupUi(this);
     delegate = new ListViewDelegate(this);
     this->setupModelView();
-    if (!this->setupPersonsModel()){
+    /*if (!this->setupPersonsModel()){
         QMessageBox::warning(0, tr("Error"),
                              tr("Could not initialise persons model"));
-    }
+    }*/
     // Connect UI elements to their respective slots
     QObject::connect(ui.addButton, SIGNAL(clicked()), this, SLOT(addSpeech()));
     QObject::connect(ui.removeButton, SIGNAL(clicked()),
@@ -131,6 +131,7 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
     takesDownloadManager = new TakesDownloadManager(this);
     QObject::connect( takesDownloadManager, SIGNAL(takeFinished(QModelIndex)),
                       this, SLOT(takeFinished(QModelIndex)));
+    personsModel = new PersonsModel();
 }
 
 TranscribeWidget::~TranscribeWidget()
@@ -433,7 +434,6 @@ QList<Person *>* readPersonsFile(QString filePath){
 }
 
 bool TranscribeWidget::setupPersonsModel(){
-    personsModel = new PersonsModel();
     QString applicationDataPath = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
     QDir applicationDataDir = QDir(applicationDataPath);
     if (!applicationDataDir.exists("bungeni_transcriber")){
@@ -637,14 +637,47 @@ void TranscribeWidget::OAuthLinked(){
     this->fileMenu->insertAction(exitAct, logoutAct);
     QNetworkAccessManager *m = new QNetworkAccessManager(this);
     QString hostName = this->getHostName();
+
+    // Load current user's details
     QNetworkRequest req = QNetworkRequest(QUrl(hostName+"/api/users/current"));
     req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+    qDebug() << oauth->getAccessToken().toAscii();
     QNetworkReply *r = m->get(req);
     connect(r, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(networkError(QNetworkReply::NetworkError)));
     connect(r, SIGNAL(sslErrors(QList<QSslError>)),
             this, SLOT(networkSslErrors(QList<QSslError>)));
     connect(m, SIGNAL(finished(QNetworkReply*)), this, SLOT(onUserReadFinished(QNetworkReply*)));
+
+    // Load all user details
+    QNetworkRequest all_users_req = QNetworkRequest(QUrl(hostName+"/api/users/"));
+    all_users_req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+    QNetworkAccessManager *all_users_m = new QNetworkAccessManager(this);
+    QNetworkReply *all_users_reply = all_users_m->get(all_users_req);
+    connect(all_users_reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(networkError(QNetworkReply::NetworkError)));
+    connect(all_users_reply, SIGNAL(sslErrors(QList<QSslError>)),
+            this, SLOT(networkSslErrors(QList<QSslError>)));
+    connect(all_users_m, SIGNAL(finished(QNetworkReply*)), this, SLOT(onAllUsersReadFinished(QNetworkReply*)));
+}
+
+void TranscribeWidget::onAllUsersReadFinished(QNetworkReply* reply){
+    QVariantMap result = parseReply(reply);
+    Person *person;
+    QList<Person*>* persons = new QList<Person *>();
+    if (!result.isEmpty()){
+        QList<QVariant> nodes = result["nodes"].toList();
+        for (int i = 0; i < nodes.size(); ++i){
+            QMap<QString, QVariant> node = nodes.at(i).toMap();
+            person = new Person();
+            person->setId(node["user_id"].toString());
+            person->setName(node["combined_name"].toString());
+            person->setUri(node["object_id"].toString());
+            persons->append(person);
+        }
+    }
+    personsModel->loadPersonData(persons);
+    delegate->setPersonsModel(personsModel);
 }
 
 void TranscribeWidget::onUserReadFinished(QNetworkReply* reply){
