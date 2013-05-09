@@ -63,5 +63,6 @@ int qtEventToVLCKey( QKeyEvent *e );
 int qtWheelEventToVLCKey( QWheelEvent *e );
 QString VLCKeyToString( int val );
 QString timeSecondstoString(int time);
+int QTimeToSeconds(QTime);
 QVariantMap parseReply(QNetworkReply*);
 #endif

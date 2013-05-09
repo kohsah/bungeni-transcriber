@@ -733,8 +733,9 @@ void TranscribeWidget::playlistRefresh(){
 }
 
 
-QModelIndex TranscribeWidget::addSitting(QString sittingName, QDateTime startTime, QDateTime endTime){
+QModelIndex TranscribeWidget::addSitting(QString sittingName, QDateTime startTime, QDateTime endTime, QString sittingUrl){
     Sitting* newSitting = new Sitting(sittingName, startTime, endTime);
+    newSitting->setBungeniUrl(sittingUrl);
     PlaylistModel *model = playlist->getModel();
     QModelIndex parent_index = QModelIndex();
     model->insertItem(parent_index, newSitting);
@@ -755,11 +756,15 @@ void TranscribeWidget::onDebateReadFinished(QNetworkReply *reply){
         }
     }
     if (!result.isEmpty() && sitting_present == false){
-        QModelIndex sitting_index = addSitting(result["title"].toString(), QDateTime::fromString(result["start_date"].toString(), Qt::ISODate), QDateTime::fromString(result["end_date"].toString(), Qt::ISODate));
-        QNetworkAccessManager *m = new QNetworkAccessManager(this);
         QString hostName = this->getHostName();
-        qDebug() << hostName+"/api/workspace/my-documents/inbox/debate_record-"+result["debate_record_id"].toString()+"/takes?filter_transcriber_login="+this->currentUserDetails->getLogin();
-        QNetworkRequest req = QNetworkRequest(QUrl(hostName+"/api/workspace/my-documents/inbox/debate_record-"+result["debate_record_id"].toString()+"/takes?filter_transcriber_login="+this->currentUserDetails->getLogin()));
+        QString sittingUrl = hostName+"/api/workspace/my-documents/inbox/debate_record-"+result["debate_record_id"].toString();
+        QModelIndex sitting_index = addSitting(
+            result["title"].toString(),
+            QDateTime::fromString(result["start_date"].toString(), Qt::ISODate),
+            QDateTime::fromString(result["end_date"].toString(), Qt::ISODate),
+            sittingUrl);
+        QNetworkAccessManager *m = new QNetworkAccessManager(this);
+        QNetworkRequest req = QNetworkRequest(QUrl(sittingUrl+"/takes?filter_transcriber_login="+this->currentUserDetails->getLogin()));
         req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
         qDebug() << oauth->getAccessToken().toAscii();
         QNetworkReply *r = m->get(req);

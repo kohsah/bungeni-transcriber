@@ -54,3 +54,10 @@ const QList<PlaylistItem*>* Sitting::getTakes() const{
     return temp;
 }
 
+QString Sitting::getBungeniUrl(){
+    return bungeniUrl;
+}
+
+void Sitting::setBungeniUrl(QString url){
+    bungeniUrl = url;
+}

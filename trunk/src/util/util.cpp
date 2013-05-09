@@ -32,6 +32,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QStandardItem>
+#include <QTime>
 
 #define HANDLE( qt, vk ) case Qt::qt : i_vlck |= vk; found = true;break
 
@@ -170,4 +171,7 @@ QVariantMap parseReply(QNetworkReply* reply){
         return QVariantMap();
     }
     return result;
+}
+int QTimeToSeconds(QTime time){
+    return time.hour()*3600+time.minute()*60+time.second();
 }

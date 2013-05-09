@@ -36,6 +36,7 @@
 #include <QSpacerItem>
 
 #include "addSittingWidget.hpp"
+#include "submitHandler.hpp"
 #include "model/playlistModel.hpp"
 #include "model/transcriptionItem.hpp"
 #define setupSmallButton( aButton ){  \
@@ -68,6 +69,7 @@ class PlaylistWidget : public QWidget
         int current;
         void takeMenu();
         void sittingMenu();
+        SubmitHandler *submitHandler;
     public slots:
         //void addItemToPlaylist();
         //void addToPlaylistDialog();
@@ -77,6 +79,7 @@ class PlaylistWidget : public QWidget
         void next();
         void contextualMenu(const QPoint&);
         void editTake();
+        void submitTake();
         void removeTake();
         void editSitting();
         void addTake();

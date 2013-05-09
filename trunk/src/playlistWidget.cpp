@@ -46,6 +46,7 @@ PlaylistWidget :: PlaylistWidget() : QWidget()
     QObject::connect( refreshPlaylistButton, SIGNAL(clicked()), this, SLOT(refreshPlaylistClicked()));
     QObject::connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemClicked( const QModelIndex & ) ) );
     QObject::connect( this, SIGNAL( currentTakeIndex(const QModelIndex&) ), model, SLOT( setCurrentTakeIndex( const QModelIndex & ) ) );
+    submitHandler = new SubmitHandler();
 }
 
 PlaylistWidget :: ~PlaylistWidget()
@@ -183,25 +184,31 @@ void PlaylistWidget::contextualMenu(const QPoint & point){
     if (item && item->getType() == PlaylistItem::TypeSitting){
         this->sittingMenu();
     }
-    /* else if (item && item->getType() == PlaylistItem::TypeTake){
+    else if (item && item->getType() == PlaylistItem::TypeTake){
         this->takeMenu();
-    } */
+    }
 }
 
 
 void PlaylistWidget::takeMenu(){
     QMenu contextMenu;
-    QAction *editAct = new QAction(tr("&Edit"), this);
-    connect(editAct, SIGNAL(triggered()), this, SLOT(editTake()));
-    editAct->setStatusTip(tr("Edit take"));
-    contextMenu.addAction(editAct);
-
+    QAction *submitAct = new QAction(tr("&Submit"), this);
+    connect(submitAct, SIGNAL(triggered()), this, SLOT(submitTake()));
+    submitAct->setStatusTip(tr("Submit speeches"));
+    contextMenu.addAction(submitAct);
+    /*
     QAction *removeAct = new QAction(tr("&Remove"), this);
     connect(removeAct, SIGNAL(triggered()), this, SLOT(removeTake()));
     removeAct->setStatusTip(tr("Remove take"));
-    contextMenu.addAction(removeAct);
+    contextMenu.addAction(removeAct);*/
 
     contextMenu.exec(QCursor::pos());
+}
+
+void PlaylistWidget::submitTake(){
+    QModelIndex index = treeView->selectionModel()->currentIndex();
+    Take *item = static_cast<Take*>(index.internalPointer());
+    submitHandler->submit(item);
 }
 
 void PlaylistWidget::editTake(){

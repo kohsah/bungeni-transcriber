@@ -82,6 +82,8 @@ class TranscribeWidget : public QMainWindow
         int getFileDuration();
         void endReached();
         QStandardItemModel* getPersonsModel();
+        //OAUTH
+        OAuth2 *oauth;
     public slots:
         void updateInterface();
         void changeVolume(int newVolume);
@@ -185,7 +187,6 @@ class TranscribeWidget : public QMainWindow
         bool _isPlaying;
 
         //OAUTH
-        OAuth2 *oauth;
         void setupOAuth();
         bool isLoggedIn();
 
@@ -193,7 +194,7 @@ class TranscribeWidget : public QMainWindow
         QNetworkAccessManager *manager;
         QNetworkReply *reply;
         QByteArray networkData;
-        QModelIndex addSitting(QString, QDateTime, QDateTime);
+        QModelIndex addSitting(QString, QDateTime, QDateTime, QString);
         UserDetails *currentUserDetails;
         QString getHostName();
         QString getClientSecret();

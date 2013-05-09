@@ -29,6 +29,7 @@
 #include <QDateTime>
 #include <QList>
 #include <QNetworkReply>
+#include <QUrl>
 #include "playlistItem.hpp"
 #include "take.hpp"
 
@@ -40,9 +41,12 @@ public:
     PlaylistItem::ItemType getType();
     QString getAknFilePath();
     void setAknFilePath(QString);
+    QString getBungeniUrl();
+    void setBungeniUrl(QString);
     const QList<PlaylistItem*>* getTakes() const;
 private:
     QString aknFilePath;
+    QString bungeniUrl;
 };
 
 #endif // SITTING_HPP
