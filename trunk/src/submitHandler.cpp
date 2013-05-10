@@ -20,13 +20,14 @@ void SubmitHandler::submit(Take *take){
     TranscriptionItem* transcriptionItem;
     Speech* speech;
     QVariantList items;
+    int rel_seconds = sitting->getStartDateTime().secsTo(take->getStartDateTime());
     for (int j=0; j<transcriptionItemsList->size(); j++){
         transcriptionItem = transcriptionItemsList->at(j);
         if(transcriptionItem->getType()==TranscriptionItem::TypeSpeech){
             QVariantMap item;
             speech = static_cast<Speech*>(transcriptionItem);
-            item.insert("start_time", QTimeToSeconds(speech->getStartTime()));
-            item.insert("endTime", QTimeToSeconds(speech->getEndTime()));
+            item.insert("start_time", rel_seconds+QTimeToSeconds(speech->getStartTime()));
+            item.insert("end_time", rel_seconds+QTimeToSeconds(speech->getEndTime()));
             item.insert("user_id", speech->getPerson()->getId());
             item.insert("speech",speech->getSpeech());
             items << item;
