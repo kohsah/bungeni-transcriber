@@ -235,6 +235,7 @@ TranscriptionItemEditor * ListViewDelegate::newSpeechEditor(QWidget *parent)cons
 
 TranscriptionItemEditor * ListViewDelegate::newAgendaItemEditor(QWidget *parent)const{
     AgendaItemEditor *editor = new AgendaItemEditor(parent);
+    editor->setAgendaItemMap(agendaItemMap);
     return editor;
 }
 
@@ -283,4 +284,14 @@ void ListViewDelegate::setAgendaItemModelData(QWidget *editor_, AgendaItem* agen
 
 void ListViewDelegate::setPersonsModel(PersonsModel* personsModel_){
     personsModel = personsModel_;
+}
+
+void ListViewDelegate::setAgendaItemMap(QMap<QString, QString>* agendaItemMap_){
+    agendaItemMap = agendaItemMap_;
+    qDebug() << "WWWWWWWWWWWWWWWW";
+    QMapIterator<QString, QString> i(*agendaItemMap);
+    while (i.hasNext()) {
+         i.next();
+         qDebug() << "ZZZZZZZZZZZZZZZ" << i.value() << i.key();
+    }
 }

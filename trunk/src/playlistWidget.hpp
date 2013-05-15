@@ -91,5 +91,6 @@ class PlaylistWidget : public QWidget
         void playMediaFile(QString);
         void loadTranscriptionItems(QList<TranscriptionItem*>*);
         void currentTakeIndex(const QModelIndex&);
+        void agendaItemMap(QMap<QString, QString>*);
 };
 #endif

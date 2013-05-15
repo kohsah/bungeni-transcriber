@@ -54,7 +54,7 @@ public:
     void setDuration(int);
     void setAgendaList(const QStringList &);
     QString getAgendaItem();
-    void setAgendaList(QStringList list);
+    void setAgendaItemMap(QMap<QString, QString>*);
 private:
     Ui::agendaItemEditor ui;
     QxtSpanSlider *horizontalSlider; 

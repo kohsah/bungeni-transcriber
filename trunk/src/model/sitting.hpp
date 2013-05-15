@@ -43,10 +43,13 @@ public:
     void setAknFilePath(QString);
     QString getBungeniUrl();
     void setBungeniUrl(QString);
+    QMap<QString, QString>* getAgendaItemMap();
+    void setAgendaItemMap(QMap<QString, QString>* agendaItemMap);
     const QList<PlaylistItem*>* getTakes() const;
 private:
     QString aknFilePath;
     QString bungeniUrl;
+    QMap<QString, QString>* agendaItemMap;
 };
 
 #endif // SITTING_HPP

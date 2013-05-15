@@ -95,6 +95,7 @@ void PlaylistWidget :: itemClicked(const QModelIndex & index)
         emit loadTranscriptionItems(take->getItems());
         emit playMediaFile(take->getMediaLocation());
         emit currentTakeIndex(index);
+        emit agendaItemMap(static_cast<Sitting*>(take->parent())->getAgendaItemMap());
     }
     /*
     emit loadTranscriptFile(current, model->data(index).toString());

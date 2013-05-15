@@ -55,7 +55,6 @@ public:
     void updateEditorGeometry ( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
     QWidget * createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
     void setPersonsModel(PersonsModel*);
-    void setAgendaList(QStringList);
 private:
     void speechDraw(QPainter *&, const QStyleOptionViewItem&, Speech*) const;
     QSize speechSizeHint(const QStyleOptionViewItem&, bool, bool, Speech*)const;
@@ -68,10 +67,12 @@ private:
     void setAgendaItemModelData(QWidget *editor_, AgendaItem*)const;
     TranscriptionItemEditor *newAgendaItemEditor(QWidget *parent)const;
     PersonsModel *personsModel;
+    QMap<QString, QString>*agendaItemMap;
 public slots:
     void currentEditing(QModelIndex index);
     void display(QModelIndex index);
     void editorClose(QWidget *editor);
+    void setAgendaItemMap(QMap<QString, QString>*);
 signals:
     void closeEditor(QWidget * editor, QAbstractItemDelegate::EndEditHint hint = NoHint );   
 };

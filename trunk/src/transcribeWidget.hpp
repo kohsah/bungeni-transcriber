@@ -117,6 +117,7 @@ class TranscribeWidget : public QMainWindow
         void networkSslErrors(QList<QSslError>);
         void onDebateReadFinished(QNetworkReply *);
         void onUserReadFinished(QNetworkReply *);
+        void onAgendaItemsReadFinished(QNetworkReply *reply);
         void onAllUsersReadFinished(QNetworkReply *);
         void onTakesReadFinished(QNetworkReply *);
         void takeFinished(QModelIndex);

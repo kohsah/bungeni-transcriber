@@ -114,6 +114,8 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
                       this, SLOT(setCurrentTakeIndex(const QModelIndex&)));
     QObject::connect( playlist, SIGNAL(refreshPlaylist()),
                       this, SLOT(playlistRefresh()));
+    QObject::connect( playlist, SIGNAL(agendaItemMap(QMap<QString, QString>*)),
+                      delegate, SLOT(setAgendaItemMap(QMap<QString, QString>*)));
     this->createActions();
     this->createMenus();
     unsetenv ("DESKTOP_STARTUP_ID");
@@ -763,17 +765,50 @@ void TranscribeWidget::onDebateReadFinished(QNetworkReply *reply){
             QDateTime::fromString(result["start_date"].toString(), Qt::ISODate),
             QDateTime::fromString(result["end_date"].toString(), Qt::ISODate),
             sittingUrl);
+        //get the takes
         QNetworkAccessManager *m = new QNetworkAccessManager(this);
-        QNetworkRequest req = QNetworkRequest(QUrl(sittingUrl+"/takes?filter_transcriber_login="+this->currentUserDetails->getLogin()));
-        req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+        QString takes_url = sittingUrl+"/takes?filter_transcriber_login="+this->currentUserDetails->getLogin();
+        QNetworkRequest takes_req = QNetworkRequest(QUrl(takes_url));
+        takes_req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
         qDebug() << oauth->getAccessToken().toAscii();
-        QNetworkReply *r = m->get(req);
-        connect(r, SIGNAL(error(QNetworkReply::NetworkError)),
+        QNetworkReply *takes_reply = m->get(takes_req);
+        connect(takes_reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(networkError(QNetworkReply::NetworkError)));
-        connect(r, SIGNAL(sslErrors(QList<QSslError>)),
+        connect(takes_reply, SIGNAL(sslErrors(QList<QSslError>)),
             this, SLOT(networkSslErrors(QList<QSslError>)));
         connect(m, SIGNAL(finished(QNetworkReply*)), this, SLOT(onTakesReadFinished(QNetworkReply*)));
-        replySittingMap[r->request().url().toString()] = sitting_index;
+        replySittingMap[takes_url] = sitting_index;
+        //get the agenda items
+        QString agenda_items_url = sittingUrl+"/sitting/items";
+        QNetworkAccessManager *agenda_items_m = new QNetworkAccessManager(this);
+        QNetworkRequest agenda_items_req = QNetworkRequest(QUrl(agenda_items_url));
+        agenda_items_req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+        QNetworkReply *agenda_items_reply = agenda_items_m->get(agenda_items_req);
+        connect(agenda_items_reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(networkError(QNetworkReply::NetworkError)));
+        connect(agenda_items_reply, SIGNAL(sslErrors(QList<QSslError>)),
+            this, SLOT(networkSslErrors(QList<QSslError>)));
+        connect(agenda_items_m, SIGNAL(finished(QNetworkReply*)), this, SLOT(onAgendaItemsReadFinished(QNetworkReply*)));
+        replySittingMap[agenda_items_url] = sitting_index;
+    }
+}
+
+void TranscribeWidget::onAgendaItemsReadFinished(QNetworkReply *reply){
+    QVariantMap result = parseReply(reply);
+    qDebug() << "XXXXXXXXcalled";
+    QModelIndex sitting_index = replySittingMap.value(reply->request().url().toString());
+    Sitting *sitting = static_cast<Sitting*>(sitting_index.internalPointer());
+    QMap<QString, QString>* agendaItemMap = new QMap<QString, QString>();
+    sitting->setAgendaItemMap(agendaItemMap);
+    if (!result.isEmpty()){
+        QList<QVariant> nodes = result["nodes"].toList();
+        for (int i = 0; i < nodes.size(); ++i){
+            QMap<QString, QVariant> node = nodes.at(i).toMap();
+            QString item_title = node["item_title"].toString();
+            QString item_id = node["object_id"].toString();
+            qDebug() << "XXXXXXXXXXXX" << item_title <<item_id;
+            agendaItemMap->insert(item_id, item_title);
+        }
     }
 }
 
