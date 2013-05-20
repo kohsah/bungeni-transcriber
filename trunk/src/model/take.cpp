@@ -56,3 +56,7 @@ void Take::setMediaLocation(QString mediaLocation_){
 QList<TranscriptionItem*>* Take::getItems(){
     return items;
 }
+
+void Take::addItem(TranscriptionItem *item){
+    items->append(item);
+}

@@ -15,21 +15,37 @@ SubmitHandler::SubmitHandler(){
 
 void SubmitHandler::submit(Take *take){
     Sitting *sitting = static_cast<Sitting*>(take->parent());
-    QUrl postUrl = QUrl(sitting->getBungeniUrl()+"/add-speeches");
+    QUrl postUrl = QUrl(sitting->getBungeniUrl()+"/add-items");
     QList<TranscriptionItem*>* transcriptionItemsList = take->getItems();
     TranscriptionItem* transcriptionItem;
     Speech* speech;
+    AgendaItem* agendaItem;
     QVariantList items;
     int rel_seconds = sitting->getStartDateTime().secsTo(take->getStartDateTime());
     for (int j=0; j<transcriptionItemsList->size(); j++){
         transcriptionItem = transcriptionItemsList->at(j);
+        QVariantMap item;
         if(transcriptionItem->getType()==TranscriptionItem::TypeSpeech){
-            QVariantMap item;
             speech = static_cast<Speech*>(transcriptionItem);
+            item.insert("type", "speech");
             item.insert("start_time", rel_seconds+QTimeToSeconds(speech->getStartTime()));
             item.insert("end_time", rel_seconds+QTimeToSeconds(speech->getEndTime()));
             item.insert("user_id", speech->getPerson()->getId());
+            if (speech->getId()){
+                item.insert("debate_record_id", speech->getId());
+            }
             item.insert("speech",speech->getSpeech());
+            items << item;
+        }
+        else if (transcriptionItem->getType()==TranscriptionItem::TypeAgendaItem){
+            agendaItem = static_cast<AgendaItem*>(transcriptionItem);
+            item.insert("type", "doc");
+            item.insert("start_time", rel_seconds+QTimeToSeconds(agendaItem->getStartTime()));
+            item.insert("end_time", rel_seconds+QTimeToSeconds(agendaItem->getEndTime()));
+            item.insert("doc_id", agendaItem->getDocId());
+            if (agendaItem->getId()){
+                item.insert("debate_record_id", agendaItem->getId());
+            }
             items << item;
         }
     }

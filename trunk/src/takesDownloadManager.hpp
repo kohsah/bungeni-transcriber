@@ -1,7 +1,7 @@
 #ifndef TAKESDOWNLOADMANAGER_HPP
 #define TAKESDOWNLOADMANAGER_HPP
 
-#include <QFile>
+#include <QTemporaryFile>
 #include <QObject>
 #include <QQueue>
 #include <QTime>
@@ -30,8 +30,7 @@ private:
     QMap<QString, QModelIndex> urlTakeMap;
     QQueue<QString> downloadQueue;
     QNetworkReply *currentDownload;
-    QFile output;
+    QTemporaryFile *output;
     QTime downloadTime;
-    QString saveFileName(QString);
 };
 #endif // TAKESDOWNLOADMANAGER_HPP

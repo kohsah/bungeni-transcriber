@@ -288,10 +288,4 @@ void ListViewDelegate::setPersonsModel(PersonsModel* personsModel_){
 
 void ListViewDelegate::setAgendaItemMap(QMap<QString, QString>* agendaItemMap_){
     agendaItemMap = agendaItemMap_;
-    qDebug() << "WWWWWWWWWWWWWWWW";
-    QMapIterator<QString, QString> i(*agendaItemMap);
-    while (i.hasNext()) {
-         i.next();
-         qDebug() << "ZZZZZZZZZZZZZZZ" << i.value() << i.key();
-    }
 }

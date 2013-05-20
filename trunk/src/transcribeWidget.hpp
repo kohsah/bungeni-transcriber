@@ -47,7 +47,6 @@
 #include "ui/ui_transcribe.h"
 #include "listViewDelegate.hpp"
 #include "ui/ui_uploadProgress.h"
-#include "network/formpost/formpost.hpp"
 #include "controlsWidget.hpp"
 #include "playlistWidget.hpp"
 #include "model/transcriptionModel.hpp"
@@ -117,9 +116,10 @@ class TranscribeWidget : public QMainWindow
         void networkSslErrors(QList<QSslError>);
         void onDebateReadFinished(QNetworkReply *);
         void onUserReadFinished(QNetworkReply *);
-        void onAgendaItemsReadFinished(QNetworkReply *reply);
+        void onAgendaItemsReadFinished(QNetworkReply *);
         void onAllUsersReadFinished(QNetworkReply *);
         void onTakesReadFinished(QNetworkReply *);
+        void onTakeItemsReadFinished(QNetworkReply *);
         void takeFinished(QModelIndex);
     private:
         TranscribeWidget();
@@ -202,6 +202,7 @@ class TranscribeWidget : public QMainWindow
         void saveRefreshToken(QString);
         QString readRefreshToken();
         QMap<QString, QModelIndex> replySittingMap;
+        QMap<QNetworkReply*, QModelIndex> replyTakeItemsMap;
         TakesDownloadManager *takesDownloadManager;
 };
 

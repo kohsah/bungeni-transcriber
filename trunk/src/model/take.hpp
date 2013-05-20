@@ -41,6 +41,7 @@ public:
     QString getMediaLocation();
     void setMediaLocation(QString);
     QList<TranscriptionItem*>* getItems();
+    void addItem(TranscriptionItem *);
 private:
     QString mediaLocation;
     QList<TranscriptionItem*>* items;

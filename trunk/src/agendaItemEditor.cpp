@@ -98,9 +98,9 @@ void AgendaItemEditor::setIndex(const QModelIndex & index_)
 }
 
 
-void AgendaItemEditor::setAgendaItemMap(QMap<QString, QString>* agendaItemMap)
+void AgendaItemEditor::setAgendaItemMap(QMap<QString, QString>* agendaItemMap_)
 {
-    QMapIterator<QString, QString> i(*agendaItemMap);
+    QMapIterator<QString, QString> i(*agendaItemMap_);
     while (i.hasNext()) {
          i.next();
          ui.comboBox->insertItem(0, i.value(), i.key());
@@ -141,4 +141,8 @@ void AgendaItemEditor::setStartTime(QTime start)
 void AgendaItemEditor::setEndTime(QTime end)
 {
     ui.endTime->setTime(end);
+}
+
+void AgendaItemEditor::setAgendaItem(QString text){
+    ui.comboBox->setCurrentIndex(ui.comboBox->findText(text));
 }

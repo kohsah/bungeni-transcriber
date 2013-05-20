@@ -13,7 +13,6 @@ HEADERS += src/transcribeWidget.hpp \
     src/speechEditor.hpp \
     src/agendaItemEditor.hpp \
     src/playlistWidget.hpp \
-    src/network/formpost/formpost.hpp \
     src/about.hpp \
     src/hotkeyWidget.hpp \
     src/util/vlc_keys.h \
@@ -60,7 +59,6 @@ SOURCES += src/transcribeWidget.cpp \
     src/speechEditor.cpp \
     src/agendaItemEditor.cpp \
     src/playlistWidget.cpp \
-    src/network/formpost/formpost.cpp \
     src/about.cpp \
     src/hotkeyWidget.cpp \
     src/util/util.cpp \
@@ -90,30 +88,3 @@ RESOURCES   =  src/resources.qrc
 CONFIG  +=  qt debug qxt
 QT += network xml webkit
 QXT += core gui
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

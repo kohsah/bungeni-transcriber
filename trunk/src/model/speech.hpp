@@ -33,11 +33,13 @@
 
 class Speech : public TranscriptionItem{
 public:
-    explicit Speech(QTime, QTime, QString, Person*, bool);
+    explicit Speech(QTime, QTime, QString, Person*, bool, int id = 0);
     void setPerson(Person*);
     void setSpeech(QString);
     void setStartTime(QTime);
     void setEndTime(QTime);
+    void setId(int);
+    int getId();
     Person* getPerson();
     QString getSpeech();
     QTime getStartTime();
@@ -49,6 +51,7 @@ protected:
     Person* person;
     QString speech;
     bool complete;
+    int id;
 };
 
 #endif // SPEECH_HPP

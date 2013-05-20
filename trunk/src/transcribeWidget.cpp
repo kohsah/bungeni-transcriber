@@ -795,7 +795,6 @@ void TranscribeWidget::onDebateReadFinished(QNetworkReply *reply){
 
 void TranscribeWidget::onAgendaItemsReadFinished(QNetworkReply *reply){
     QVariantMap result = parseReply(reply);
-    qDebug() << "XXXXXXXXcalled";
     QModelIndex sitting_index = replySittingMap.value(reply->request().url().toString());
     Sitting *sitting = static_cast<Sitting*>(sitting_index.internalPointer());
     QMap<QString, QString>* agendaItemMap = new QMap<QString, QString>();
@@ -806,7 +805,6 @@ void TranscribeWidget::onAgendaItemsReadFinished(QNetworkReply *reply){
             QMap<QString, QVariant> node = nodes.at(i).toMap();
             QString item_title = node["item_title"].toString();
             QString item_id = node["object_id"].toString();
-            qDebug() << "XXXXXXXXXXXX" << item_title <<item_id;
             agendaItemMap->insert(item_id, item_title);
         }
     }
@@ -824,9 +822,54 @@ void TranscribeWidget::onTakesReadFinished(QNetworkReply *reply){
             Take* newTake = new Take(takeName, takeStartTime, takeEndTime, QString());
             PlaylistModel *model = playlist->getModel();
             QModelIndex sitting_index = replySittingMap.value(reply->request().url().toString());
+            Sitting *sitting = static_cast<Sitting*>(sitting_index.internalPointer());
             model->insertItem(sitting_index, newTake);
             QModelIndex take_index = model->index(model->rowCount(sitting_index)-1, 0, sitting_index);
             takesDownloadManager->append(take_index, node["media_url"].toString());
+            QStringList list = reply->url().path().split("/", QString::SkipEmptyParts);
+            list.removeLast();
+            QUrl take_items_url = QUrl("http://"+reply->url().authority()+"/"+list.join("/")+"/items");
+            take_items_url.addQueryItem("start_time", QByteArray::number(sitting->getStartDateTime().secsTo(takeStartTime)));
+            take_items_url.addQueryItem("end_time", QByteArray::number(sitting->getStartDateTime().secsTo(takeEndTime)));
+            QNetworkAccessManager *take_items_m = new QNetworkAccessManager(this);
+            QNetworkRequest take_items_req = QNetworkRequest(take_items_url);
+            take_items_req.setRawHeader("Authorization", "Bearer " + oauth->getAccessToken().toAscii());
+            QNetworkReply *take_items_reply = take_items_m->get(take_items_req);
+            connect(take_items_reply, SIGNAL(error(QNetworkReply::NetworkError)),
+                this, SLOT(networkError(QNetworkReply::NetworkError)));
+            connect(take_items_reply, SIGNAL(sslErrors(QList<QSslError>)),
+                this, SLOT(networkSslErrors(QList<QSslError>)));
+            connect(take_items_m, SIGNAL(finished(QNetworkReply*)), this, SLOT(onTakeItemsReadFinished(QNetworkReply*)));
+            replyTakeItemsMap[take_items_reply] = take_index;
+        }
+    }
+}
+
+void TranscribeWidget::onTakeItemsReadFinished(QNetworkReply *reply){
+    QVariantMap result = parseReply(reply);
+    QModelIndex take_index = replyTakeItemsMap[reply];
+    Take *take = static_cast<Take*>(take_index.internalPointer());
+    QTime rel = QTime();
+    if (!result.isEmpty()){
+        QList<QVariant> nodes = result["nodes"].toList();
+        for (int i = 0; i < nodes.size(); ++i){
+            QMap<QString, QVariant> node = nodes.at(i).toMap();
+            QDateTime actualStartTime = QDateTime::fromString(node["start_date"].toString(), Qt::ISODate);
+            QTime relStartTime = rel.addSecs(take->getStartDateTime().secsTo(actualStartTime));
+            QDateTime actualEndTime = QDateTime::fromString(node["end_date"].toString(), Qt::ISODate);
+            QTime relEndTime = rel.addSecs(take->getStartDateTime().secsTo(actualEndTime));
+            int debateRecordItemId = node["debate_record_item_id"].toInt();
+            if (node["type"].toString() == "debate_speech"){
+                QString speech = node["text"].toString();
+                int person_id = node["person_id"].toInt();
+                QModelIndex person_index = personsModel->match(personsModel->index(0,1), Qt::DisplayRole, person_id).at(0);
+                Person *person = static_cast<Person*>(person_index.internalPointer());
+                Speech *newSpeech = new Speech(relStartTime, relEndTime, speech, person, true, debateRecordItemId);
+                take->addItem(newSpeech);
+            }
+            else if (node["type"].toString() == "debate_doc"){
+                //pass
+            }
         }
     }
 }

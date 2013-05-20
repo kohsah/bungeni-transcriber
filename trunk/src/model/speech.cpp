@@ -1,12 +1,13 @@
 #include <QDebug>
 #include "speech.hpp"
 Speech::Speech(QTime startTime_, QTime endTime_, QString speech_,
-               Person *person_, bool complete_) : TranscriptionItem(){
+               Person *person_, bool complete_, int id_) : TranscriptionItem(){
     startTime = startTime_;
     endTime = endTime_;
     speech = speech_;
     person = person_;
     complete = complete_;
+    id = id_;
 }
 
 void Speech::setStartTime(QTime startTime_){
@@ -26,6 +27,14 @@ void Speech::setComplete(bool complete_){
 }
 void Speech::setSpeech(QString speech_){
     speech = speech_;
+}
+
+void Speech::setId(int id_){
+    id = id_;
+}
+
+int Speech::getId(){
+    return id;
 }
 
 Person* Speech::getPerson(){
