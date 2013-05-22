@@ -32,7 +32,7 @@ void SubmitHandler::submit(Take *take){
             item.insert("end_time", rel_seconds+QTimeToSeconds(speech->getEndTime()));
             item.insert("user_id", speech->getPerson()->getId());
             if (speech->getId()){
-                item.insert("debate_record_id", speech->getId());
+                item.insert("debate_record_item_id", speech->getId());
             }
             item.insert("speech",speech->getSpeech());
             items << item;
@@ -44,7 +44,7 @@ void SubmitHandler::submit(Take *take){
             item.insert("end_time", rel_seconds+QTimeToSeconds(agendaItem->getEndTime()));
             item.insert("doc_id", agendaItem->getDocId());
             if (agendaItem->getId()){
-                item.insert("debate_record_id", agendaItem->getId());
+                item.insert("debate_record_item_id", agendaItem->getId());
             }
             items << item;
         }

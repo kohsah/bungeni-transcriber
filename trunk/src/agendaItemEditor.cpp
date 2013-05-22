@@ -98,12 +98,12 @@ void AgendaItemEditor::setIndex(const QModelIndex & index_)
 }
 
 
-void AgendaItemEditor::setAgendaItemMap(QMap<QString, QString>* agendaItemMap_)
+void AgendaItemEditor::setAgendaItemMap(QMap<int, QString>* agendaItemMap_)
 {
-    QMapIterator<QString, QString> i(*agendaItemMap_);
+    QMapIterator<int, QString> i(*agendaItemMap_);
     while (i.hasNext()) {
          i.next();
-         ui.comboBox->insertItem(0, i.value(), i.key());
+         ui.comboBox->insertItem(0, i.value(), QVariant(i.key()));
     }
 }
 
@@ -117,9 +117,9 @@ QTime AgendaItemEditor::getEndTime()
     return ui.endTime->time();
 }
 
-QString AgendaItemEditor::getAgendaItem()
+int AgendaItemEditor::getDocId()
 {
-    return ui.comboBox->currentText();
+    return ui.comboBox->itemData(ui.comboBox->currentIndex()).toInt();
 }
 
 void AgendaItemEditor::setDuration(int sec)
@@ -143,6 +143,6 @@ void AgendaItemEditor::setEndTime(QTime end)
     ui.endTime->setTime(end);
 }
 
-void AgendaItemEditor::setAgendaItem(QString text){
-    ui.comboBox->setCurrentIndex(ui.comboBox->findText(text));
+void AgendaItemEditor::setDocId(int id){
+    ui.comboBox->setCurrentIndex(ui.comboBox->findData(id));
 }

@@ -53,9 +53,9 @@ public:
     void setIndex(const QModelIndex& );
     void setDuration(int);
     void setAgendaList(const QStringList &);
-    QString getAgendaItem();
-    void setAgendaItemMap(QMap<QString, QString>*);
-    void setAgendaItem(QString text);
+    int getDocId();
+    void setAgendaItemMap(QMap<int, QString>*);
+    void setDocId(int id);
 private:
     Ui::agendaItemEditor ui;
     QxtSpanSlider *horizontalSlider; 

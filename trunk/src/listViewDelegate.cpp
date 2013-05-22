@@ -240,7 +240,7 @@ TranscriptionItemEditor * ListViewDelegate::newAgendaItemEditor(QWidget *parent)
 }
 
 void ListViewDelegate::agendaItemDraw(QPainter *& painter, const QStyleOptionViewItem &option, AgendaItem* agendaItem)const{
-    QString agendaItemTxt = agendaItem->getTitle();
+    QString agendaItemTxt = agendaItemMap->value(agendaItem->getDocId());
     QString startTimeTxt = "Start Time : "+agendaItem->getStartTime().toString(Qt::TextDate);
     QString endTimeTxt = "End Time : "+agendaItem->getEndTime().toString(Qt::TextDate);
     QRect rStartTime = option.rect.adjusted(2, 2, 200, 29);
@@ -273,19 +273,20 @@ void ListViewDelegate::setAgendaItemEditorData(QWidget *editor_, AgendaItem* age
     AgendaItemEditor *editor = static_cast<AgendaItemEditor*>(editor_);
     editor->setStartTime(agendaItem->getStartTime());
     editor->setEndTime(agendaItem->getEndTime());
+    editor->setDocId(agendaItem->getDocId());
 }
 
 void ListViewDelegate::setAgendaItemModelData(QWidget *editor_, AgendaItem* agendaItem)const{
     AgendaItemEditor *editor = static_cast<AgendaItemEditor*>(editor_);
     agendaItem->setStartTime(editor->getStartTime());
     agendaItem->setEndTime(editor->getEndTime());
-    agendaItem->setTitle(editor->getAgendaItem());
+    agendaItem->setDocId(editor->getDocId());
 }
 
 void ListViewDelegate::setPersonsModel(PersonsModel* personsModel_){
     personsModel = personsModel_;
 }
 
-void ListViewDelegate::setAgendaItemMap(QMap<QString, QString>* agendaItemMap_){
+void ListViewDelegate::setAgendaItemMap(QMap<int, QString>* agendaItemMap_){
     agendaItemMap = agendaItemMap_;
 }

@@ -7,11 +7,9 @@
 class AgendaItem : public TranscriptionItem
 {
 public:
-    explicit AgendaItem(QTime, QTime, QString, int, int id = 0);
-    void setTitle(QString title);
+    explicit AgendaItem(QTime, QTime, int, int id = 0);
     void setId(int id);
     void setDocId(int id);
-    QString getTitle();
     int getId();
     int getDocId();
     virtual void setStartTime(QTime);
@@ -20,7 +18,6 @@ public:
     virtual QTime getEndTime();
     ItemType getType();
 protected:
-    QString title;
     int id;
     int docId;
 };

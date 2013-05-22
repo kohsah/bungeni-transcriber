@@ -62,10 +62,10 @@ void Sitting::setBungeniUrl(QString url){
     bungeniUrl = url;
 }
 
-QMap<QString, QString>* Sitting::getAgendaItemMap(){
+QMap<int, QString>* Sitting::getAgendaItemMap(){
     return agendaItemMap;
 }
 
-void Sitting::setAgendaItemMap(QMap<QString, QString>* agendaItemMap_){
+void Sitting::setAgendaItemMap(QMap<int, QString>* agendaItemMap_){
     agendaItemMap = agendaItemMap_;
 }

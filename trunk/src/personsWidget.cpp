@@ -30,9 +30,10 @@ PersonsWidget :: PersonsWidget(QWidget*parent=0) : QDialog(parent){
     this->setModal(true);
     setLayout(ui.gridLayout);
     ui.personsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    QObject::connect(ui.closeButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 void PersonsWidget::setModel(PersonsModel *personsModel){
     ui.personsTable->setModel(personsModel);
-    ui.personsTable->resizeColumnsToContents();
+    //ui.personsTable->resizeColumnsToContents();
 }

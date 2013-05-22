@@ -114,8 +114,8 @@ TranscribeWidget::TranscribeWidget() : QMainWindow()
                       this, SLOT(setCurrentTakeIndex(const QModelIndex&)));
     QObject::connect( playlist, SIGNAL(refreshPlaylist()),
                       this, SLOT(playlistRefresh()));
-    QObject::connect( playlist, SIGNAL(agendaItemMap(QMap<QString, QString>*)),
-                      delegate, SLOT(setAgendaItemMap(QMap<QString, QString>*)));
+    QObject::connect( playlist, SIGNAL(agendaItemMap(QMap<int, QString>*)),
+                      delegate, SLOT(setAgendaItemMap(QMap<int, QString>*)));
     this->createActions();
     this->createMenus();
     unsetenv ("DESKTOP_STARTUP_ID");
@@ -361,19 +361,17 @@ void TranscribeWidget::addSpeech()
 void TranscribeWidget::addAgendaItem()
 {
     AgendaItem *newAgendaItem;
-    if (playlist->getSelected()>=0)
+    if (currentIndex.isValid())
     {
         if (model->rowCount() > 0){
             TranscriptionItemWrapper *wrapper = qvariant_cast<TranscriptionItemWrapper*>(
                         model->data(model->index(model->rowCount()-1)));
             TranscriptionItem *lastItem = wrapper->ptr;
             newAgendaItem = new AgendaItem(lastItem->getEndTime().addSecs(1),
-                                   lastItem->getEndTime().addSecs(120),
-                                   "Agenda Item", 0);
+                                   lastItem->getEndTime().addSecs(120), 0);
         }
         else {
-            newAgendaItem = new AgendaItem(QTime(0,0,0), QTime(0,2,0),
-                                    "Agenda Item", 0);
+            newAgendaItem = new AgendaItem(QTime(0,0,0), QTime(0,2,0), 0);
             qDebug() << "NEW AGENDA ITEM CREATED";
         }
         model->insertItem(model->rowCount(), newAgendaItem);
@@ -466,7 +464,7 @@ bool TranscribeWidget::setupPersonsModel(){
 void TranscribeWidget::createMenus()
 {
     fileMenu = menuBar()->addMenu("&File");
-    fileMenu->addAction(addToPlaylistAct);
+    //fileMenu->addAction(addToPlaylistAct);
     /*fileMenu->addSeparator();
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
@@ -797,14 +795,16 @@ void TranscribeWidget::onAgendaItemsReadFinished(QNetworkReply *reply){
     QVariantMap result = parseReply(reply);
     QModelIndex sitting_index = replySittingMap.value(reply->request().url().toString());
     Sitting *sitting = static_cast<Sitting*>(sitting_index.internalPointer());
-    QMap<QString, QString>* agendaItemMap = new QMap<QString, QString>();
+    QMap<int, QString>* agendaItemMap = new QMap<int, QString>();
     sitting->setAgendaItemMap(agendaItemMap);
     if (!result.isEmpty()){
         QList<QVariant> nodes = result["nodes"].toList();
         for (int i = 0; i < nodes.size(); ++i){
             QMap<QString, QVariant> node = nodes.at(i).toMap();
+            QString number = node["object_id"].toString().split("-", QString::SkipEmptyParts)[1];
+            number.chop(1);
+            int item_id = number.toInt();
             QString item_title = node["item_title"].toString();
-            QString item_id = node["object_id"].toString();
             agendaItemMap->insert(item_id, item_title);
         }
     }
@@ -868,7 +868,9 @@ void TranscribeWidget::onTakeItemsReadFinished(QNetworkReply *reply){
                 take->addItem(newSpeech);
             }
             else if (node["type"].toString() == "debate_doc"){
-                //pass
+                AgendaItem *agendaItem = new AgendaItem(relStartTime, relEndTime,
+                    node["doc_id"].toInt(), node["debate_record_item_id"].toInt());
+                take->addItem(agendaItem);
             }
         }
     }

@@ -67,12 +67,12 @@ private:
     void setAgendaItemModelData(QWidget *editor_, AgendaItem*)const;
     TranscriptionItemEditor *newAgendaItemEditor(QWidget *parent)const;
     PersonsModel *personsModel;
-    QMap<QString, QString>*agendaItemMap;
+    QMap<int, QString>*agendaItemMap;
 public slots:
     void currentEditing(QModelIndex index);
     void display(QModelIndex index);
     void editorClose(QWidget *editor);
-    void setAgendaItemMap(QMap<QString, QString>*);
+    void setAgendaItemMap(QMap<int, QString>*);
 signals:
     void closeEditor(QWidget * editor, QAbstractItemDelegate::EndEditHint hint = NoHint );   
 };

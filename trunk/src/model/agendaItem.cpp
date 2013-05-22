@@ -26,10 +26,9 @@
 #include "agendaItem.hpp"
 #include "../agendaItemEditor.hpp"
 AgendaItem::AgendaItem(QTime startTime_, QTime endTime_,
-                       QString title_, int docId_, int id_) : TranscriptionItem(){
+                       int docId_, int id_) : TranscriptionItem(){
     startTime = startTime_;
     endTime = endTime_;
-    title = title_;
     docId = docId_;
     id = id_;
 }
@@ -42,20 +41,12 @@ void AgendaItem::setEndTime(QTime endTime_){
     endTime = endTime_;
 }
 
-void AgendaItem::setTitle(QString title_){
-    title = title_;
-}
-
 void AgendaItem::setDocId(int docId_){
     docId = docId_;
 }
 
 void AgendaItem::setId(int id_){
     id = id_;
-}
-
-QString AgendaItem::getTitle(){
-    return title;
 }
 
 int AgendaItem::getId(){
