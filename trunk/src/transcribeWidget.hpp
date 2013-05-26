@@ -121,6 +121,7 @@ class TranscribeWidget : public QMainWindow
         void onTakesReadFinished(QNetworkReply *);
         void onTakeItemsReadFinished(QNetworkReply *);
         void takeFinished(QModelIndex);
+        void setupOAuth();
     private:
         TranscribeWidget();
         ~TranscribeWidget();
@@ -188,7 +189,7 @@ class TranscribeWidget : public QMainWindow
         bool _isPlaying;
 
         //OAUTH
-        void setupOAuth();
+
         bool isLoggedIn();
 
         //Bungeni

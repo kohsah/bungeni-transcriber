@@ -493,6 +493,7 @@ void TranscribeWidget::createMenus()
 void TranscribeWidget::bungeniSettings()
 {
     SettingsDialog *settings = new SettingsDialog(this);
+    QObject::connect(settings, SIGNAL(accepted()), this, SLOT(setupOAuth()));
     settings->show();
 }
 
